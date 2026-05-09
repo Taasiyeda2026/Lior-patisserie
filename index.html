@@ -1327,6 +1327,73 @@
       font-weight: 400;
     }
 
+    .contact-details-card {
+      width: min(560px, 100%);
+      margin: 18px auto 0;
+      padding: 16px 18px;
+      border-radius: 20px;
+      background: linear-gradient(
+        180deg,
+        rgba(255, 249, 242, 0.88) 0%,
+        rgba(242, 234, 223, 0.76) 100%
+      );
+      border: 1px solid rgba(200, 194, 184, 0.46);
+      box-shadow:
+        0 10px 26px rgba(47, 33, 28, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.58);
+      text-align: right;
+    }
+
+    .contact-details-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .contact-details-list li {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      color: var(--cocoa);
+      font-size: 0.96rem;
+      line-height: 1.5;
+    }
+
+    .contact-label {
+      color: rgba(92, 61, 50, 0.9);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .contact-value {
+      color: #3D2249;
+      font-weight: 500;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+
+    .contact-value:hover {
+      color: #5A3967;
+    }
+
+    .contact-value.phone-link {
+      direction: ltr;
+      unicode-bidi: embed;
+      white-space: nowrap;
+    }
+
+    .contact-value.email-link {
+      overflow-wrap: anywhere;
+      word-break: break-word;
+      text-align: left;
+    }
+
     .final .btn {
       margin-top: 18px;
       min-height: 42px;
@@ -1587,6 +1654,27 @@
         margin-top: 12px;
         font-size: 0.95rem;
         line-height: 1.76;
+      }
+
+      .contact-details-card {
+        margin-top: 14px;
+        padding: 14px 12px;
+        border-radius: 16px;
+      }
+
+      .contact-details-list {
+        gap: 9px;
+      }
+
+      .contact-details-list li {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+        font-size: 0.9rem;
+      }
+
+      .contact-value.email-link {
+        font-size: 0.88rem;
       }
 
       .final .btn {
@@ -2186,7 +2274,19 @@
             <p>
               ספרו לליאור אילו טעמים אהבתם, ונמשיך משם בצורה פשוטה ונעימה.
             </p>
-            <a class="btn" href="#" data-order>שליחת הזמנה לליאור</a>
+            <div class="contact-details-card" aria-label="פרטי יצירת קשר">
+              <ul class="contact-details-list">
+                <li>
+                  <span class="contact-label">☎ נייד</span>
+                  <a class="contact-value phone-link" href="tel:+972506422900">050-642-2900</a>
+                </li>
+                <li>
+                  <span class="contact-label">✉ מייל</span>
+                  <a class="contact-value email-link" href="mailto:liornahum1911@gmail.com">liornahum1911@gmail.com</a>
+                </li>
+              </ul>
+            </div>
+            <a class="btn" href="https://wa.me/972506422900" target="_blank" rel="noopener noreferrer">שליחת הזמנה לליאור</a>
             <div class="signature">באהבה, ליאור</div>
           </div>
         </div>
