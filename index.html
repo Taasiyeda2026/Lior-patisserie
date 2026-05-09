@@ -702,6 +702,32 @@
       isolation: isolate;
     }
 
+    .section-unlock {
+      opacity: 0.42;
+      transform: translateY(34px) scale(0.985);
+      transform-origin: center top;
+      filter: drop-shadow(0 22px 34px rgba(47, 33, 28, 0.10));
+      transition:
+        opacity 0.56s ease,
+        transform 0.56s cubic-bezier(0.22, 1, 0.36, 1),
+        filter 0.56s ease;
+      will-change: opacity, transform;
+    }
+
+    .section-unlock.is-unlocked {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: drop-shadow(0 0 0 rgba(47, 33, 28, 0));
+      will-change: auto;
+    }
+
+    main > section:not(:first-child).section-unlock {
+      border-radius: clamp(22px, 3vw, 42px) clamp(22px, 3vw, 42px) 0 0;
+      box-shadow:
+        0 -18px 44px rgba(47, 33, 28, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.44);
+    }
+
     .section-title {
       text-align: center;
       margin-bottom: 54px;
@@ -1203,15 +1229,20 @@
       min-height: 420px;
       border-radius: 34px;
       overflow: hidden;
-      background-image: url("images/instagram-collage.webp");
-      background-size: cover;
-      background-position: center center;
-      background-repeat: no-repeat;
       box-shadow: 0 26px 70px rgba(60, 35, 25, 0.18);
       border: 1px solid rgba(191, 148, 82, 0.38);
       display: flex;
       align-items: center;
       justify-content: center;
+    }
+
+    .instagram-bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center center;
     }
 
     .instagram-card::before {
@@ -1711,6 +1742,27 @@
       }
     }
 
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.001ms !important;
+      }
+
+      .reveal,
+      .section-unlock {
+        opacity: 1;
+        transform: none;
+        filter: none;
+      }
+    }
+
     @media (max-width: 980px) {
       .nav,
       .header-cta {
@@ -1987,7 +2039,6 @@
         width: calc(100% - 32px);
         min-height: 360px;
         border-radius: 26px;
-        background-position: center center;
       }
 
       .instagram-content {
@@ -2403,7 +2454,7 @@
           </div>
 
           <div class="home-hero-panel">
-            <img class="hero-logo" src="assets/logo.png" alt="Lior’s Pâtisserie logo" width="210" height="210">
+            <img class="hero-logo" src="assets/logo.png" alt="Lior’s Pâtisserie logo" width="825" height="550" loading="eager" decoding="async">
             <a class="hero-scroll-link" href="#products" aria-label="גלילה לאזור הטעמים">גללו מטה</a>
           </div>
         </div>
@@ -2431,6 +2482,14 @@
       <section class="instagram-section" id="instagram">
         <div class="container">
           <div class="instagram-card reveal">
+            <img
+              class="instagram-bg"
+              src="images/instagram-collage.webp"
+              alt="קולאז׳ קינוחים ועוגיות של Lior’s Pâtisserie באינסטגרם"
+              width="1212"
+              height="678"
+              loading="lazy"
+              decoding="async">
             <div class="instagram-content">
               <div class="instagram-kicker">— Instagram —</div>
               <h2 class="instagram-title">עוד רגעים מתוקים מחכים באינסטגרם</h2>
@@ -2594,7 +2653,7 @@
 
   <div class="image-lightbox" id="imageLightbox" aria-hidden="true">
     <button class="image-lightbox-close" id="imageLightboxClose" type="button" aria-label="סגירת תמונה">×</button>
-    <img id="imageLightboxImg" src="" alt="">
+    <img id="imageLightboxImg" src="" alt="" decoding="async">
   </div>
 
   <script>
@@ -2761,7 +2820,7 @@ ${productLine}
       grid.innerHTML = signatureProducts.map((product) => `
         <article class="signature-card reveal">
           <div class="signature-image">
-            <img data-product-image="${product.image}" alt="${product.name}" width="1200" height="1260" loading="lazy" decoding="async">
+            <img data-product-image="${product.image}" alt="${product.name}" width="1200" height="1032" loading="lazy" decoding="async">
           </div>
           <div class="signature-body">
             <h3>${product.name}</h3>
@@ -2773,9 +2832,6 @@ ${productLine}
         </article>
       `).join("");
 
-      grid.querySelectorAll("[data-product-image]").forEach((img) => {
-        setImageWithFallback(img, img.dataset.productImage);
-      });
     }
 
     function renderProducts() {
@@ -2796,14 +2852,50 @@ ${productLine}
         </article>
       `).join("");
 
-      grid.querySelectorAll("[data-product-image]").forEach((img) => {
-        setImageWithFallback(img, img.dataset.productImage);
-      });
+    }
+
+    function getManagedImageName(img) {
+      return img.dataset.img || img.dataset.productImage || "";
     }
 
     function setupImages() {
-      document.querySelectorAll("[data-img]").forEach((img) => {
-        setImageWithFallback(img, img.dataset.img);
+      const images = Array.from(document.querySelectorAll("[data-img], [data-product-image]"));
+
+      if (!images.length) return;
+
+      const loadImage = (img) => {
+        if (img.dataset.imageQueued === "loaded") return;
+
+        const name = getManagedImageName(img);
+        if (!name) return;
+
+        img.dataset.imageQueued = "loaded";
+        setImageWithFallback(img, name);
+      };
+
+      if (!("IntersectionObserver" in window)) {
+        images.forEach(loadImage);
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            loadImage(entry.target);
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { rootMargin: "650px 0px", threshold: 0.01 });
+
+      images.forEach((img) => {
+        const shouldLoadImmediately = img.loading === "eager" || img.fetchPriority === "high";
+
+        if (shouldLoadImmediately) {
+          loadImage(img);
+          return;
+        }
+
+        observer.observe(img);
       });
     }
 
@@ -2931,6 +3023,35 @@ ${productLine}
       }
     }
 
+    function setupSectionUnlockAnimations() {
+      const sections = document.querySelectorAll("main > section");
+
+      if (!sections.length) return;
+
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+        sections.forEach((section) => section.classList.add("section-unlock", "is-unlocked"));
+        return;
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-unlocked");
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.12, rootMargin: "0px 0px -10% 0px" });
+
+      sections.forEach((section, index) => {
+        section.classList.add("section-unlock");
+        if (index === 0) {
+          section.classList.add("is-unlocked");
+          return;
+        }
+        observer.observe(section);
+      });
+    }
+
     function setupRevealAnimations() {
       const observer = new IntersectionObserver((entries) => {
         entries.forEach((entry) => {
@@ -3024,6 +3145,7 @@ ${productLine}
       renderProducts();
       setupImages();
       setupWhatsappLinks();
+      setupSectionUnlockAnimations();
       setupRevealAnimations();
       setupOrderModal();
       setupImageLightbox();
