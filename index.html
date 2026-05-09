@@ -1575,7 +1575,9 @@
       align-items: center;
       justify-content: center;
       padding: 24px;
-      background: rgba(47, 33, 28, 0.68);
+      background:
+        radial-gradient(circle at center, rgba(247, 240, 230, 0.10), transparent 36%),
+        rgba(47, 33, 28, 0.64);
       backdrop-filter: blur(10px);
     }
 
@@ -1584,11 +1586,16 @@
     }
 
     .image-lightbox img {
-      max-width: min(760px, 88vw);
-      max-height: 82vh;
+      max-width: min(860px, 88vw);
+      max-height: 84vh;
+      width: auto;
+      height: auto;
+      min-width: min(420px, 78vw);
       object-fit: contain;
       border-radius: 24px;
-      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+      box-shadow:
+        0 34px 100px rgba(0, 0, 0, 0.38),
+        0 10px 30px rgba(47, 33, 28, 0.28);
       cursor: zoom-out;
       animation: lightboxIn 0.22s ease both;
     }
@@ -1597,15 +1604,17 @@
       position: fixed;
       top: 22px;
       left: 22px;
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 250, 243, 0.34);
-      background: rgba(255, 250, 243, 0.16);
+      border: 1px solid rgba(255, 250, 243, 0.38);
+      background: rgba(255, 250, 243, 0.18);
       color: #fffaf3;
       font-size: 1.35rem;
       cursor: pointer;
       line-height: 1;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 10px 26px rgba(47, 33, 28, 0.20);
     }
 
     @keyframes lightboxIn {
@@ -1629,6 +1638,7 @@
       }
 
       .image-lightbox img {
+        min-width: unset;
         max-width: 92vw;
         max-height: 78vh;
         border-radius: 20px;
