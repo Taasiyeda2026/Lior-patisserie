@@ -772,6 +772,90 @@
       font-weight: 300;
     }
 
+    .instagram-section {
+      padding: 96px 0;
+      background:
+        radial-gradient(circle at 20% 20%, rgba(199, 178, 214, 0.16), transparent 34%),
+        radial-gradient(circle at 82% 18%, rgba(200, 169, 106, 0.12), transparent 32%),
+        linear-gradient(180deg, #F7F0E6 0%, #F2EADF 100%);
+    }
+
+    .instagram-card {
+      max-width: 820px;
+      margin: 0 auto;
+      text-align: center;
+      padding: 58px 42px;
+      border-radius: 34px;
+      background: rgba(255, 249, 242, 0.72);
+      border: 1px solid rgba(200, 194, 184, 0.42);
+      box-shadow:
+        0 24px 70px rgba(47, 33, 28, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.42);
+      backdrop-filter: blur(10px);
+    }
+
+    .instagram-card h2 {
+      margin: 0;
+      font-family: "Playfair Display", "Assistant", serif;
+      font-size: clamp(2rem, 4vw, 3.4rem);
+      line-height: 1.2;
+      font-weight: 500;
+      color: #2F211C;
+    }
+
+    .instagram-card p {
+      max-width: 580px;
+      margin: 22px auto 0;
+      color: #5C3D32;
+      font-size: 1.05rem;
+      line-height: 1.9;
+      font-weight: 300;
+    }
+
+    .instagram-note {
+      margin: 14px auto 0;
+      max-width: 560px;
+      color: #7A665C;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      font-weight: 300;
+    }
+
+    .instagram-btn {
+      margin-top: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 42px;
+      padding: 10px 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(200, 169, 106, 0.38);
+      background:
+        linear-gradient(180deg, rgba(255, 249, 242, 0.82), rgba(242, 234, 223, 0.72));
+      color: #3D2249;
+      font-weight: 600;
+      font-size: 0.92rem;
+      letter-spacing: 0.03em;
+      box-shadow:
+        0 10px 24px rgba(47, 33, 28, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.62);
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
+    }
+
+    .instagram-btn:hover {
+      transform: translateY(-2px);
+      box-shadow:
+        0 16px 34px rgba(47, 33, 28, 0.14),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72);
+    }
+
+    .instagram-btn:active {
+      transform: translateY(1px);
+    }
+
 
     .catalog-cta {
       background: var(--cream);
@@ -1066,6 +1150,19 @@
         bottom: 18px;
       }
 
+      .instagram-section {
+        padding: 72px 0;
+      }
+
+      .instagram-card {
+        padding: 42px 24px;
+        border-radius: 26px;
+      }
+
+      .instagram-card p {
+        font-size: 0.98rem;
+      }
+
       #products {
         scroll-margin-top: 92px;
       }
@@ -1317,6 +1414,7 @@
         <nav class="nav" aria-label="תפריט ראשי">
           <a href="#home">הבית</a>
           <a href="#products">הטעמים</a>
+          <a href="#instagram">אינסטגרם</a>
           <a href="#why">למה אצלנו</a>
           <a href="#order">איך מזמינים</a>
           <a href="#contact">יצירת קשר</a>
@@ -1337,6 +1435,7 @@
     <div class="mobile-nav" id="mobileNav">
       <a href="#home">הבית</a>
       <a href="#products">הטעמים</a>
+      <a href="#instagram">אינסטגרם</a>
       <a href="#why">למה אצלנו</a>
       <a href="#order">איך מזמינים</a>
       <a href="#contact">יצירת קשר</a>
@@ -1409,6 +1508,25 @@
           </div>
 
           <div class="products-grid" id="productsGrid"></div>
+        </div>
+      </section>
+
+      <section class="instagram-section" id="instagram">
+        <div class="container">
+          <div class="instagram-card reveal">
+            <div class="section-label">— Instagram —</div>
+            <h2>עוד רגעים מתוקים מחכים באינסטגרם</h2>
+            <p>
+              רוצים לראות טעמים חדשים, מארזים, הצצות מהאפייה ורעיונות לאירוח?
+              עקבו אחרי Lior’s Pâtisserie באינסטגרם.
+            </p>
+            <div class="instagram-note">
+              העמוד מתעדכן בתמונות, השראות וקולקציות חדשות.
+            </div>
+            <a class="instagram-btn" href="#" target="_blank" rel="noopener noreferrer">
+              לאינסטגרם
+            </a>
+          </div>
         </div>
       </section>
 
@@ -1585,6 +1703,7 @@
 
   <script>
     const WHATSAPP_PHONE = "972506422900";
+    const INSTAGRAM_URL = "https://www.instagram.com/REPLACE_WITH_HANDLE/";
 
     const signatureProductNames = ["אוראו דרים", "קוקילוטוס", "פיסטצ׳יו", "שוקולד דובאי"];
 
@@ -1781,6 +1900,12 @@ ${productLine}
         link.href = getWhatsAppUrl();
         link.target = "_blank";
         link.rel = "noopener noreferrer";
+      });
+    }
+
+    function setupInstagramLinks() {
+      document.querySelectorAll(".instagram-btn").forEach((link) => {
+        link.href = INSTAGRAM_URL;
       });
     }
 
@@ -1992,6 +2117,7 @@ ${productLine}
       setupMobileMenu();
       setupOrderModal();
       setupImageLightbox();
+      setupInstagramLinks();
     });
   </script>
 </body>
