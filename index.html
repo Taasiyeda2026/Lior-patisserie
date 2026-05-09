@@ -697,16 +697,18 @@
     .section-title h2::after {
       content: "";
       display: block;
-      width: 72px;
-      height: 1px;
-      margin: 18px auto 0;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(200, 169, 106, 0.72),
-        rgba(200, 194, 184, 0.72),
-        transparent
-      );
+      width: min(132px, 34vw);
+      height: 4px;
+      margin: 16px auto 0;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 250, 243, 0.42);
+      background:
+        linear-gradient(90deg, rgba(255, 250, 243, 0), rgba(255, 250, 243, 0.52), rgba(255, 250, 243, 0)),
+        linear-gradient(90deg, rgba(200, 169, 106, 0.18), rgba(200, 169, 106, 0.78), rgba(90, 57, 103, 0.66), rgba(200, 194, 184, 0.72), rgba(200, 169, 106, 0.18));
+      box-shadow:
+        0 0 0 1px rgba(200, 194, 184, 0.18),
+        0 6px 14px rgba(47, 33, 28, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.58);
     }
 
     .section-title p {
@@ -895,15 +897,18 @@
     .product-body h3::after {
       content: "";
       display: block;
-      width: 56px;
-      height: 1px;
+      width: min(108px, 42vw);
+      height: 4px;
       margin-top: 8px;
-      background: linear-gradient(
-        90deg,
-        rgba(200, 169, 106, 0.72),
-        rgba(200, 194, 184, 0.68),
-        transparent
-      );
+      border-radius: 999px;
+      border: 1px solid rgba(255, 250, 243, 0.38);
+      background:
+        linear-gradient(90deg, rgba(255, 250, 243, 0), rgba(255, 250, 243, 0.5), rgba(255, 250, 243, 0)),
+        linear-gradient(90deg, rgba(200, 169, 106, 0.2), rgba(200, 169, 106, 0.76), rgba(90, 57, 103, 0.62), rgba(200, 194, 184, 0.7), rgba(200, 169, 106, 0.2));
+      box-shadow:
+        0 0 0 1px rgba(200, 194, 184, 0.16),
+        0 4px 10px rgba(47, 33, 28, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
     }
 
     .product-body p {
@@ -1062,10 +1067,17 @@
     .why-card h3::after {
       content: "";
       display: block;
-      width: 44px;
-      height: 1px;
+      width: 74px;
+      height: 3px;
       margin: 8px auto 0;
-      background: linear-gradient(90deg, rgba(200, 169, 106, 0.72), rgba(200, 194, 184, 0.68), transparent);
+      border-radius: 999px;
+      border: 1px solid rgba(255, 250, 243, 0.34);
+      background:
+        linear-gradient(90deg, rgba(255, 250, 243, 0), rgba(255, 250, 243, 0.42), rgba(255, 250, 243, 0)),
+        linear-gradient(90deg, rgba(200, 169, 106, 0.24), rgba(200, 169, 106, 0.7), rgba(90, 57, 103, 0.56), rgba(200, 194, 184, 0.66), rgba(200, 169, 106, 0.24));
+      box-shadow:
+        0 3px 8px rgba(47, 33, 28, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
 
     .why-card p {
@@ -1341,9 +1353,16 @@
       top: 0;
       left: 50%;
       transform: translateX(-50%);
-      width: 34px;
-      height: 1px;
-      background: linear-gradient(90deg, rgba(200, 169, 106, 0.78), rgba(200, 194, 184, 0.7), transparent);
+      width: 62px;
+      height: 3px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 250, 243, 0.34);
+      background:
+        linear-gradient(90deg, rgba(255, 250, 243, 0), rgba(255, 250, 243, 0.4), rgba(255, 250, 243, 0)),
+        linear-gradient(90deg, rgba(200, 169, 106, 0.24), rgba(200, 169, 106, 0.68), rgba(90, 57, 103, 0.52), rgba(200, 194, 184, 0.64), rgba(200, 169, 106, 0.24));
+      box-shadow:
+        0 2px 7px rgba(47, 33, 28, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.45);
     }
 
     .kashrut {
@@ -1708,6 +1727,10 @@
         width: min(130px, 52vw);
       }
 
+      .section-title h2::after {
+        width: min(114px, 46vw);
+      }
+
       .statement-text {
         font-size: 1.55rem;
         line-height: 1.85;
@@ -1727,6 +1750,10 @@
       .product-body h3 {
         font-size: clamp(1.28rem, 5.8vw, 1.5rem);
         margin-bottom: 10px;
+      }
+
+      .product-body h3::after {
+        width: min(94px, 44vw);
       }
 
       .editorial {
