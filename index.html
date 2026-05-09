@@ -102,7 +102,6 @@
     }
 
     html {
-      zoom: 0.85;
       scroll-behavior: smooth;
     }
 
@@ -363,6 +362,7 @@
 
     .home-hero {
       min-height: calc(100svh - (var(--shell-gutter) * 2));
+      height: calc(100svh - (var(--shell-gutter) * 2));
       position: relative;
       display: grid;
       place-items: center;
@@ -461,8 +461,8 @@
     .home-opening {
       position: relative;
       z-index: 1;
-      margin-top: -28px;
-      padding: 22px 0 56px;
+      margin-top: 0;
+      padding: 42px 0 56px;
       text-align: center;
       background:
         linear-gradient(180deg, rgba(255, 249, 242, 0.62) 0%, rgba(247, 240, 230, 0.94) 10%, rgba(255, 249, 242, 0.35) 28%, transparent 42%),
@@ -608,7 +608,12 @@
     }
 
     .flavors-actions {
-      margin-top: 22px;
+      margin: 24px auto 0;
+      justify-content: center;
+    }
+
+    .flavors-actions .btn {
+      min-width: 154px;
     }
 
     .home-hero .btn {
@@ -888,6 +893,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      cursor: pointer;
       transition: transform 0.75s ease;
     }
 
@@ -1146,10 +1152,26 @@
     }
 
     .detail-card .icon-circle {
-      width: 48px;
-      height: 48px;
-      margin-bottom: 14px;
+      width: 66px;
+      height: 66px;
+      margin-bottom: 16px;
       font-size: 1.16rem;
+    }
+
+    .pastry-icon {
+      width: 38px;
+      height: 38px;
+      display: block;
+    }
+
+    .pastry-icon path,
+    .pastry-icon circle,
+    .pastry-icon line {
+      fill: none;
+      stroke: currentColor;
+      stroke-width: 1.7;
+      stroke-linecap: round;
+      stroke-linejoin: round;
     }
 
     .detail-card h3 {
@@ -1197,8 +1219,8 @@
       position: absolute;
       inset: 0;
       background:
-        radial-gradient(circle at center, rgba(255, 245, 232, 0.10) 0%, rgba(255, 245, 232, 0.22) 100%),
-        rgba(40, 20, 15, 0.08);
+        linear-gradient(180deg, rgba(47, 33, 28, 0.18), rgba(47, 33, 28, 0.10)),
+        radial-gradient(circle at center, rgba(255, 245, 232, 0.08) 0%, rgba(255, 245, 232, 0.18) 100%);
       z-index: 1;
       pointer-events: none;
       border-radius: inherit;
@@ -1783,6 +1805,7 @@
 
       .home-hero {
         min-height: calc(100svh - (var(--shell-gutter) * 2));
+        height: calc(100svh - (var(--shell-gutter) * 2));
         padding: 44px 16px 26px;
       }
 
@@ -1799,8 +1822,8 @@
       }
 
       .home-opening {
-        margin-top: -22px;
-        padding: 12px 0 44px;
+        margin-top: 0;
+        padding: 34px 0 44px;
       }
 
       .home-lead-text {
@@ -2252,11 +2275,11 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 24px;
+      padding: clamp(14px, 3vw, 28px);
       background:
-        radial-gradient(circle at center, rgba(247, 240, 230, 0.10), transparent 36%),
-        rgba(47, 33, 28, 0.64);
-      backdrop-filter: blur(10px);
+        radial-gradient(circle at center, rgba(247, 240, 230, 0.08), transparent 42%),
+        rgba(38, 24, 20, 0.50);
+      backdrop-filter: blur(5px);
     }
 
     .image-lightbox.is-open {
@@ -2264,17 +2287,16 @@
     }
 
     .image-lightbox img {
-      max-width: min(860px, 88vw);
-      max-height: 84vh;
+      max-width: min(1080px, 94vw);
+      max-height: min(88svh, 880px);
       width: auto;
       height: auto;
-      min-width: min(420px, 78vw);
       object-fit: contain;
-      border-radius: 24px;
+      border-radius: 20px;
       box-shadow:
-        0 34px 100px rgba(0, 0, 0, 0.38),
-        0 10px 30px rgba(47, 33, 28, 0.28);
-      cursor: zoom-out;
+        0 30px 90px rgba(0, 0, 0, 0.34),
+        0 8px 24px rgba(47, 33, 28, 0.22);
+      cursor: default;
       animation: lightboxIn 0.22s ease both;
     }
 
@@ -2316,10 +2338,9 @@
       }
 
       .image-lightbox img {
-        min-width: unset;
-        max-width: 92vw;
-        max-height: 78vh;
-        border-radius: 20px;
+        max-width: 94vw;
+        max-height: 82svh;
+        border-radius: 18px;
       }
 
       .image-lightbox-close {
@@ -2371,7 +2392,8 @@
         <div class="home-hero">
           <div class="hero-bg">
             <img
-              data-img="A7405559-hero"
+              src="prdimages/A7405559-hero.webp"
+              data-img="A7405559-hero.webp"
               alt="עוגיית לוטוס בעבודת יד של Lior’s Pâtisserie"
               width="2752"
               height="1536"
@@ -2399,7 +2421,6 @@
               </p>
               <div class="cta-row flavors-actions">
                 <a class="btn" href="#" data-order>להזמנה</a>
-                <a class="btn secondary" href="#productsGrid">לצפייה בטעמים</a>
               </div>
             </div>
             <div class="products-grid" id="productsGrid"></div>
@@ -2414,7 +2435,7 @@
               <div class="instagram-kicker">— Instagram —</div>
               <h2 class="instagram-title">עוד רגעים מתוקים מחכים באינסטגרם</h2>
               <p class="instagram-text">
-                רוצים לראות טעמים חדשים, מארזים, הצצות מהאפייה ורעיונות לאירוח?
+                רוצים לראות טעמים חדשים, מארזים, הצצות מהאפייה ורעיונות לאירוח?<br>
                 עקבו אחרי Lior’s Pâtisserie באינסטגרם.
               </p>
               <a class="instagram-btn instagram-button" href="#" target="_blank" rel="noopener noreferrer">
@@ -2429,7 +2450,7 @@
         <div class="container">
           <div class="editorial-card reveal">
             <div class="editorial-img">
-              <img data-img="A7405048" alt="עבודת יד וקינוח בעיצוב אישי" width="4672" height="7008" loading="lazy" decoding="async">
+              <img data-img="A7405048.webp" alt="עבודת יד וקינוח בעיצוב אישי" width="1200" height="1800" loading="lazy" decoding="async">
             </div>
             <div class="editorial-text">
               <div class="section-label">— עבודת יד —</div>
@@ -2439,30 +2460,46 @@
               </p>
               <div class="details-grid" aria-label="היתרונות של Lior’s Pâtisserie">
                 <article class="detail-card reveal">
-                  <div class="icon-circle">✦</div>
+                  <div class="icon-circle" aria-hidden="true">
+                    <svg class="pastry-icon" viewBox="0 0 48 48" focusable="false">
+                      <path d="M16 6c8 7 13 16 15 27" />
+                      <path d="M23 5c5 9 8 18 8 30" />
+                      <path d="M30 8c-1 9-2 18-7 27" />
+                      <path d="M13 34c5 5 17 6 23 0" />
+                      <path d="M24 35v8" />
+                    </svg>
+                  </div>
                   <h3>עבודת יד</h3>
                   <p>כל עוגייה נאפית ומעוצבת בקפידה, אחת אחת, בלי תחושה תעשייתית.</p>
                 </article>
                 <article class="detail-card reveal">
-                  <div class="icon-circle">◌</div>
+                  <div class="icon-circle" aria-hidden="true">
+                    <svg class="pastry-icon" viewBox="0 0 48 48" focusable="false">
+                      <path d="M12 30c0-8 5-14 12-14s12 6 12 14" />
+                      <path d="M10 30h28l-3 10H13l-3-10Z" />
+                      <path d="M18 16c1-5 4-8 7-10" />
+                      <path d="M27 16c2-4 5-6 9-7" />
+                      <path d="M17 35h14" />
+                    </svg>
+                  </div>
                   <h3>טעמים עשירים</h3>
                   <p>קרמים, שוקולדים ותוספות מפנקות שהופכים כל ביס לחוויה.</p>
                 </article>
                 <article class="detail-card reveal">
-                  <div class="icon-circle">♡</div>
+                  <div class="icon-circle" aria-hidden="true">
+                    <svg class="pastry-icon" viewBox="0 0 48 48" focusable="false">
+                      <path d="M14 23c1-8 5-13 10-17 5 4 9 9 10 17" />
+                      <path d="M13 23h22l-2 18H15l-2-18Z" />
+                      <path d="M18 28c3 3 9 3 12 0" />
+                      <path d="M20 17c2 2 6 2 8 0" />
+                    </svg>
+                  </div>
                   <h3>מושלם לאירוח ומתנה</h3>
                   <p>נראות חגיגית שמתאימה לשבת, חג, אירוח או פינוק אישי.</p>
                 </article>
               </div>
             </div>
           </div>
-        </div>
-      </section>
-
-      <section class="catalog-cta">
-        <div class="container reveal">
-          <h2>ראיתם טעם שאהבתם?</h2>
-          <a class="btn" href="#" data-order>שלחו הודעה לליאור</a>
         </div>
       </section>
 
@@ -2474,9 +2511,9 @@
         <div class="container">
           <div class="reveal">
             <div class="section-label">— בואו נדבר —</div>
-            <h2>רוצים להזמין?</h2>
+            <h2>רוצים להזמין טעם שאהבתם?</h2>
             <p>
-              ספרו לליאור אילו טעמים אהבתם ונמשיך משם בצורה פשוטה ונעימה.
+              ספרו לליאור איזה טעם אהבתם, ונמשיך משם בצורה פשוטה ונעימה.
             </p>
             <div class="contact-details-card" aria-label="פרטי יצירת קשר">
               <ul class="contact-details-list">
@@ -2490,7 +2527,7 @@
                 </li>
               </ul>
             </div>
-            <a class="btn" href="https://wa.me/972506422900" target="_blank" rel="noopener noreferrer">שליחת הזמנה לליאור</a>
+            <a class="btn" href="#" data-order>שליחת הזמנה לליאור</a>
             <div class="signature">באהבה, ליאור</div>
           </div>
         </div>
@@ -2569,87 +2606,87 @@
     const products = [
       {
         name: "אוראו דרים",
-        image: "A7404929",
+        image: "A7404929.webp",
         description: "עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל."
       },
       {
         name: "כריות נוגט",
-        image: "A7404958",
+        image: "A7404958.webp",
         description: "עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן."
       },
       {
         name: "קוקילוטוס",
-        image: "A7404990",
+        image: "A7404990.webp",
         description: "עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל."
       },
       {
         name: "פיסטצ׳יו",
-        image: "A7404980",
+        image: "A7404980.webp",
         description: "עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס."
       },
       {
         name: "במבה רד",
-        image: "A7405005",
+        image: "A7405005.webp",
         description: "עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה."
       },
       {
         name: "קונפטי פאן",
-        image: "A7404978",
+        image: "A7404978.webp",
         description: "עוגייה צבעונית ושמחה עם סוכריות צבעוניות, שוקולד לבן וקרם ורוד."
       },
       {
         name: "ס׳מורשמלו",
-        image: "A7404945",
+        image: "A7404945.webp",
         description: "עוגיית קקאו עשירה עם שוקולד מריר, קרם אגוזי לוז ומרשמלו שרוף מעל."
       },
       {
         name: "קינדר",
-        image: "A7404950",
+        image: "A7404950.webp",
         description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם קינדר בואנו ופניני שוקולד קראנץ׳."
       },
       {
         name: "קורנפלקס שוקולד לבן",
-        image: "A7404939",
+        image: "A7404939.webp",
         description: "עוגייה עשירה עם קורנפלקס, שוקולד לבן, קרם שוקולד לבן וקראנץ׳ מפנק."
       },
       {
         name: "קורנפלקס שוקולד חלב",
-        image: "A7404956",
+        image: "A7404956.webp",
         description: "עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי."
       },
       {
         name: "אמסטרדם",
-        image: "A7404918",
+        image: "A7404918.webp",
         description: "עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן."
       },
       {
         name: "שוקוצ׳יפס",
-        image: "A7404900",
+        image: "A7404900.webp",
         description: "עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד."
       },
       {
         name: "חצי־חצי",
-        image: "A7404971",
+        image: "A7404971.webp",
         description: "חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים."
       },
       {
         name: "ברוקי",
-        image: "A7404968",
+        image: "A7404968.webp",
         description: "בראוניז שוקולד עשיר עם חתיכות בצק עוגיות, קרם שוקולד וזילוף אגוזי לוז."
       },
       {
         name: "שוקולד דובאי",
-        image: "A7404987",
+        image: "A7404987.webp",
         description: "עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף."
       },
       {
         name: "מגולגלת קינדר",
-        image: "A7404964",
+        image: "A7404964.webp",
         description: "עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל."
       },
       {
         name: "פתיבר",
-        image: "A7404912",
+        image: "A7404912.webp",
         description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם פתיבר, עוגיית פתיבר וסוכריות צבעוניות."
       }
     ];
@@ -2702,6 +2739,13 @@ ${productLine}
           img.src = options[index];
         }
       };
+
+      if (img.getAttribute("src") === options[index]) {
+        if (img.complete && img.naturalWidth) {
+          img.classList.add("is-loaded");
+        }
+        return;
+      }
 
       img.src = options[index];
     }
@@ -2951,8 +2995,6 @@ ${productLine}
       const lightboxImg = document.getElementById("imageLightboxImg");
 
       document.querySelectorAll(".product-image img").forEach((img) => {
-        img.style.cursor = "zoom-in";
-
         img.addEventListener("click", () => {
           openImageLightbox(img.currentSrc || img.src, img.alt || "");
         });
@@ -2963,11 +3005,11 @@ ${productLine}
       }
 
       if (lightbox) {
-        lightbox.addEventListener("click", closeImageLightbox);
-      }
-
-      if (lightboxImg) {
-        lightboxImg.addEventListener("click", closeImageLightbox);
+        lightbox.addEventListener("click", (event) => {
+          if (event.target === lightbox) {
+            closeImageLightbox();
+          }
+        });
       }
 
       document.addEventListener("keydown", (event) => {
