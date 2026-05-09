@@ -1534,7 +1534,7 @@
         <div class="container">
           <div class="editorial-card reveal">
             <div class="editorial-img">
-              <img data-img="A7405048" alt="עבודת יד וקינוח בעיצוב אישי">
+              <img data-img="A7405048" alt="עבודת יד וקינוח בעיצוב אישי" loading="lazy" decoding="async">
             </div>
             <div class="editorial-text">
               <div class="section-label">— עבודת יד —</div>
@@ -1812,18 +1812,22 @@ ${productLine}
     }
 
     function setImageWithFallback(img, name) {
-      const base = imagePath(name);
-      const options = [
-        `${base}.webp`,
-        `${base}.jpg`,
-        `${base}.jpeg`,
-        `${base}.png`,
-        `${base}.JPG`,
-        `${base}.JPEG`,
-        `${base}.PNG`,
-        `${base}.WEBP`,
-        base
-      ];
+      const hasExtension = /\.[a-zA-Z0-9]+$/.test(name);
+
+      const options = hasExtension
+        ? [
+            imagePath(name)
+          ]
+        : [
+            `${imagePath(name)}.webp`,
+            `${imagePath(name)}.jpg`,
+            `${imagePath(name)}.jpeg`,
+            `${imagePath(name)}.png`,
+            `${imagePath(name)}.JPG`,
+            `${imagePath(name)}.JPEG`,
+            `${imagePath(name)}.PNG`,
+            `${imagePath(name)}.WEBP`
+          ];
 
       let index = 0;
 
