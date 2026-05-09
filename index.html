@@ -1124,7 +1124,7 @@
       background-color: var(--cream-2);
       background-image: url("images/instagram-collage.webp");
       background-size: cover;
-      background-position: center 42%;
+      background-position: center center;
       background-repeat: no-repeat;
     }
 
@@ -1135,14 +1135,12 @@
       z-index: 0;
       border-radius: inherit;
       pointer-events: none;
-      background:
-        radial-gradient(ellipse 88% 78% at 50% 36%, rgba(255, 249, 242, 0.34) 0%, rgba(255, 249, 242, 0.1) 52%, transparent 74%),
-        linear-gradient(
-          180deg,
-          rgba(255, 249, 242, 0.36) 0%,
-          rgba(255, 249, 242, 0.1) 40%,
-          rgba(47, 33, 28, 0.16) 100%
-        );
+      background: linear-gradient(
+        165deg,
+        rgba(40, 22, 18, 0.07) 0%,
+        transparent 42%,
+        rgba(40, 20, 15, 0.1) 100%
+      );
     }
 
     .instagram-card-inner {
@@ -1154,43 +1152,63 @@
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 28px 32px 26px;
+      padding: 20px 22px;
       width: 100%;
-      gap: 0;
     }
 
-    .instagram-card .section-label {
-      margin-bottom: 6px;
+    .instagram-content {
+      position: relative;
+      z-index: 2;
+      width: min(760px, calc(100% - 8px));
+      max-width: 100%;
+      margin: 0 auto;
+      padding: 28px 38px 26px;
+      border-radius: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 10px;
+      background: rgba(255, 248, 238, 0.78);
+      backdrop-filter: blur(11px);
+      -webkit-backdrop-filter: blur(11px);
+      border: 1px solid rgba(255, 230, 190, 0.55);
+      box-shadow:
+        0 18px 45px rgba(60, 35, 25, 0.15),
+        0 4px 14px rgba(47, 33, 28, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.68);
+    }
+
+    .instagram-content .section-label {
+      margin: 0;
       font-size: 0.82rem;
       letter-spacing: 0.16em;
-      text-shadow:
-        0 1px 0 rgba(255, 250, 243, 0.9),
-        0 2px 10px rgba(255, 249, 242, 0.55);
+      color: #4d3428;
+      text-shadow: none;
     }
 
-    .instagram-card h2 {
+    .instagram-content h2 {
       margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(1.62rem, 3.15vw, 2.65rem);
-      line-height: 1.18;
+      font-size: clamp(1.55rem, 2.85vw, 2.38rem);
+      line-height: 1.24;
       font-weight: 500;
-      color: #2F211C;
-      text-shadow:
-        0 1px 0 rgba(255, 250, 243, 0.92),
-        0 2px 6px rgba(255, 249, 242, 0.75),
-        0 3px 18px rgba(255, 249, 242, 0.45);
+      color: #1f1510;
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.4);
     }
 
-    .instagram-card p {
-      max-width: 520px;
-      margin: 10px auto 0;
-      color: #3d2a24;
+    .instagram-content p {
+      max-width: 32em;
+      margin: 0;
+      color: #3d2d26;
       font-size: 0.98rem;
-      line-height: 1.65;
-      font-weight: 300;
-      text-shadow:
-        0 1px 0 rgba(255, 250, 243, 0.88),
-        0 2px 8px rgba(255, 249, 242, 0.65);
+      line-height: 1.62;
+      font-weight: 400;
+      text-shadow: none;
+    }
+
+    .instagram-content .instagram-btn {
+      margin-top: 6px;
     }
 
     .instagram-note {
@@ -1203,7 +1221,7 @@
     }
 
     .instagram-btn {
-      margin-top: 16px;
+      margin-top: 0;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1886,33 +1904,38 @@
         min-height: clamp(248px, 48vw, 340px);
         max-height: none;
         border-radius: 26px;
-        background-position: center 40%;
+        background-position: center center;
       }
 
       .instagram-card-inner {
-        padding: 22px 20px 22px;
+        padding: 14px 12px;
       }
 
-      .instagram-card .section-label {
-        font-size: 0.76rem;
-        margin-bottom: 4px;
+      .instagram-content {
+        width: 100%;
+        padding: 20px 18px 18px;
+        border-radius: 22px;
+        gap: 8px;
       }
 
-      .instagram-card h2 {
-        font-size: clamp(1.28rem, 5.2vw, 1.68rem);
-        line-height: 1.22;
-        max-width: 11.5em;
+      .instagram-content .section-label {
+        font-size: 0.74rem;
+      }
+
+      .instagram-content h2 {
+        font-size: clamp(1.26rem, 5.1vw, 1.66rem);
+        line-height: 1.24;
+        max-width: 12em;
         text-wrap: balance;
       }
 
-      .instagram-card p {
-        font-size: 0.92rem;
-        line-height: 1.58;
-        margin-top: 8px;
+      .instagram-content p {
+        font-size: 0.9rem;
+        line-height: 1.56;
       }
 
-      .instagram-btn {
-        margin-top: 14px;
+      .instagram-content .instagram-btn {
+        margin-top: 4px;
       }
 
       #home,
@@ -2366,15 +2389,17 @@
         <div class="container">
           <div class="instagram-card reveal">
             <div class="instagram-card-inner">
-              <div class="section-label">— Instagram —</div>
-              <h2>עוד רגעים מתוקים מחכים באינסטגרם</h2>
-              <p>
-                רוצים לראות טעמים חדשים, מארזים, הצצות מהאפייה ורעיונות לאירוח?
-                עקבו אחרי Lior’s Pâtisserie באינסטגרם.
-              </p>
-              <a class="instagram-btn" href="#" target="_blank" rel="noopener noreferrer">
-                לאינסטגרם
-              </a>
+              <div class="instagram-content">
+                <div class="section-label">— Instagram —</div>
+                <h2>עוד רגעים מתוקים מחכים באינסטגרם</h2>
+                <p>
+                  רוצים לראות טעמים חדשים, מארזים, הצצות מהאפייה ורעיונות לאירוח?
+                  עקבו אחרי Lior’s Pâtisserie באינסטגרם.
+                </p>
+                <a class="instagram-btn" href="#" target="_blank" rel="noopener noreferrer">
+                  לאינסטגרם
+                </a>
+              </div>
             </div>
           </div>
         </div>
