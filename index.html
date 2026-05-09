@@ -36,6 +36,7 @@
     }
 
     html {
+      zoom: 0.85;
       scroll-behavior: smooth;
     }
 
@@ -66,7 +67,7 @@
     }
 
     .container {
-      width: min(1180px, calc(100% - 40px));
+      width: min(1360px, calc(100% - 40px));
       margin: 0 auto;
     }
 
@@ -97,7 +98,7 @@
 
     .brand-name {
       font-family: "Playfair Display", serif;
-      font-size: 1.42rem;
+      font-size: 1.56rem;
       font-style: italic;
       letter-spacing: 0.02em;
       color: var(--espresso);
@@ -105,7 +106,7 @@
     }
 
     .brand-sub {
-      font-size: 0.72rem;
+      font-size: 0.76rem;
       color: var(--muted);
       letter-spacing: 0.12em;
       margin-top: 4px;
@@ -114,9 +115,9 @@
     .nav {
       display: flex;
       align-items: center;
-      gap: 30px;
-      font-size: 0.9rem;
-      color: rgba(47, 33, 28, 0.72);
+      gap: 32px;
+      font-size: 0.96rem;
+      color: rgba(47, 33, 28, 0.82);
       letter-spacing: 0.04em;
     }
 
@@ -231,6 +232,7 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      object-position: center center;
       transform: scale(1.04);
       filter: brightness(0.75) saturate(1.12) contrast(1.08);
     }
@@ -303,7 +305,7 @@
     }
 
     .cta-row {
-      margin-top: 34px;
+      margin-top: 18px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -312,6 +314,7 @@
     }
 
     .btn {
+      position: relative;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -319,19 +322,44 @@
       min-height: 44px;
       padding: 11px 28px;
       border-radius: 999px;
-      border: 1px solid rgba(200, 194, 184, 0.34);
-      background: var(--plum);
-      color: var(--ivory);
+      border: 1px solid rgba(200, 194, 184, 0.42);
+      background: linear-gradient(180deg, #4a2a58 0%, #3d2249 55%, #2f1938 100%);
+      color: #fffaf3;
       font-weight: 600;
       font-size: 0.92rem;
       letter-spacing: 0.03em;
-      box-shadow: 0 8px 24px rgba(47, 33, 28, 0.18), inset 0 1px 0 rgba(255,255,255,0.12);
-      transition: all 0.25s ease;
+      box-shadow:
+        0 12px 26px rgba(47, 33, 28, 0.22),
+        0 4px 0 rgba(35, 19, 42, 0.75),
+        inset 0 1px 0 rgba(255, 255, 255, 0.18),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        filter 0.18s ease;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      box-shadow: 0 14px 34px rgba(47, 33, 28, 0.22), inset 0 1px 0 rgba(255,255,255,0.15);
+      filter: brightness(1.04);
+      box-shadow:
+        0 16px 34px rgba(47, 33, 28, 0.26),
+        0 5px 0 rgba(35, 19, 42, 0.75),
+        inset 0 1px 0 rgba(255, 255, 255, 0.22),
+        inset 0 -1px 0 rgba(0, 0, 0, 0.18);
+    }
+
+    .btn:active {
+      transform: translateY(2px);
+      box-shadow:
+        0 6px 16px rgba(47, 33, 28, 0.18),
+        0 1px 0 rgba(35, 19, 42, 0.80),
+        inset 0 2px 4px rgba(0, 0, 0, 0.18);
+    }
+
+    .btn:focus-visible {
+      outline: 2px solid rgba(200, 194, 184, 0.75);
+      outline-offset: 4px;
     }
 
     .btn.secondary {
@@ -440,7 +468,7 @@
 
     .products-grid {
       display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
+      grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 28px;
     }
 
@@ -449,13 +477,13 @@
       border: 1px solid var(--line);
       border-radius: var(--radius);
       overflow: hidden;
-      box-shadow: var(--soft-shadow);
+      box-shadow: 0 14px 38px rgba(47, 33, 28, 0.11);
       transition: transform 0.35s ease, box-shadow 0.35s ease;
     }
 
     .product-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 22px 60px rgba(47, 33, 28, 0.13);
+      transform: translateY(-6px);
+      box-shadow: 0 24px 64px rgba(47, 33, 28, 0.16);
     }
 
     .product-image {
@@ -476,13 +504,13 @@
     }
 
     .product-body {
-      padding: 24px 24px 26px;
+      padding: 28px 28px 30px;
     }
 
     .product-body h3 {
       margin: 0 0 9px;
       font-family: "Playfair Display", "Assistant", serif;
-      font-size: 1.25rem;
+      font-size: 1.35rem;
       font-weight: 500;
       color: var(--espresso);
     }
@@ -490,7 +518,7 @@
     .product-body p {
       margin: 0 0 20px;
       color: var(--muted);
-      font-size: 0.94rem;
+      font-size: 0.98rem;
       line-height: 1.85;
       font-weight: 300;
       min-height: 78px;
@@ -704,7 +732,7 @@
     }
 
     .final .btn {
-      margin-top: 34px;
+      margin-top: 22px;
     }
 
     .signature {
@@ -819,7 +847,7 @@
 
     @media (max-width: 640px) {
       .container {
-        width: min(100% - 28px, 1180px);
+        width: min(100% - 28px, 1360px);
       }
 
       .brand-name {
@@ -932,14 +960,14 @@
     <main>
       <section class="hero" id="home">
         <div class="hero-bg">
-          <img data-img="A7405052" alt="קינוח בעבודת יד של Lior’s Pâtisserie">
+          <img data-img="A7405559" alt="עוגיית לוטוס בעבודת יד של Lior’s Pâtisserie">
         </div>
 
         <div class="hero-content">
           <div class="hero-kicker">Lior’s Pâtisserie</div>
           <h1>
             עוגיות וקינוחים
-            <span>בעבודת יד להזמנות מראש</span>
+            <span>בעבודת יד</span>
           </h1>
           <p>
             טעמים עשירים, מילויים מפנקים ונראות חגיגית — בדיוק לרגעים שמתחשק בהם משהו מיוחד.
