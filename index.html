@@ -160,6 +160,7 @@
       align-items: center;
       gap: 12px;
       line-height: 1.1;
+      flex-shrink: 0;
     }
 
     .brand-logo {
@@ -194,13 +195,20 @@
     .nav {
       display: flex;
       align-items: center;
-      gap: 32px;
+      justify-content: center;
+      gap: 24px;
+      flex: 1;
+      min-width: 0;
+      white-space: nowrap;
       font-size: 0.96rem;
       color: rgba(47, 33, 28, 0.82);
       letter-spacing: 0.04em;
     }
 
     .nav a {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
       transition: color 0.25s ease;
     }
 
@@ -209,13 +217,19 @@
     }
 
     .header-cta {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
       border: 1px solid rgba(61, 34, 73, 0.26);
       color: var(--plum);
       padding: 8px 18px;
       border-radius: 999px;
       font-weight: 600;
       font-size: 0.88rem;
-      background: rgba(255, 250, 243, 0.55);
+      background: linear-gradient(180deg, rgba(255, 250, 243, 0.88), rgba(242, 234, 223, 0.78));
+      box-shadow:
+        0 6px 16px rgba(47, 33, 28, 0.10),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
       transition: all 0.25s ease;
     }
 
@@ -290,6 +304,16 @@
 
     .mobile-nav a:last-child {
       border-bottom: 0;
+    }
+
+    .mobile-nav a[data-order] {
+      margin-top: 10px;
+      border: 1px solid rgba(61, 34, 73, 0.24);
+      border-radius: 999px;
+      background: rgba(255, 249, 242, 0.82);
+      text-align: center;
+      font-weight: 600;
+      color: var(--plum);
     }
 
     .hero {
@@ -1240,6 +1264,10 @@
         min-height: 68px;
       }
 
+      .brand {
+        margin-inline-start: auto;
+      }
+
       .mobile-nav {
         top: 68px;
       }
@@ -1279,6 +1307,11 @@
 
       .brand-sub {
         display: none;
+      }
+
+      .mobile-nav {
+        max-height: calc(100vh - 90px);
+        overflow-y: auto;
       }
 
       .hero {
@@ -1701,9 +1734,8 @@
           <a href="#why">למה אצלנו</a>
           <a href="#order">איך מזמינים</a>
           <a href="#contact">יצירת קשר</a>
+          <a class="header-cta" href="#" data-order>להזמנה</a>
         </nav>
-
-        <a class="header-cta" href="#" data-order>להזמנה</a>
 
         <a href="#home" class="brand" aria-label="Lior’s Pâtisserie">
           <img class="brand-logo" src="assets/logo.png" alt="Lior’s Pâtisserie logo">
@@ -1722,7 +1754,7 @@
       <a href="#why">למה אצלנו</a>
       <a href="#order">איך מזמינים</a>
       <a href="#contact">יצירת קשר</a>
-      <a href="#" data-order>להזמנה בוואטסאפ</a>
+      <a href="#" data-order>להזמנה</a>
     </div>
 
     <main>
