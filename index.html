@@ -11,6 +11,8 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Assistant:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400;1,500&display=swap" rel="stylesheet">
 
+  <link rel="preload" as="image" href="prdimages/A7405559-hero.webp" fetchpriority="high">
+
   <style>
     :root {
       --cream: #F7F0E6;
@@ -1183,7 +1185,78 @@
       overflow: hidden;
     }
 
+    .image-lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 120;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      background: rgba(47, 33, 28, 0.68);
+      backdrop-filter: blur(10px);
+    }
+
+    .image-lightbox.is-open {
+      display: flex;
+    }
+
+    .image-lightbox img {
+      max-width: min(760px, 88vw);
+      max-height: 82vh;
+      object-fit: contain;
+      border-radius: 24px;
+      box-shadow: 0 28px 90px rgba(0, 0, 0, 0.34);
+      cursor: zoom-out;
+      animation: lightboxIn 0.22s ease both;
+    }
+
+    .image-lightbox-close {
+      position: fixed;
+      top: 22px;
+      left: 22px;
+      width: 38px;
+      height: 38px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 250, 243, 0.34);
+      background: rgba(255, 250, 243, 0.16);
+      color: #fffaf3;
+      font-size: 1.35rem;
+      cursor: pointer;
+      line-height: 1;
+    }
+
+    @keyframes lightboxIn {
+      from {
+        opacity: 0;
+        transform: scale(0.94);
+      }
+      to {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    body.has-lightbox {
+      overflow: hidden;
+    }
+
     @media (max-width: 640px) {
+      .image-lightbox {
+        padding: 16px;
+      }
+
+      .image-lightbox img {
+        max-width: 92vw;
+        max-height: 78vh;
+        border-radius: 20px;
+      }
+
+      .image-lightbox-close {
+        top: 16px;
+        left: 16px;
+      }
+
       .order-modal {
         padding: 14px;
       }
@@ -1237,7 +1310,12 @@
     <main>
       <section class="hero" id="home">
         <div class="hero-bg">
-          <img data-img="A7405559" alt="עוגיית לוטוס בעבודת יד של Lior’s Pâtisserie">
+          <img
+            data-img="A7405559-hero"
+            alt="עוגיית לוטוס בעבודת יד של Lior’s Pâtisserie"
+            loading="eager"
+            fetchpriority="high"
+            decoding="async">
         </div>
 
         <div class="hero-content">
@@ -1464,6 +1542,11 @@
     </div>
   </div>
 
+  <div class="image-lightbox" id="imageLightbox" aria-hidden="true">
+    <button class="image-lightbox-close" id="imageLightboxClose" type="button" aria-label="סגירת תמונה">×</button>
+    <img id="imageLightboxImg" src="" alt="">
+  </div>
+
   <script>
     const WHATSAPP_PHONE = "972506422900";
 
@@ -1574,16 +1657,17 @@ ${productLine}
     }
 
     function setImageWithFallback(img, name) {
+      const base = imagePath(name);
       const options = [
-        imagePath(name),
-        `${imagePath(name)}.jpg`,
-        `${imagePath(name)}.jpeg`,
-        `${imagePath(name)}.png`,
-        `${imagePath(name)}.webp`,
-        `${imagePath(name)}.JPG`,
-        `${imagePath(name)}.JPEG`,
-        `${imagePath(name)}.PNG`,
-        `${imagePath(name)}.WEBP`
+        `${base}.webp`,
+        `${base}.jpg`,
+        `${base}.jpeg`,
+        `${base}.png`,
+        `${base}.JPG`,
+        `${base}.JPEG`,
+        `${base}.PNG`,
+        `${base}.WEBP`,
+        base
       ];
 
       let index = 0;
@@ -1609,7 +1693,7 @@ ${productLine}
       grid.innerHTML = signatureProducts.map((product) => `
         <article class="signature-card reveal">
           <div class="signature-image">
-            <img data-product-image="${product.image}" alt="${product.name}">
+            <img data-product-image="${product.image}" alt="${product.name}" loading="lazy" decoding="async">
           </div>
           <div class="signature-body">
             <h3>${product.name}</h3>
@@ -1632,7 +1716,7 @@ ${productLine}
       grid.innerHTML = products.map((product) => `
         <article class="product-card reveal">
           <div class="product-image">
-            <img data-product-image="${product.image}" alt="${product.name}">
+            <img data-product-image="${product.image}" alt="${product.name}" loading="lazy" decoding="async">
           </div>
           <div class="product-body">
             <h3>${product.name}</h3>
@@ -1644,7 +1728,7 @@ ${productLine}
         </article>
       `).join("");
 
-      document.querySelectorAll("[data-product-image]").forEach((img) => {
+      grid.querySelectorAll("[data-product-image]").forEach((img) => {
         setImageWithFallback(img, img.dataset.productImage);
       });
     }
@@ -1801,6 +1885,68 @@ ${productLine}
       });
     }
 
+    function openImageLightbox(src, alt = "") {
+      const lightbox = document.getElementById("imageLightbox");
+      const image = document.getElementById("imageLightboxImg");
+
+      if (!lightbox || !image) return;
+
+      image.src = src;
+      image.alt = alt;
+
+      lightbox.classList.add("is-open");
+      lightbox.setAttribute("aria-hidden", "false");
+      document.body.classList.add("has-lightbox");
+    }
+
+    function closeImageLightbox() {
+      const lightbox = document.getElementById("imageLightbox");
+      const image = document.getElementById("imageLightboxImg");
+
+      if (!lightbox || !image) return;
+
+      lightbox.classList.remove("is-open");
+      lightbox.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("has-lightbox");
+
+      setTimeout(() => {
+        image.src = "";
+        image.alt = "";
+      }, 150);
+    }
+
+    function setupImageLightbox() {
+      const lightbox = document.getElementById("imageLightbox");
+      const closeBtn = document.getElementById("imageLightboxClose");
+      const lightboxImg = document.getElementById("imageLightboxImg");
+
+      document.querySelectorAll(".product-image img").forEach((img) => {
+        img.style.cursor = "zoom-in";
+
+        img.addEventListener("click", () => {
+          openImageLightbox(img.currentSrc || img.src, img.alt || "");
+        });
+      });
+
+      if (closeBtn) {
+        closeBtn.addEventListener("click", closeImageLightbox);
+      }
+
+      if (lightbox) {
+        lightbox.addEventListener("click", closeImageLightbox);
+      }
+
+      if (lightboxImg) {
+        lightboxImg.addEventListener("click", closeImageLightbox);
+      }
+
+      document.addEventListener("keydown", (event) => {
+        if (event.key === "Escape") {
+          closeImageLightbox();
+        }
+      });
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       renderSignatureProducts();
       renderProducts();
@@ -1809,6 +1955,7 @@ ${productLine}
       setupRevealAnimations();
       setupMobileMenu();
       setupOrderModal();
+      setupImageLightbox();
     });
   </script>
 </body>
