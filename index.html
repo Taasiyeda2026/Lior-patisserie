@@ -3140,6 +3140,39 @@ ${productLine}
       });
     }
 
+
+    function preloadAllImages() {
+      const allImages = products.map((p) => p.image);
+
+      const load = (index) => {
+        if (index >= allImages.length) return;
+        const name = allImages[index];
+        const extensions = name.includes('.') ? [name] : [
+          name + '.webp', name + '.jpg', name + '.jpeg', name + '.png'
+        ];
+        const img = new Image();
+        img.src = 'prdimages/' + extensions[0];
+        img.onerror = () => {
+          let i = 1;
+          const tryNext = () => {
+            if (i >= extensions.length) return;
+            const next = new Image();
+            next.src = 'prdimages/' + extensions[i];
+            next.onerror = tryNext;
+            i++;
+          };
+          tryNext();
+        };
+        if ('requestIdleCallback' in window) {
+          requestIdleCallback(() => load(index + 1), { timeout: 3000 });
+        } else {
+          setTimeout(() => load(index + 1), 80);
+        }
+      };
+
+      setTimeout(() => load(0), 900);
+    }
+
     document.addEventListener("DOMContentLoaded", () => {
       renderSignatureProducts();
       renderProducts();
@@ -3150,6 +3183,7 @@ ${productLine}
       setupOrderModal();
       setupImageLightbox();
       setupInstagramLinks();
+      preloadAllImages();
     });
   </script>
 </body>
