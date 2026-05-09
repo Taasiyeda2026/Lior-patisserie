@@ -783,7 +783,12 @@
       font-weight: 300;
     }
 
-    #products {
+    #home,
+    #products,
+    #instagram,
+    #why,
+    #order,
+    #contact {
       scroll-margin-top: 120px;
     }
 
@@ -991,6 +996,15 @@
       border-bottom: 1px solid rgba(200, 194, 184, 0.2);
     }
 
+    .why.section-pad {
+      padding-top: 92px;
+      padding-bottom: 64px;
+    }
+
+    .why .section-title {
+      margin-bottom: 42px;
+    }
+
     .why-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
@@ -1067,6 +1081,24 @@
       font-size: 0.94rem;
       letter-spacing: 0.16em;
       font-weight: 500;
+    }
+
+    .why::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: 0;
+      transform: translateX(-50%);
+      width: min(210px, 50vw);
+      height: 1px;
+      pointer-events: none;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(200, 169, 106, 0.56),
+        rgba(200, 194, 184, 0.62),
+        transparent
+      );
     }
 
     .instagram-section {
@@ -1765,11 +1797,12 @@
         font-size: 0.98rem;
       }
 
-      #products {
-        scroll-margin-top: 92px;
-      }
-
-      #order {
+      #home,
+      #products,
+      #instagram,
+      #why,
+      #order,
+      #contact {
         scroll-margin-top: 92px;
       }
 
@@ -1815,6 +1848,15 @@
         font-size: 0.74rem;
         letter-spacing: 0.1em;
         padding: 8px 14px;
+      }
+
+      .why.section-pad {
+        padding-top: 74px;
+        padding-bottom: 48px;
+      }
+
+      .why .section-title {
+        margin-bottom: 28px;
       }
     }
 
