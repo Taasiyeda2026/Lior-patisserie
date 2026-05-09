@@ -6,6 +6,7 @@
   <title>Lior’s Pâtisserie | עוגיות וקינוחים בעבודת יד</title>
 
   <meta name="description" content="Lior’s Pâtisserie — עוגיות Crumble וקינוחים בעבודת יד להזמנה דרך WhatsApp." />
+  <link rel="preload" href="assets/fonts/IBMPlexSansHebrew-Regular.ttf" as="font" type="font/ttf" crossorigin>
 
   <link rel="preload" as="image" href="prdimages/A7405559-hero.webp" fetchpriority="high">
 
@@ -117,6 +118,16 @@
     img {
       max-width: 100%;
       display: block;
+    }
+
+    img[data-img],
+    img[data-product-image] {
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    img.is-loaded {
+      opacity: 1;
     }
 
     a {
@@ -2241,7 +2252,7 @@
         </nav>
 
         <a href="#home" class="brand" aria-label="Lior’s Pâtisserie">
-          <img class="brand-logo" src="assets/logo.png" alt="Lior’s Pâtisserie logo">
+          <img class="brand-logo" src="assets/logo.png" alt="Lior’s Pâtisserie logo" width="46" height="46">
           <span class="brand-text">
             <span class="brand-name">Lior’s Pâtisserie</span>
             <span class="brand-sub">Boutique Patisserie</span>
@@ -2266,6 +2277,8 @@
           <img
             data-img="A7405559-hero"
             alt="עוגיית לוטוס בעבודת יד של Lior’s Pâtisserie"
+            width="2752"
+            height="1536"
             loading="eager"
             fetchpriority="high"
             decoding="async">
@@ -2332,7 +2345,7 @@
             </a>
           </div>
           <div class="instagram-media reveal">
-            <img src="images/instagram-collage.png" alt="קולאז׳ עוגיות וקינוחים של Lior’s Pâtisserie" loading="lazy" decoding="async">
+            <img src="images/instagram-collage.webp" alt="קולאז׳ עוגיות וקינוחים של Lior’s Pâtisserie" width="1212" height="678" loading="lazy" decoding="async">
           </div>
         </div>
       </section>
@@ -2341,7 +2354,7 @@
         <div class="container">
           <div class="editorial-card reveal">
             <div class="editorial-img">
-              <img data-img="A7405048" alt="עבודת יד וקינוח בעיצוב אישי" loading="lazy" decoding="async">
+              <img data-img="A7405048" alt="עבודת יד וקינוח בעיצוב אישי" width="4672" height="7008" loading="lazy" decoding="async">
             </div>
             <div class="editorial-text">
               <div class="section-label">— עבודת יד —</div>
@@ -2650,6 +2663,12 @@ ${productLine}
 
       let index = 0;
 
+      img.classList.remove("is-loaded");
+
+      img.onload = function () {
+        img.classList.add("is-loaded");
+      };
+
       img.onerror = function () {
         index += 1;
         if (index < options.length) {
@@ -2671,7 +2690,7 @@ ${productLine}
       grid.innerHTML = signatureProducts.map((product) => `
         <article class="signature-card reveal">
           <div class="signature-image">
-            <img data-product-image="${product.image}" alt="${product.name}" loading="lazy" decoding="async">
+            <img data-product-image="${product.image}" alt="${product.name}" width="1200" height="1260" loading="lazy" decoding="async">
           </div>
           <div class="signature-body">
             <h3>${product.name}</h3>
@@ -2694,7 +2713,7 @@ ${productLine}
       grid.innerHTML = products.map((product) => `
         <article class="product-card reveal">
           <div class="product-image">
-            <img data-product-image="${product.image}" alt="${product.name}" loading="lazy" decoding="async">
+            <img data-product-image="${product.image}" alt="${product.name}" width="1200" height="1032" loading="lazy" decoding="async">
           </div>
           <div class="product-body">
             <h3>${product.name}</h3>
