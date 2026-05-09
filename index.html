@@ -1193,6 +1193,26 @@
       transform: translateY(1px);
     }
 
+    .instagram-media {
+      margin: 26px auto 0;
+      width: min(1180px, 100%);
+      border-radius: 28px;
+      overflow: hidden;
+      border: 1px solid rgba(200, 194, 184, 0.38);
+      box-shadow:
+        0 20px 54px rgba(47, 33, 28, 0.16),
+        inset 0 1px 0 rgba(255, 255, 255, 0.42);
+      background: rgba(255, 249, 242, 0.56);
+    }
+
+    .instagram-media img {
+      width: 100%;
+      max-height: 540px;
+      object-fit: cover;
+      object-position: center center;
+      display: block;
+    }
+
 
     .catalog-cta {
       background: var(--cream);
@@ -1797,6 +1817,16 @@
         font-size: 0.98rem;
       }
 
+      .instagram-media {
+        margin-top: 18px;
+        border-radius: 20px;
+      }
+
+      .instagram-media img {
+        max-height: 320px;
+        object-fit: cover;
+      }
+
       #home,
       #products,
       #instagram,
@@ -2273,6 +2303,9 @@
             <a class="instagram-btn" href="#" target="_blank" rel="noopener noreferrer">
               לאינסטגרם
             </a>
+          </div>
+          <div class="instagram-media reveal">
+            <img src="images/instagram-collage.png" alt="קולאז׳ עוגיות וקינוחים של Lior’s Pâtisserie" loading="lazy" decoding="async">
           </div>
         </div>
       </section>
