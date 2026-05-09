@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="he" dir="rtl" class="is-locked">
+<html lang="he" dir="rtl">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -273,12 +273,35 @@
         linear-gradient(180deg, rgba(47, 33, 28, 0.18) 0%, rgba(61, 34, 73, 0.10) 42%, rgba(247, 240, 230, 0.70) 88%, var(--cream) 100%);
     }
 
+    @keyframes fadeUpHeroDesktop {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(-20px);
+      }
+    }
+
+    @keyframes fadeUpHeroMobile {
+      from {
+        opacity: 0;
+        transform: translateY(22px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(-10px);
+      }
+    }
+
     .hero-content {
       position: relative;
       z-index: 2;
       width: min(760px, 100%);
-      padding-top: 40px;
-      animation: fadeUp 1.1s ease both;
+      padding-top: 20px;
+      transform: translateY(-20px);
+      animation: fadeUpHeroDesktop 1.1s ease both;
     }
 
     .hero-logo-wrap {
@@ -290,7 +313,7 @@
       background: rgba(255, 250, 243, 0.18);
       backdrop-filter: blur(8px);
       border: 1px solid rgba(200, 194, 184, 0.22);
-      margin: 0 auto 22px;
+      margin: 0 auto 16px;
     }
 
     .hero-logo {
@@ -326,8 +349,8 @@
       margin: 0;
       font-family: "Playfair Display", "Assistant", serif;
       font-weight: 500;
-      line-height: 1.08;
-      font-size: clamp(3.2rem, 8vw, 6.8rem);
+      line-height: 1.05;
+      font-size: clamp(2.8rem, 6vw, 5.8rem);
       color: var(--ivory);
       text-shadow: 0 6px 28px rgba(47, 33, 28, 0.34);
     }
@@ -342,7 +365,7 @@
     }
 
     .hero p {
-      margin: 28px auto 0;
+      margin: 18px auto 0;
       max-width: 520px;
       color: rgba(255, 250, 243, 0.92);
       font-size: clamp(1.03rem, 2vw, 1.18rem);
@@ -437,30 +460,37 @@
     }
 
     .scroll-hint {
-      position: absolute;
-      z-index: 3;
-      bottom: 30px;
+      position: fixed;
+      z-index: 80;
+      bottom: 34px;
       left: 50%;
       transform: translateX(-50%);
-      color: rgba(255, 249, 242, 0.78);
-      font-size: 0.78rem;
-      letter-spacing: 0.18em;
-      background: transparent;
-      border: 0;
-      padding: 10px 14px;
+      color: rgba(255, 250, 243, 0.92);
+      background: rgba(61, 34, 73, 0.34);
+      border: 1px solid rgba(255, 250, 243, 0.32);
+      backdrop-filter: blur(10px);
+      border-radius: 999px;
+      padding: 10px 18px;
+      font-size: 0.82rem;
+      letter-spacing: 0.10em;
       cursor: pointer;
       font-family: inherit;
-      animation: float 2.6s ease-in-out infinite;
+      box-shadow: 0 10px 28px rgba(47, 33, 28, 0.22);
+      animation: floatFixed 2.6s ease-in-out infinite;
     }
 
     .scroll-hint:hover {
-      color: #FFF9F2;
+      background: rgba(61, 34, 73, 0.52);
+      color: #fffaf3;
     }
 
     .scroll-hint:focus-visible {
-      outline: 1px solid rgba(255, 249, 242, 0.65);
-      outline-offset: 6px;
-      border-radius: 999px;
+      outline: 2px solid rgba(255, 250, 243, 0.55);
+      outline-offset: 3px;
+    }
+
+    .scroll-hint.is-hidden {
+      display: none;
     }
 
     section {
@@ -976,12 +1006,12 @@
       }
     }
 
-    @keyframes float {
+    @keyframes floatFixed {
       0%, 100% {
         transform: translateX(-50%) translateY(0);
       }
       50% {
-        transform: translateX(-50%) translateY(7px);
+        transform: translateX(-50%) translateY(6px);
       }
     }
 
@@ -1045,7 +1075,11 @@
       }
 
       .hero-logo-wrap {
-        margin-bottom: 18px;
+        margin-bottom: 16px;
+      }
+
+      .hero-content {
+        animation: fadeUpHeroMobile 1.1s ease both;
       }
 
       .hero {
@@ -1064,7 +1098,13 @@
       }
 
       .hero h1 {
-        font-size: clamp(2.8rem, 14vw, 4.6rem);
+        font-size: clamp(2.4rem, 12vw, 4rem);
+      }
+
+      .scroll-hint {
+        bottom: 22px;
+        font-size: 0.76rem;
+        padding: 9px 15px;
       }
 
       .section-pad {
@@ -1275,7 +1315,7 @@
   </style>
 </head>
 
-<body class="is-locked">
+<body>
   <div class="page">
 
     <header class="header">
@@ -1886,18 +1926,29 @@ ${productLine}
       });
     }
 
+    function unlockPageScroll() {
+      document.documentElement.classList.remove("is-locked");
+      document.body.classList.remove("is-locked");
+
+      const unlockBtn = document.getElementById("unlockScrollBtn");
+      if (unlockBtn) {
+        unlockBtn.classList.add("is-hidden");
+      }
+    }
+
     function setupHeroScrollLock() {
+      const unlockBtn = document.getElementById("unlockScrollBtn");
+      if (!unlockBtn) return;
+
       document.documentElement.classList.add("is-locked");
       document.body.classList.add("is-locked");
 
-      const unlockBtn = document.getElementById("unlockScrollBtn");
       const productsBtn = document.getElementById("heroProductsBtn");
       const nextSection = document.querySelector(".brand-statement") || document.querySelector("#products");
       const productsSection = document.querySelector("#products");
 
       const unlockAndScroll = (target) => {
-        document.documentElement.classList.remove("is-locked");
-        document.body.classList.remove("is-locked");
+        unlockPageScroll();
 
         setTimeout(() => {
           if (target) {
@@ -1909,9 +1960,7 @@ ${productLine}
         }, 80);
       };
 
-      if (unlockBtn) {
-        unlockBtn.addEventListener("click", () => unlockAndScroll(nextSection));
-      }
+      unlockBtn.addEventListener("click", () => unlockAndScroll(nextSection));
 
       if (productsBtn) {
         productsBtn.addEventListener("click", (event) => {
@@ -1919,6 +1968,12 @@ ${productLine}
           unlockAndScroll(productsSection);
         });
       }
+
+      document.querySelectorAll('a[href="#products"]').forEach((link) => {
+        link.addEventListener("click", () => {
+          unlockPageScroll();
+        });
+      });
     }
 
     document.addEventListener("DOMContentLoaded", () => {
