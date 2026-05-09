@@ -572,14 +572,38 @@
       font-weight: 300;
     }
 
+    #products {
+      scroll-margin-top: 120px;
+    }
+
     .products {
       background: linear-gradient(180deg, var(--cream-2) 0%, var(--cream) 48%, var(--cream-2) 100%);
+      padding-top: 120px;
+    }
+
+    .products-title {
+      margin-bottom: 54px;
+    }
+
+    .products-title .section-label {
+      color: #C8A96A;
+      opacity: 0.75;
+      letter-spacing: 0.18em;
+    }
+
+    .products-title h2 {
+      color: #2F211C;
+    }
+
+    .products-title p {
+      color: #5C3D32;
     }
 
     .products-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 32px;
+      margin-top: 0;
     }
 
     .product-card {
@@ -1041,6 +1065,18 @@
         left: 18px;
         bottom: 18px;
       }
+
+      #products {
+        scroll-margin-top: 92px;
+      }
+
+      .products {
+        padding-top: 88px;
+      }
+
+      .section-title.products-title {
+        margin-bottom: 36px;
+      }
     }
 
     @media (max-width: 420px) {
@@ -1364,11 +1400,11 @@
 
       <section class="products section-pad" id="products">
         <div class="container">
-          <div class="section-title reveal">
+          <div class="section-title products-title reveal">
             <div class="section-label">— הקולקציה שלנו —</div>
             <h2>הטעמים שלנו</h2>
             <p>
-              עוגיות Crumble עשירות, גדולות ומפנקות — כל אחת עם אופי, מילוי וטוויסט משלה.
+              קולקציית Crumble עשירה, מוקפדת ובלתי נשכחת — לכל טעם יש אופי משלו.
             </p>
           </div>
 
