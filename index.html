@@ -2355,7 +2355,7 @@
         0 30px 90px rgba(0, 0, 0, 0.34),
         0 8px 24px rgba(47, 33, 28, 0.22);
       cursor: default;
-      animation: lightboxIn 0.22s ease both;
+      animation: lightboxIn 0.12s ease both;
     }
 
     .image-lightbox-close {
@@ -3092,12 +3092,11 @@ ${productLine}
 
       if (!lightbox || !image) return;
 
-      image.src = src;
-      image.alt = alt;
-
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.classList.add("has-lightbox");
+      image.src = src;
+      image.alt = alt;
     }
 
     function closeImageLightbox() {
@@ -3109,11 +3108,8 @@ ${productLine}
       lightbox.classList.remove("is-open");
       lightbox.setAttribute("aria-hidden", "true");
       document.body.classList.remove("has-lightbox");
-
-      setTimeout(() => {
-        image.src = "";
-        image.alt = "";
-      }, 150);
+      image.src = "";
+      image.alt = "";
     }
 
     function setupImageLightbox() {
@@ -3176,7 +3172,7 @@ ${productLine}
         }
       };
 
-      setTimeout(() => load(0), 900);
+      setTimeout(() => load(0), 200);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
