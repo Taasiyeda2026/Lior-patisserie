@@ -1998,25 +1998,35 @@
       }
 
       .contact-details-card {
-        width: min(92%, 420px);
+        width: min(94%, 420px);
         margin-top: 14px;
-        padding: 14px 18px;
+        padding: 0 16px;
         border-radius: 16px;
       }
 
       .contact-details-list {
-        gap: 9px;
+        gap: 0;
       }
 
       .contact-details-list li {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
         font-size: 0.9rem;
+        padding: 12px 0;
+        border-bottom: 1px solid rgba(200, 194, 184, 0.34);
+      }
+
+      .contact-details-list li:last-child {
+        border-bottom: none;
       }
 
       .contact-value.email-link {
-        font-size: 0.88rem;
+        font-size: 0.83rem;
+        word-break: break-all;
+        text-align: left;
+        direction: ltr;
       }
 
       .final .btn {
