@@ -531,7 +531,7 @@
     }
 
     .home-opening .reveal {
-      transition: opacity 0.48s ease, transform 0.48s ease;
+      transition: opacity 0.48s ease;
     }
 
     .cta-row {
@@ -704,7 +704,7 @@
 
     .section-unlock {
       opacity: 0.42;
-      transform: translateY(34px) scale(0.985);
+      transform: scale(0.990);
       transform-origin: center top;
       filter: drop-shadow(0 22px 34px rgba(47, 33, 28, 0.10));
       transition:
@@ -716,7 +716,7 @@
 
     .section-unlock.is-unlocked {
       opacity: 1;
-      transform: translateY(0) scale(1);
+      transform: scale(1);
       filter: drop-shadow(0 0 0 rgba(47, 33, 28, 0));
       will-change: auto;
     }
@@ -1716,13 +1716,11 @@
 
     .reveal {
       opacity: 0;
-      transform: translateY(18px);
-      transition: opacity 0.52s ease, transform 0.52s ease;
+      transition: opacity 0.45s ease;
     }
 
     .reveal.is-visible {
       opacity: 1;
-      transform: translateY(0);
     }
 
     @keyframes fadeUp {
