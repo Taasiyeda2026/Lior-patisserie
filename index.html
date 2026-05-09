@@ -103,6 +103,7 @@
 
     html {
       scroll-behavior: smooth;
+      scroll-snap-type: y proximity;
     }
 
     body {
@@ -700,6 +701,7 @@
 
     main > section {
       isolation: isolate;
+      scroll-snap-align: start;
     }
 
     .section-unlock {
@@ -2437,6 +2439,70 @@
         min-height: 64px;
       }
     }
+
+    /* ── Section navigation dots ── */
+    .section-nav {
+      position: fixed;
+      left: 14px;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 90;
+      display: flex;
+      flex-direction: column;
+      gap: 11px;
+      align-items: center;
+      pointer-events: none;
+    }
+
+    .nav-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.28);
+      border: 1.5px solid rgba(255, 255, 255, 0.42);
+      cursor: pointer;
+      pointer-events: all;
+      transition: background 0.22s ease, transform 0.22s ease, border-color 0.22s ease;
+      position: relative;
+    }
+
+    .nav-dot.is-active {
+      background: #c8a96e;
+      border-color: #c8a96e;
+      transform: scale(1.5);
+    }
+
+    .nav-dot:hover:not(.is-active) {
+      background: rgba(255, 255, 255, 0.58);
+      border-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .nav-dot::after {
+      content: attr(data-label);
+      position: absolute;
+      left: calc(100% + 10px);
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(35, 18, 48, 0.90);
+      color: #f5e8d5;
+      font-size: 0.72rem;
+      font-family: var(--font-body);
+      padding: 4px 10px;
+      border-radius: 7px;
+      white-space: nowrap;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.16s ease;
+    }
+
+    .nav-dot:hover::after {
+      opacity: 1;
+    }
+
+    @media (max-width: 680px) {
+      .section-nav { display: none; }
+    }
+
   </style>
 </head>
 
@@ -2595,6 +2661,14 @@
           </div>
         </div>
       </section>
+
+    <nav class="section-nav" aria-label="ניווט לפי קטע">
+      <button class="nav-dot" data-target="#home"      data-label="הטעמים שלנו" aria-label="הטעמים שלנו"></button>
+      <button class="nav-dot" data-target="#instagram" data-label="גלריה"                   aria-label="גלריה"></button>
+      <button class="nav-dot" data-target=".editorial" data-label="עבודת יד"               aria-label="עבודת יד"></button>
+      <button class="nav-dot" data-target=".kashrut"   data-label="כשרות"                  aria-label="כשרות"></button>
+      <button class="nav-dot" data-target="#contact"   data-label="צור קשר"                aria-label="צור קשר"></button>
+    </nav>
     </main>
 
     <footer class="footer">
@@ -3174,6 +3248,36 @@ ${productLine}
     }
 
     document.addEventListener("DOMContentLoaded", () => {
+
+    function setupNavDots() {
+      const sections = Array.from(document.querySelectorAll("main > section"));
+      const dots = Array.from(document.querySelectorAll(".nav-dot"));
+
+      if (!sections.length || !dots.length) return;
+
+      dots.forEach((dot) => {
+        dot.addEventListener("click", () => {
+          const target = dot.dataset.target;
+          const el = document.querySelector(target);
+          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+        });
+      });
+
+      function updateActive() {
+        const mid = window.scrollY + window.innerHeight * 0.45;
+        let activeIndex = 0;
+        sections.forEach((section, i) => {
+          if (section.offsetTop <= mid) activeIndex = i;
+        });
+        dots.forEach((dot, i) => {
+          dot.classList.toggle("is-active", i === activeIndex);
+        });
+      }
+
+      window.addEventListener("scroll", updateActive, { passive: true });
+      updateActive();
+    }
+
       renderSignatureProducts();
       renderProducts();
       setupImages();
@@ -3182,6 +3286,7 @@ ${productLine}
       setupRevealAnimations();
       setupOrderModal();
       setupImageLightbox();
+      setupNavDots();
       setupInstagramLinks();
       preloadAllImages();
     });
