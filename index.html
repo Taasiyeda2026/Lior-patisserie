@@ -1353,9 +1353,9 @@
       justify-content: center;
       padding: 22px;
       background:
-        radial-gradient(circle at center, rgba(247, 240, 230, 0.18), transparent 42%),
-        rgba(47, 33, 28, 0.62);
-      backdrop-filter: blur(10px);
+        radial-gradient(circle at center, rgba(247, 240, 230, 0.16), transparent 42%),
+        rgba(47, 33, 28, 0.56);
+      backdrop-filter: blur(9px);
     }
 
     .order-modal.is-open {
@@ -1363,23 +1363,34 @@
     }
 
     .order-modal-card {
-      width: min(520px, 100%);
-      max-height: calc(100vh - 44px);
+      width: min(460px, calc(100vw - 32px));
+      max-height: min(88vh, 720px);
       overflow-y: auto;
       background: linear-gradient(
         180deg,
-        rgba(255, 249, 242, 0.82) 0%,
-        rgba(242, 234, 223, 0.66) 100%
+        rgba(255, 249, 242, 0.96) 0%,
+        rgba(242, 234, 223, 0.92) 100%
       );
-      border: 1px solid rgba(200, 194, 184, 0.38);
-      border-radius: 28px;
+      border: 1px solid rgba(200, 194, 184, 0.52);
+      border-radius: 26px;
       box-shadow:
-        0 22px 60px rgba(47, 33, 28, 0.12),
-        0 6px 18px rgba(61, 34, 73, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.45);
-      padding: 34px;
+        0 28px 80px rgba(47, 33, 28, 0.30),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+      padding: 28px 30px 26px;
       position: relative;
-      backdrop-filter: blur(10px);
+    }
+
+    .order-modal-card::-webkit-scrollbar {
+      width: 6px;
+    }
+
+    .order-modal-card::-webkit-scrollbar-track {
+      background: transparent;
+    }
+
+    .order-modal-card::-webkit-scrollbar-thumb {
+      background: rgba(111, 74, 124, 0.28);
+      border-radius: 999px;
     }
 
     .products::before,
@@ -1406,48 +1417,51 @@
 
     .order-modal-close {
       position: absolute;
-      top: 18px;
-      left: 18px;
-      width: 34px;
-      height: 34px;
+      top: 16px;
+      left: 16px;
+      width: 32px;
+      height: 32px;
       border-radius: 999px;
       border: 1px solid rgba(200, 194, 184, 0.45);
-      background: rgba(255, 250, 243, 0.7);
+      background: rgba(255, 250, 243, 0.72);
       color: #3D2249;
       cursor: pointer;
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       line-height: 1;
     }
 
     .order-modal h2 {
-      margin: 0 0 10px;
-      font-family: var(--font-display);
-      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      margin: 0 0 8px;
+      font-family: var(--font-body);
+      font-size: clamp(1.65rem, 3vw, 2.15rem);
+      line-height: 1.25;
       font-weight: 500;
       color: #2F211C;
+      text-align: right;
     }
 
     .order-modal-subtitle {
-      margin: 0 0 24px;
+      margin: 0 0 20px;
       color: #7A665C;
-      line-height: 1.8;
-      font-size: 0.98rem;
+      line-height: 1.65;
+      font-size: 0.92rem;
       font-weight: 300;
+      text-align: right;
     }
 
     .order-form {
       display: grid;
-      gap: 14px;
+      gap: 11px;
     }
 
     .order-field {
       display: grid;
-      gap: 7px;
+      gap: 5px;
     }
 
     .order-field label {
       color: #5C3D32;
-      font-size: 0.88rem;
+      font-size: 0.82rem;
       font-weight: 600;
     }
 
@@ -1455,18 +1469,18 @@
     .order-field textarea {
       width: 100%;
       border: 1px solid rgba(200, 194, 184, 0.56);
-      background: rgba(255, 250, 243, 0.74);
+      background: rgba(255, 250, 243, 0.78);
       color: #2F211C;
-      border-radius: 16px;
-      padding: 12px 14px;
+      border-radius: 14px;
+      padding: 10px 12px;
       font-family: inherit;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
       transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
     .order-field textarea {
-      min-height: 88px;
+      min-height: 72px;
       resize: vertical;
     }
 
@@ -1494,7 +1508,10 @@
 
     .order-submit {
       width: 100%;
-      margin-top: 8px;
+      margin-top: 6px;
+      min-height: 42px;
+      padding: 10px 20px;
+      font-size: 0.9rem;
     }
 
     body.has-modal {
@@ -1574,12 +1591,36 @@
       }
 
       .order-modal {
-        padding: 14px;
+        padding: 12px;
+        align-items: center;
       }
 
       .order-modal-card {
-        padding: 28px 20px 22px;
-        border-radius: 24px;
+        width: min(100%, 430px);
+        max-height: calc(100vh - 24px);
+        padding: 24px 18px 20px;
+        border-radius: 22px;
+      }
+
+      .order-modal h2 {
+        font-size: 1.55rem;
+        line-height: 1.28;
+        padding-left: 34px;
+      }
+
+      .order-modal-subtitle {
+        font-size: 0.88rem;
+        margin-bottom: 16px;
+      }
+
+      .order-field input,
+      .order-field textarea {
+        padding: 9px 11px;
+        font-size: 0.88rem;
+      }
+
+      .order-field textarea {
+        min-height: 64px;
       }
     }
   </style>
