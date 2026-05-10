@@ -460,11 +460,33 @@ ${productLine}
       updateFloatingCartCount();
     }
 
+    let modalOpener = null;
+
+    function trapModalFocus(event) {
+      const modal = document.getElementById("orderModal");
+      if (!modal || modal.getAttribute("aria-hidden") === "true") return;
+      const card = modal.querySelector(".order-modal-card");
+      if (!card) return;
+      const focusable = Array.from(card.querySelectorAll(
+        'a[href],button:not([disabled]),input:not([disabled]),textarea:not([disabled]),select:not([disabled]),[tabindex]:not([tabindex="-1"])'
+      )).filter((el) => !el.closest("[hidden]"));
+      if (!focusable.length) return;
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+      if (event.shiftKey) {
+        if (document.activeElement === first) { event.preventDefault(); last.focus(); }
+      } else {
+        if (document.activeElement === last) { event.preventDefault(); first.focus(); }
+      }
+    }
+
     function openOrderModal(productName = "") {
       const modal = document.getElementById("orderModal");
       const error = document.getElementById("orderError");
 
       if (!modal) return;
+
+      modalOpener = document.activeElement || null;
 
       if (productName) {
         addProductToCart(productName);
@@ -493,6 +515,11 @@ ${productLine}
       modal.classList.remove("is-open");
       modal.setAttribute("aria-hidden", "true");
       document.body.classList.remove("has-modal");
+
+      if (modalOpener && typeof modalOpener.focus === "function") {
+        modalOpener.focus();
+        modalOpener = null;
+      }
     }
 
     function getOrderProductsText(manualProduct = "") {
@@ -590,6 +617,9 @@ ${productLine}
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
           closeOrderModal();
+        }
+        if (event.key === "Tab") {
+          trapModalFocus(event);
         }
       });
 
