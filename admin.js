@@ -139,28 +139,72 @@ function productTemplate(product = {}) {
   const id = product.id || crypto.randomUUID();
   return `<article class="product-row" data-product-id="${id}">
     <div class="grid">
-      <label class="field-label">שם מוצר - מוצג בכרטיס המוצר <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
-      <label class="field-label">סדר תצוגה - מיקום בכרטיסי הטעמים <input data-field="display_order" type="number" value="${product.display_order || 0}"></label>
-      <label class="field-label">פעיל / לא פעיל - קובע אם המוצר מוצג באתר <select data-field="is_active"><option value="true" ${product.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${product.is_active === false ? "selected" : ""}>לא</option></select></label>
-      <label class="field-label">תיאור מוצר - מוצג בכרטיס המוצר <textarea data-field="description">${escapeHtml(product.description || "")}</textarea></label>
-      <label class="field-label wide">תמונת מוצר - מוצגת בכרטיס המוצר
+      <label class="field-label">שם הטעם <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
+      <label class="field-label">סדר <input data-field="display_order" type="number" value="${product.display_order || 0}"></label>
+      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${product.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${product.is_active === false ? "selected" : ""}>לא</option></select></label>
+      <label class="field-label">תיאור <textarea data-field="description">${escapeHtml(product.description || "")}</textarea></label>
+      <label class="field-label wide">תמונה
         <div class="image-tools">
           <img class="preview" src="${escapeHtml(product.image_url || "assets/logo.png")}" alt="Preview">
           <div>
-            <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="Public URL">
+            <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה">
             <input data-product-upload data-folder="products" data-max-width="900" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </div>
         </div>
       </label>
     </div>
-    <button class="admin-button" type="button" data-save-product>שמירת מוצר</button>
+    <button class="admin-button" type="button" data-save-product>שמירה</button>
   </article>`;
 }
 
+const SITE_PRODUCTS_STATIC = [
+  { name: "אוראו דרים", image: "A7404929.webp", description: "עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל." },
+  { name: "כריות נוגט", image: "A7404958.webp", description: "עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן." },
+  { name: "קוקילוטוס", image: "A7404990.webp", description: "עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל." },
+  { name: "פיסטצ׳יו", image: "A7404980.webp", description: "עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס." },
+  { name: "במבה רד", image: "A7405005.webp", description: "עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה." },
+  { name: "קונפטי פאן", image: "A7404978.webp", description: "עוגייה צבעונית ושמחה עם סוכריות צבעוניות, שוקולד לבן וקרם ורוד." },
+  { name: "ס׳מורשמלו", image: "A7404945.webp", description: "עוגיית קקאו עשירה עם שוקולד מריר, קרם אגוזי לוז ומרשמלו שרוף מעל." },
+  { name: "קינדר", image: "A7404950.webp", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם קינדר בואנו ופניני שוקולד קראנץ׳." },
+  { name: "קורנפלקס שוקולד לבן", image: "A7404939.webp", description: "עוגייה עשירה עם קורנפלקס, שוקולד לבן, קרם שוקולד לבן וקראנץ׳ מפנק." },
+  { name: "קורנפלקס שוקולד חלב", image: "A7404956.webp", description: "עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי." },
+  { name: "אמסטרדם", image: "A7404918.webp", description: "עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן." },
+  { name: "שוקוצ׳יפס", image: "A7404900.webp", description: "עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד." },
+  { name: "חצי-חצי", image: "A7404971.webp", description: "חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים." },
+  { name: "ברוקי", image: "A7404968.webp", description: "בראוניז שוקולד עשיר עם חתיכות בצק עוגיות, קרם שוקולד וזילוף אגוזי לוז." },
+  { name: "שוקולד דובאי", image: "A7404987.webp", description: "עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף." },
+  { name: "מגולגלת קינדר", image: "A7404964.webp", description: "עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל." },
+  { name: "פתיבר", image: "A7404912.webp", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם פתיבר, עוגיית פתיבר וסוכריות צבעוניות." }
+];
+
 async function loadProducts() {
-  const { data, error } = await client().from("products").select("*").order("display_order", { ascending: true });
-  if (error) throw error;
-  document.getElementById("productsAdmin").innerHTML = (data || []).map(productTemplate).join("");
+  let supabaseProducts = [];
+  try {
+    const { data } = await client().from("products").select("*").order("display_order", { ascending: true });
+    supabaseProducts = data || [];
+  } catch (_) {}
+
+  const supabaseByName = new Map(supabaseProducts.map((p) => [String(p.name || "").trim(), p]));
+
+  const merged = SITE_PRODUCTS_STATIC.map((sp, index) => {
+    const saved = supabaseByName.get(sp.name);
+    if (saved) {
+      supabaseByName.delete(sp.name);
+      return saved;
+    }
+    return {
+      id: crypto.randomUUID(),
+      name: sp.name,
+      description: sp.description,
+      image_url: "prdimages/" + sp.image,
+      display_order: index,
+      is_active: true
+    };
+  });
+
+  supabaseByName.forEach((p) => merged.push(p));
+
+  document.getElementById("productsAdmin").innerHTML = merged.map(productTemplate).join("");
 }
 
 async function saveProduct(row) {
@@ -174,21 +218,21 @@ function featureTemplate(feature = {}) {
   const id = feature.id || crypto.randomUUID();
   return `<article class="feature-row" data-feature-id="${id}">
     <div class="grid">
-      <label class="field-label">כותרת יתרון - מוצגת בכרטיס היתרון <input data-field="title" value="${escapeHtml(feature.title || "")}"></label>
-      <label class="field-label">סדר תצוגה - מיקום בשלושת היתרונות <input data-field="display_order" type="number" value="${feature.display_order || 0}"></label>
-      <label class="field-label">פעיל / לא פעיל - קובע אם היתרון מוצג באתר <select data-field="is_active"><option value="true" ${feature.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${feature.is_active === false ? "selected" : ""}>לא</option></select></label>
-      <label class="field-label">טקסט יתרון - מוצג בכרטיס היתרון <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
-      <label class="field-label wide">תמונה / אייקון יתרון - אופציונלי
+      <label class="field-label">כותרת <input data-field="title" value="${escapeHtml(feature.title || "")}"></label>
+      <label class="field-label">סדר <input data-field="display_order" type="number" value="${feature.display_order || 0}"></label>
+      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${feature.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${feature.is_active === false ? "selected" : ""}>לא</option></select></label>
+      <label class="field-label">טקסט <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
+      <label class="field-label wide">תמונה (אופציונלי)
         <div class="image-tools">
           <img class="preview" src="${escapeHtml(feature.image_url || "assets/logo.png")}" alt="Preview">
           <div>
-            <input data-field="image_url" value="${escapeHtml(feature.image_url || "")}" placeholder="Public URL">
+            <input data-field="image_url" value="${escapeHtml(feature.image_url || "")}" placeholder="כתובת תמונה">
             <input data-feature-upload data-folder="icons" data-max-width="500" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </div>
         </div>
       </label>
     </div>
-    <button class="admin-button" type="button" data-save-feature>שמירת יתרון</button>
+    <button class="admin-button" type="button" data-save-feature>שמירה</button>
   </article>`;
 }
 
@@ -235,11 +279,18 @@ async function initAdmin() {
 
 function setupEvents() {
   document.getElementById("loginButton").addEventListener("click", async () => {
-    const email = (document.getElementById("adminEmail").value || "").trim();
+    const username = (document.getElementById("adminUsername").value || "").trim().toLowerCase();
     const password = document.getElementById("adminPassword").value || "";
 
-    if (!email || !password) {
-      showLoginError("יש להזין כתובת מייל וסיסמה");
+    if (!username || !password) {
+      showLoginError("שם המשתמש או הסיסמה שגויים");
+      return;
+    }
+
+    const ADMIN_USERS = { lior: "lior.patisserie@outlook.com" };
+    const email = ADMIN_USERS[username];
+    if (!email) {
+      showLoginError("שם המשתמש או הסיסמה שגויים");
       return;
     }
 
@@ -254,7 +305,7 @@ function setupEvents() {
       showAdminApp();
       await initAdmin();
     } catch {
-      showLoginError("כתובת המייל או הסיסמה שגויים");
+      showLoginError("שם המשתמש או הסיסמה שגויים");
     } finally {
       btn.disabled = false;
       btn.textContent = "כניסה לניהול";
@@ -269,7 +320,7 @@ function setupEvents() {
     });
   }
 
-  document.getElementById("adminEmail").addEventListener("keydown", (e) => {
+  document.getElementById("adminUsername").addEventListener("keydown", (e) => {
     if (e.key === "Enter") document.getElementById("adminPassword").focus();
   });
   document.getElementById("adminPassword").addEventListener("keydown", (e) => {

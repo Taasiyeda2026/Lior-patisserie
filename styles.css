@@ -2351,9 +2351,10 @@
       inset: 0;
       z-index: 100;
       display: none;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       padding: 24px;
+      overflow-y: auto;
       background:
         radial-gradient(circle at center, rgba(247, 240, 230, 0.16), transparent 42%),
         rgba(47, 33, 28, 0.56);
@@ -2368,6 +2369,7 @@
       width: min(520px, calc(100% - 32px));
       max-height: none;
       overflow: visible;
+      margin: auto;
       background: linear-gradient(
         180deg,
         rgba(255, 249, 242, 0.97) 0%,

@@ -37,8 +37,8 @@
         </div>
       </div>
       <div class="login-form">
-        <label class="field-label">כתובת מייל
-          <input id="adminEmail" type="email" autocomplete="email" placeholder="admin@example.com">
+        <label class="field-label">שם משתמש
+          <input id="adminUsername" type="text" autocomplete="username" placeholder="שם משתמש">
         </label>
         <label class="field-label">סיסמה
           <input id="adminPassword" type="password" autocomplete="current-password" placeholder="••••••••">
@@ -50,44 +50,43 @@
 
     <section id="adminApp" class="hidden">
       <nav class="admin-tabs" aria-label="ניווט אזורי ניהול">
-        <a href="#heroPanel">Hero</a>
+        <a href="#heroPanel">תמונת פתיחה</a>
         <a href="#flavorsPanel">אזור הטעמים</a>
-        <a href="#productsPanel">מוצרים / טעמים</a>
-        <a href="#handmadePanel">עבודת יד / יתרונות</a>
-        <a href="#contactPanel">סיום / צור קשר</a>
+        <a href="#productsPanel">מוצרים וטעמים</a>
+        <a href="#handmadePanel">עבודת יד</a>
+        <a href="#contactPanel">פרטי קשר</a>
         <a href="#instagramPanel">אינסטגרם</a>
       </nav>
 
-      <section class="editor-card" id="heroPanel">
-        <div class="section-heading">
-          <span class="section-number">01</span>
+      <section class=”editor-card” id=”heroPanel”>
+        <div class=”section-heading”>
+          <span class=”section-number”>01</span>
           <div>
-            <h2>Hero</h2>
-            <p>השדות כאן מופיעים בחלק העליון של האתר: תמונת הרקע, לוגו וכפתור הגלילה.</p>
+            <h2>תמונת פתיחה</h2>
+            <p>תמונת הרקע ולוגו שמופיעים בחלק העליון של האתר.</p>
           </div>
         </div>
-        <div class="image-grid">
-          <label class="field-label image-card">תמונת Hero - רקע עליון באתר
-            <img class="preview" data-preview="hero_image" src="prdimages/A7405559-hero.webp" alt="תצוגה מקדימה לתמונת Hero">
-            <input data-setting="hero_image" type="url" placeholder="prdimages/A7405559-hero.webp או Public URL">
-            <input data-upload="hero_image" data-folder="hero" data-max-width="1600" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
-            <span class="hint">אם השדה ריק, האתר יציג את תמונת ה־Hero הקבועה.</span>
+        <div class=”image-grid”>
+          <label class=”field-label image-card”>תמונת פתיחה
+            <img class=”preview” data-preview=”hero_image” src=”prdimages/A7405559-hero.webp” alt=”תצוגה מקדימה לתמונת פתיחה”>
+            <input data-setting=”hero_image” type=”url” placeholder=”prdimages/A7405559-hero.webp”>
+            <input data-upload=”hero_image” data-folder=”hero” data-max-width=”1600” type=”file” accept=”.png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp”>
+            <span class=”hint”>אם השדה ריק, האתר יציג את תמונת הפתיחה הקבועה.</span>
           </label>
-          <label class="field-label image-card">לוגו Hero - הלוגו שמופיע מעל תמונת ה־Hero
-            <img class="preview logo-preview" data-preview="hero_logo_image" src="assets/logo.png" alt="תצוגה מקדימה ללוגו Hero">
-            <input data-setting="hero_logo_image" type="url" placeholder="assets/logo.png או Public URL">
-            <input data-upload="hero_logo_image" data-folder="logo" data-max-width="600" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
-            <span class="hint">הלוגו משמש גם ככניסה נסתרת לאדמין. מנגנון הכניסה לא משתנה.</span>
-          </label>
-        </div>
-        <div class="grid two-columns section-fields">
-          <label class="field-label">טקסט כפתור Hero - “גללו מטה”
-            <input data-setting="hero_scroll_button_text" type="text" placeholder="גללו מטה">
+          <label class=”field-label image-card”>לוגו
+            <img class=”preview logo-preview” data-preview=”hero_logo_image” src=”assets/logo.png” alt=”תצוגה מקדימה ללוגו”>
+            <input data-setting=”hero_logo_image” type=”url” placeholder=”assets/logo.png”>
+            <input data-upload=”hero_logo_image” data-folder=”logo” data-max-width=”600” type=”file” accept=”.png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp”>
           </label>
         </div>
-        <div class="actions-row">
-          <button class="admin-button" type="button" data-save-settings="hero-settings">שמירת Hero</button>
-          <div class="notice" data-notice="hero-settings"></div>
+        <div class=”grid two-columns section-fields”>
+          <label class=”field-label”>כפתור גלילה
+            <input data-setting=”hero_scroll_button_text” type=”text” placeholder=”גללו מטה”>
+          </label>
+        </div>
+        <div class=”actions-row”>
+          <button class=”admin-button” type=”button” data-save-settings=”hero-settings”>שמירה</button>
+          <div class=”notice” data-notice=”hero-settings”></div>
         </div>
       </section>
 
@@ -126,8 +125,8 @@
         <div class="section-heading">
           <span class="section-number">03</span>
           <div>
-            <h2>מוצרים / טעמים</h2>
-            <p>כל מוצר שמור בטבלת products. ניתן לערוך שם, תיאור, תמונה, סדר תצוגה ופעיל / לא פעיל.</p>
+            <h2>מוצרים וטעמים</h2>
+            <p>הטעמים שמופיעים באתר. ניתן לערוך שם, תיאור, תמונה וסדר תצוגה.</p>
           </div>
         </div>
         <div class="actions-row top-action">
@@ -141,7 +140,7 @@
         <div class="section-heading">
           <span class="section-number">04</span>
           <div>
-            <h2>אזור עבודת יד / יתרונות</h2>
+            <h2>עבודת יד</h2>
             <p>הכותרת והטקסט של אזור עבודת היד, ומתחתיהם שלושת היתרונות שמופיעים באתר.</p>
           </div>
         </div>
@@ -176,8 +175,8 @@
         <div class="section-heading">
           <span class="section-number">05</span>
           <div>
-            <h2>אזור סיום / צור קשר</h2>
-            <p>פרטי הקשר והטקסטים שמופיעים באזור האחרון באתר. מספר הטלפון משמש גם לשליחת ההזמנה ב־WhatsApp.</p>
+            <h2>פרטי קשר</h2>
+            <p>פרטי הקשר והטקסטים שמופיעים באזור הסיום באתר.</p>
           </div>
         </div>
         <div class="grid two-columns">
@@ -213,8 +212,8 @@
         <div class="section-heading">
           <span class="section-number">06</span>
           <div>
-            <h2>משפט אינסטגרם</h2>
-            <p>משפט הסיום בפוטר וקישור האינסטגרם. אייקון האינסטגרם הוא נכס קבוע באתר ולא מנוהל כאן בכוונה.</p>
+            <h2>אינסטגרם</h2>
+            <p>משפט הסיום בפוטר וקישור לאינסטגרם.</p>
           </div>
         </div>
         <div class="grid two-columns">
