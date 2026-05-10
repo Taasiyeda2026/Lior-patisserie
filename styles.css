@@ -897,12 +897,15 @@
     }
 
     #home,
-    #products,
     #instagram,
     #why,
     #order,
     #contact {
       scroll-margin-top: 120px;
+    }
+
+    #products {
+      scroll-margin-top: 0;
     }
 
     .products-kicker {
@@ -2147,12 +2150,15 @@
       }
 
       #home,
-      #products,
       #instagram,
       #why,
       #order,
       #contact {
         scroll-margin-top: 92px;
+      }
+
+      #products {
+        scroll-margin-top: 0;
       }
 
       .order.section-pad {
