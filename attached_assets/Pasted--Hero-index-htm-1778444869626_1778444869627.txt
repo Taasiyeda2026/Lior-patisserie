@@ -1,0 +1,206 @@
+צריך לדייק את אזור ה-Hero בעמוד הבית: הלוגו המרכזי וכפתור "גללו מטה".
+
+קבצים רלוונטיים:
+index.html
+styles.css
+main.js - רק אם יש שם קוד של כניסה נסתרת בלחיצה על הלוגו
+
+לא לשנות:
+- לא לשנות את תמונת ה-Hero.
+- לא לשנות את Supabase.
+- לא לשנות את מנגנון האדמין.
+- לא לשנות טקסטים.
+- לא לשנות תמונות מוצרים.
+- לא להוסיף כפתור אדמין גלוי.
+
+מטרה עיצובית:
+הלוגו צריך להיות גדול, מרכזי, אלגנטי וממוקם מעל העוגה.
+כפתור "גללו מטה" צריך להיות ממורכז בדיוק, מתחת ללוגו, עם זוהר עדין וברור.
+
+מצב קיים:
+הלוגו כבר נמצא במרכז ה-Hero, אבל עיגול הרקע שלו גדול ושקוף מדי, הלוגו עצמו קטן מדי בתוך העיגול, וכפתור "גללו מטה" לא ממורכז לגמרי.
+
+דרישות ללוגו:
+1. הלוגו יישאר במרכז ה-Hero מעל העוגה.
+2. לא למקם את הלוגו בפינה.
+3. להקטין מעט את עיגול הרקע של הלוגו, בערך ב-15%.
+4. להגדיל את תמונת הלוגו בתוך העיגול כך שתנצל יותר מהשטח.
+5. להפחית את תחושת הרקע החלבי/הלבן שמסתיר את העוגה.
+6. לשמור על תחושת זכוכית עדינה, לא כתם לבן גדול.
+7. הלוגו צריך להישאר קליקבילי.
+8. חובה לשמור על:
+   data-admin-trigger="true"
+   כדי ששלוש לחיצות על הלוגו יובילו לאדמין.
+9. לא לשבור את הלחיצה הרגילה על הלוגו.
+10. הלוגו צריך להיראות טוב בדסקטופ ובמובייל.
+
+מבנה HTML רצוי:
+בתוך .home-hero צריך להיות קישור לוגו נפרד:
+
+<a class="hero-brand-logo" href="index.html" aria-label="Lior's Pâtisserie" data-admin-trigger="true">
+  <img class="hero-logo" src="assets/logo.png" alt="Lior's Pâtisserie" width="180" height="180">
+</a>
+
+חשוב:
+אם הלוגו נמצא בתוך .home-hero-panel יחד עם "גללו מטה" - להוציא אותו משם.
+.home-hero-panel צריך להכיל רק את כפתור "גללו מטה".
+
+מבנה רצוי:
+<div class="home-hero">
+  <div class="hero-bg">...</div>
+
+  <a class="hero-brand-logo" href="index.html" aria-label="Lior's Pâtisserie" data-admin-trigger="true">
+    <img class="hero-logo" src="assets/logo.png" alt="Lior's Pâtisserie" width="180" height="180">
+  </a>
+
+  <div class="home-hero-panel">
+    <a class="hero-scroll-link" href="#products" aria-label="גלילה לאזור הטעמים">גללו מטה</a>
+  </div>
+</div>
+
+CSS ללוגו:
+לעדכן/לאחד את הסגנונות הקיימים כך שלא תהיה כפילות מבלבלת בין:
+.brand-logo-link
+.hero-brand-logo
+.hero-logo
+.home-hero-panel
+
+ה-CSS הרצוי:
+
+.home-hero {
+  position: relative;
+}
+
+.hero-brand-logo {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 8;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: clamp(112px, 10vw, 160px);
+  height: clamp(112px, 10vw, 160px);
+  padding: 8px;
+
+  border-radius: 999px;
+  background: rgba(255, 249, 242, 0.13);
+  border: 1px solid rgba(218, 190, 126, 0.34);
+  box-shadow:
+    0 16px 38px rgba(31, 18, 36, 0.26),
+    0 0 22px rgba(218, 190, 126, 0.16),
+    inset 0 1px 0 rgba(255, 255, 255, 0.26);
+  backdrop-filter: blur(2px);
+  text-decoration: none;
+}
+
+.hero-logo {
+  width: 88%;
+  height: 88%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 8px 14px rgba(0, 0, 0, 0.20));
+}
+
+דרישות לכפתור "גללו מטה":
+1. הכפתור חייב להיות ממורכז אופקית בדיוק במרכז ה-Hero.
+2. המיקום שלו לא צריך להיות מושפע מהלוגו.
+3. המיקום שלו לא צריך להיות מושפע מ-direction: rtl.
+4. הכפתור צריך להיות מתחת ללוגו ובמרחק נעים ממנו.
+5. הכפתור צריך לקבל זוהר עדין כדי שלא ייעלם על התמונה.
+6. הזוהר צריך להיות יוקרתי ועדין, לא צעקני ולא ילדותי.
+7. לא לשנות את הטקסט "גללו מטה".
+8. לא לשנות את הקישור ל-#products.
+
+CSS לכפתור ולמיקום שלו:
+
+.home-hero-panel {
+  position: absolute;
+  left: 50%;
+  right: auto;
+  bottom: clamp(34px, 5vw, 58px);
+  transform: translateX(-50%);
+  z-index: 7;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  margin: 0;
+  padding: 0;
+}
+
+.hero-scroll-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  margin: 0 auto;
+  white-space: nowrap;
+
+  color: rgba(255, 249, 242, 0.98);
+  background:
+    linear-gradient(180deg, rgba(255, 249, 242, 0.18), rgba(255, 249, 242, 0.07));
+  border: 1px solid rgba(232, 207, 145, 0.62);
+  box-shadow:
+    0 0 20px rgba(232, 207, 145, 0.30),
+    0 12px 30px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.34);
+  text-shadow: 0 1px 8px rgba(0, 0, 0, 0.44);
+  backdrop-filter: blur(10px);
+}
+
+.hero-scroll-link:hover {
+  border-color: rgba(232, 207, 145, 0.82);
+  box-shadow:
+    0 0 24px rgba(232, 207, 145, 0.38),
+    0 12px 32px rgba(0, 0, 0, 0.30),
+    inset 0 1px 0 rgba(255, 255, 255, 0.42);
+  transform: translateY(-2px);
+}
+
+חשוב:
+אם כבר קיימים ערכים ל-.home-hero-panel כמו:
+right
+margin-inline
+justify-content: flex-start
+justify-content: flex-end
+width: 100%
+
+צריך להסיר או לעקוף אותם, כי הם גורמים לכפתור לא להיות במרכז.
+
+התאמה למובייל:
+@media (max-width: 700px) {
+  .hero-brand-logo {
+    width: 112px;
+    height: 112px;
+    top: 48%;
+    padding: 7px;
+  }
+
+  .home-hero-panel {
+    bottom: 24px;
+  }
+
+  .hero-scroll-link {
+    font-size: 0.92rem;
+  }
+}
+
+בדיקה בסיום:
+1. הלוגו במרכז מעל העוגה.
+2. העיגול של הלוגו לא מסתיר יותר מדי את העוגה.
+3. הלוגו עצמו גדול וקריא יותר בתוך העיגול.
+4. כפתור "גללו מטה" נמצא בדיוק במרכז ה-Hero.
+5. כפתור "גללו מטה" נראה ברור יותר בזכות זוהר עדין.
+6. הכפתור לא זז בגלל RTL.
+7. הכפתור לא צמוד מדי ללוגו.
+8. בלחיצה על "גללו מטה" המעבר ל-#products עדיין עובד.
+9. שלוש לחיצות על הלוגו עדיין מובילות לאדמין.
+10. אין כפתור אדמין גלוי.
+11. נראה טוב בדסקטופ ובמובייל.
+12. לבצע commit ולציין אילו קבצים שונו.
