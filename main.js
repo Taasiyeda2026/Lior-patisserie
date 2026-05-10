@@ -10,7 +10,7 @@
       if (digits.startsWith("00972")) return digits.replace(/^00/, "");
       return digits;
     }
-    const INSTAGRAM_URL = "https://www.instagram.com/liornahum/";
+    const INSTAGRAM_URL = "https://www.instagram.com/_liornahum_/";
 
     const signatureProductNames = ["אוראו דרים", "קוקילוטוס", "פיסטצ׳יו", "שוקולד דובאי"];
 
@@ -289,9 +289,21 @@ ${productLine}
       });
     }
 
-    function setupInstagramLinks() {
+    async function setupInstagramLinks() {
+      let url = INSTAGRAM_URL;
+      try {
+        const sb = window.getLiorSupabaseClient ? window.getLiorSupabaseClient() : null;
+        if (sb) {
+          const { data } = await sb
+            .from("site_settings")
+            .select("value")
+            .eq("key", "instagram_url")
+            .single();
+          if (data && data.value) url = data.value;
+        }
+      } catch (_) {}
       document.querySelectorAll(".instagram-btn").forEach((link) => {
-        link.href = INSTAGRAM_URL;
+        link.href = url;
       });
     }
 
@@ -665,7 +677,7 @@ ${productLine}
       setupOrderModal();
       setupImageLightbox();
       setupNavDots();
-      setupInstagramLinks();
+      setupInstagramLinks();   // async — runs in background, updates links when ready
       preloadAllImages();
       setupHiddenAdminEntry();
     });
