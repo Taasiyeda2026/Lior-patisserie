@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ניהול אתר Lior’s Pâtisserie</title>
+  <link rel="preload" href="assets/fonts/IBMPlexSansHebrew-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="preload" href="assets/fonts/Lora-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <main class="admin-shell">
+    <header class="admin-hero" aria-label="ניהול אתר Lior’s Pâtisserie">
+      <div class="brand-panel">
+        <img class="admin-logo" src="assets/logo.png" alt="Lior’s Pâtisserie" width="96" height="96">
+        <div>
+          <p class="eyebrow">Lior’s Pâtisserie CMS</p>
+          <h1>ניהול אתר Lior’s Pâtisserie</h1>
+          <p class="hero-copy">עריכת תוכן האתר הסטטי דרך Supabase — בלי לשנות את עיצוב האתר או את קבצי ה־fallback המקומיים.</p>
+        </div>
+      </div>
+      <a class="ghost-link" href="index.html">צפייה באתר</a>
+    </header>
+
+    <section id="loginCard" class="login-card editor-card">
+      <div class="section-heading">
+        <span class="section-number">כניסה</span>
+        <div>
+          <h2>התחברות בסיסית</h2>
+          <p>הגנה זמנית בלבד עד להגדרת Supabase Auth אמיתי. אין להשתמש כאן ב־service role key.</p>
+        </div>
+      </div>
+      <div class="login-form">
+        <label class="field-label">סיסמת ניהול זמנית
+          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="הקלידו סיסמה">
+        </label>
+        <button id="loginButton" class="admin-button" type="button">כניסה לניהול</button>
+      </div>
+      <div id="loginNotice" class="notice error"></div>
+    </section>
+
+    <section id="adminApp" class="hidden">
+      <nav class="admin-tabs" aria-label="ניווט אזורי ניהול">
+        <a href="#homePanel">עמוד הבית</a>
+        <a href="#productsPanel">טעמים ומוצרים</a>
+        <a href="#imagesPanel">תמונות</a>
+        <a href="#orderPanel">פרטי הזמנה</a>
+      </nav>
+
+      <section class="editor-card" id="homePanel">
+        <div class="section-heading">
+          <span class="section-number">01</span>
+          <div>
+            <h2>עמוד הבית</h2>
+            <p>טקסטים ראשיים ויתרונות — ערכים ריקים לא יחליפו את ה־fallback הקיים באתר.</p>
+          </div>
+        </div>
+        <div class="grid two-columns">
+          <label class="field-label">כותרת ראשית
+            <input data-setting="hero_title" type="text" placeholder="הטעמים שלנו">
+          </label>
+          <label class="field-label">טקסט כפתור ראשי
+            <input data-setting="hero_primary_button_text" type="text" placeholder="להזמנה">
+          </label>
+          <label class="field-label">טקסט כפתור משני / אינסטגרם
+            <input data-setting="hero_secondary_button_text" type="text" placeholder="לאינסטגרם">
+          </label>
+          <label class="field-label wide">כותרת משנה
+            <textarea data-setting="hero_subtitle" placeholder="טקסט פתיחה קצר לעמוד הבית"></textarea>
+          </label>
+        </div>
+        <div class="actions-row">
+          <button class="admin-button" type="button" data-save-settings="home-settings">שמירת עמוד הבית</button>
+          <div class="notice" data-notice="home-settings"></div>
+        </div>
+
+        <div class="subsection-head">
+          <h3>יתרונות / תיבות תוכן</h3>
+          <button id="addFeature" class="admin-button secondary" type="button">הוספת יתרון</button>
+        </div>
+        <div id="featuresAdmin" class="stack-list"></div>
+        <div class="notice" data-notice="features"></div>
+      </section>
+
+      <section class="editor-card" id="productsPanel">
+        <div class="section-heading">
+          <span class="section-number">02</span>
+          <div>
+            <h2>טעמים ומוצרים</h2>
+            <p>עריכת שם, תיאור, מחיר, זמינות וסדר תצוגה. מוצר לא פעיל לא יוצג באתר.</p>
+          </div>
+        </div>
+        <div class="actions-row top-action">
+          <button id="addProduct" class="admin-button" type="button">הוספת מוצר חדש</button>
+          <div class="notice" data-notice="products"></div>
+        </div>
+        <div id="productsAdmin" class="stack-list"></div>
+      </section>
+
+      <section class="editor-card" id="imagesPanel">
+        <div class="section-heading">
+          <span class="section-number">03</span>
+          <div>
+            <h2>תמונות</h2>
+            <p>העלאה תבצע resize והמרה ל־WebP בצד הלקוח לפני שמירה ב־Storage.</p>
+          </div>
+        </div>
+        <div class="image-grid">
+          <label class="field-label image-card">תמונת Hero
+            <img class="preview" data-preview="hero_image" src="assets/logo.png" alt="תצוגה מקדימה לתמונת Hero">
+            <input data-setting="hero_image" type="url" placeholder="Public URL">
+            <input data-upload="hero_image" data-folder="hero" data-max-width="1600" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+            <span class="hint">רוחב מקסימלי: 1600px</span>
+          </label>
+          <label class="field-label image-card">תמונת אינסטגרם / גלריה
+            <img class="preview" data-preview="instagram_image" src="assets/logo.png" alt="תצוגה מקדימה לתמונת אינסטגרם">
+            <input data-setting="instagram_image" type="url" placeholder="Public URL">
+            <input data-upload="instagram_image" data-folder="gallery" data-max-width="1200" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+            <span class="hint">רוחב מקסימלי: 1200px</span>
+          </label>
+        </div>
+        <div class="actions-row">
+          <button class="admin-button" type="button" data-save-settings="images-settings">שמירת תמונות</button>
+          <div class="notice" data-notice="images-settings"></div>
+        </div>
+      </section>
+
+      <section class="editor-card" id="orderPanel">
+        <div class="section-heading">
+          <span class="section-number">04</span>
+          <div>
+            <h2>פרטי הזמנה</h2>
+            <p>פרטי WhatsApp, Instagram וטקסטים שמופיעים באזור יצירת הקשר וההזמנה.</p>
+          </div>
+        </div>
+        <div class="grid two-columns">
+          <label class="field-label">מספר WhatsApp
+            <input data-setting="whatsapp_number" type="tel" placeholder="972506422900">
+          </label>
+          <label class="field-label">כתובת Instagram
+            <input data-setting="instagram_url" type="url" placeholder="https://www.instagram.com/...">
+          </label>
+          <label class="field-label">טקסט כפתור הזמנה
+            <input data-setting="order_button_text" type="text" placeholder="שליחת הזמנה">
+          </label>
+          <label class="field-label wide">טקסט איסוף / משלוח
+            <textarea data-setting="pickup_delivery_text" placeholder="מידע קצר ללקוחות"></textarea>
+          </label>
+        </div>
+        <div class="actions-row">
+          <button class="admin-button" type="button" data-save-settings="order-settings">שמירת פרטי הזמנה</button>
+          <div class="notice" data-notice="order-settings"></div>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>
