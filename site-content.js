@@ -168,15 +168,27 @@
     return JSON.stringify(productsList.map(productSignatureValue));
   }
 
+  function clearManagedProducts(grid) {
+    const emptySignature = "managed-empty-products";
+    if (grid.dataset.renderSignature === emptySignature) return;
+    grid.innerHTML = "";
+    grid.dataset.renderSignature = emptySignature;
+    grid.dataset.productsSignature = emptySignature;
+  }
+
   function renderManagedProducts(rows) {
     const grid = document.getElementById("productsGrid");
-    if (!grid || !Array.isArray(rows) || !rows.length) return;
+    if (!grid || !Array.isArray(rows)) return;
+    if (!rows.length) return;
 
     const activeProducts = rows
       .filter((product) => product && product.is_active !== false && hasText(product.name))
       .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
 
-    if (!activeProducts.length) return;
+    if (!activeProducts.length) {
+      clearManagedProducts(grid);
+      return;
+    }
 
     const nextSignature = productsSignature(activeProducts);
     const previousSignature = grid.dataset.renderSignature || grid.dataset.productsSignature || "";
