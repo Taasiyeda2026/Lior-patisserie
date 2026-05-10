@@ -282,6 +282,21 @@ h1 {
   gap: 16px;
 }
 
+.login-form {
+  width: min(420px, 85%);
+  margin-inline: auto;
+}
+
+.login-form input {
+  width: 100%;
+}
+
+#loginButton {
+  width: 85%;
+  max-width: 320px;
+  margin-inline: auto;
+}
+
 .two-columns {
   grid-template-columns: repeat(2, minmax(0, 1fr));
 }
