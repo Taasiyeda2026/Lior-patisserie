@@ -609,8 +609,24 @@
     }
 
     .flavors-actions {
-      margin: 20px auto 32px;
+      margin: 16px auto 30px;
       justify-content: center;
+    }
+
+    .trust-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin: 12px auto 0;
+      padding: 6px 13px;
+      border-radius: 999px;
+      border: 1px solid rgba(200, 169, 106, 0.34);
+      background: rgba(255, 249, 242, 0.62);
+      color: rgba(92, 61, 50, 0.86);
+      font-size: 0.74rem;
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      box-shadow: 0 8px 20px rgba(47, 33, 28, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.55);
     }
 
     .flavors-actions .btn {
@@ -993,7 +1009,7 @@
 
     .editorial {
       position: relative;
-      padding: 92px 0 96px;
+      padding: 66px 0 72px;
       background:
         radial-gradient(circle at 14% 24%, rgba(200, 169, 106, 0.1), transparent 38%),
         radial-gradient(circle at 88% 18%, rgba(199, 178, 214, 0.1), transparent 34%),
@@ -1007,7 +1023,9 @@
 
     .editorial-card {
       display: grid;
-      grid-template-columns: 0.95fr 1.05fr;
+      grid-template-columns: 0.72fr 1.28fr;
+      width: min(1180px, 100%);
+      margin: 0 auto;
       align-items: stretch;
       background: linear-gradient(
         180deg,
@@ -1025,7 +1043,7 @@
     }
 
     .editorial-img {
-      min-height: 420px;
+      min-height: 360px;
       overflow: hidden;
     }
 
@@ -1036,7 +1054,7 @@
     }
 
     .editorial-text {
-      padding: 58px 54px;
+      padding: 42px 40px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -1045,17 +1063,17 @@
     .editorial-text h2 {
       margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(2rem, 4vw, 3.4rem);
+      font-size: clamp(1.72rem, 3vw, 2.75rem);
       line-height: 1.2;
       font-weight: 500;
     }
 
     .editorial-text p {
-      margin: 24px 0 0;
-      color: var(--muted);
-      font-size: 1.08rem;
-      line-height: 2;
-      font-weight: 300;
+      margin: 16px 0 0;
+      color: #5c453c;
+      font-size: 1rem;
+      line-height: 1.72;
+      font-weight: 400;
     }
 
     .why {
@@ -1165,13 +1183,13 @@
     .details-grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
-      margin-top: 30px;
+      gap: 14px;
+      margin-top: 22px;
     }
 
     .detail-card {
-      min-height: 100%;
-      padding: 22px 18px 24px;
+      min-height: 0;
+      padding: 18px 16px 19px;
       text-align: center;
       background: linear-gradient(180deg, rgba(255, 249, 242, 0.76) 0%, rgba(242, 234, 223, 0.62) 100%);
       border: 1px solid rgba(200, 194, 184, 0.38);
@@ -1182,15 +1200,15 @@
     }
 
     .detail-card .icon-circle {
-      width: 66px;
-      height: 66px;
-      margin-bottom: 16px;
-      font-size: 1.16rem;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 12px;
+      font-size: 1rem;
     }
 
     .pastry-icon {
-      width: 38px;
-      height: 38px;
+      width: 28px;
+      height: 28px;
       display: block;
     }
 
@@ -1215,24 +1233,36 @@
 
     .detail-card p {
       margin: 0;
-      color: var(--muted);
-      font-size: 0.9rem;
-      line-height: 1.7;
-      font-weight: 300;
+      color: #5c453c;
+      font-size: 0.88rem;
+      line-height: 1.58;
+      font-weight: 400;
     }
 
     .instagram-section {
       position: relative;
-      padding: 72px 0 88px;
-      background: linear-gradient(180deg, #3a2048 0%, #2b1738 55%, #231230 100%);
+      padding: 48px 0 56px;
+      background:
+        radial-gradient(circle at 50% 42%, rgba(200, 169, 106, 0.16), transparent 34%),
+        radial-gradient(circle at 16% 18%, rgba(199, 178, 214, 0.18), transparent 30%),
+        linear-gradient(145deg, #3a2048 0%, #2d173c 48%, #1f102b 100%);
+    }
+
+    .instagram-section::before {
+      content: "";
+      position: absolute;
+      inset: 10% 8% 6%;
+      pointer-events: none;
+      background: radial-gradient(circle at 50% 48%, rgba(255, 228, 190, 0.18), transparent 42%);
+      filter: blur(8px);
     }
 
     .instagram-card {
       position: relative;
-      width: min(calc(100% - 48px), 900px);
+      width: min(calc(100% - 48px), 840px);
       margin: 0 auto;
-      min-height: 420px;
-      border-radius: 34px;
+      min-height: 340px;
+      border-radius: 30px;
       overflow: hidden;
       box-shadow:
         0 32px 80px rgba(20, 10, 30, 0.55),
@@ -1267,9 +1297,9 @@
     .instagram-content {
       position: relative;
       z-index: 2;
-      width: min(86%, 680px);
+      width: min(82%, 600px);
       margin: 0 auto;
-      padding: 26px 34px 28px;
+      padding: 22px 30px 24px;
       border-radius: 24px;
       background: rgba(255, 248, 238, 0.88);
       backdrop-filter: blur(14px);
@@ -1290,7 +1320,7 @@
 
     .instagram-title {
       font-family: var(--font-display);
-      font-size: clamp(32px, 3.2vw, 48px);
+      font-size: clamp(1.8rem, 3vw, 2.55rem);
       line-height: 1.18;
       font-weight: 700;
       color: #2f211b;
@@ -1298,10 +1328,10 @@
     }
 
     .instagram-text {
-      font-size: 17px;
-      line-height: 1.75;
-      color: #5d473b;
-      margin: 0 auto 22px;
+      font-size: 1rem;
+      line-height: 1.62;
+      color: #4f3b32;
+      margin: 0 auto 18px;
       max-width: 560px;
     }
 
@@ -1309,16 +1339,18 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      min-height: 46px;
+      min-height: 44px;
       padding: 0 28px;
       border-radius: 999px;
-      background: rgba(255, 249, 240, 0.92);
+      background: linear-gradient(180deg, #fff9f2 0%, #eadcc7 100%);
       color: #3f2554;
       font-size: 16px;
       font-weight: 700;
       text-decoration: none;
       border: 1px solid rgba(191, 148, 82, 0.45);
-      box-shadow: 0 10px 24px rgba(60, 35, 25, 0.13);
+      box-shadow:
+        0 12px 26px rgba(60, 35, 25, 0.18),
+        inset 0 1px 0 rgba(255, 255, 255, 0.76);
       transition: transform 0.18s ease, box-shadow 0.18s ease;
     }
 
@@ -1498,46 +1530,12 @@
         inset 0 1px 0 rgba(255, 255, 255, 0.45);
     }
 
-    .kashrut {
-      background: transparent;
-      padding: 8px 0 24px;
-      margin-top: -2px;
-      text-align: center;
-    }
-
-    .kashrut-line {
-      width: auto;
-      margin: 0 auto;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      padding: 9px 16px;
-      border-radius: 999px;
-      border: 1px solid rgba(200, 194, 184, 0.52);
-      background: rgba(255, 249, 242, 0.78);
-      color: #7A665C;
-      font-size: 0.8rem;
-      letter-spacing: 0.12em;
-      box-shadow:
-        0 8px 22px rgba(47, 33, 28, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.55);
-    }
-
-    .kashrut-line::before,
-    .kashrut-line::after {
-      display: none;
-    }
-
-    .kashrut-line::after {
-      background: linear-gradient(90deg, rgba(200, 194, 184, 0.72), transparent);
-    }
-
     .final {
       position: relative;
-      min-height: 470px;
+      min-height: 0;
       display: grid;
       place-items: center;
-      padding: 92px 0 78px;
+      padding: 56px 0 46px;
       text-align: center;
       background:
         radial-gradient(circle at 50% 22%, rgba(199, 178, 214, 0.1), transparent 40%),
@@ -1554,7 +1552,7 @@
       display: block;
       width: 78px;
       height: 1px;
-      margin: 0 auto 16px;
+      margin: 0 auto 10px;
       background: linear-gradient(
         90deg,
         transparent,
@@ -1580,8 +1578,8 @@
     }
 
     .final p {
-      margin: 16px auto 0;
-      max-width: 520px;
+      margin: 10px auto 0;
+      max-width: 500px;
       color: rgba(92, 61, 50, 0.94);
       font-size: 1.03rem;
       line-height: 1.86;
@@ -1589,9 +1587,9 @@
     }
 
     .contact-details-card {
-      width: min(450px, 100%);
-      margin: 18px auto 0;
-      padding: 16px 24px;
+      width: min(390px, 100%);
+      margin: 14px auto 0;
+      padding: 10px 18px;
       border-radius: 20px;
       background: linear-gradient(
         180deg,
@@ -1610,7 +1608,7 @@
       padding: 0;
       list-style: none;
       display: grid;
-      gap: 10px;
+      gap: 4px;
     }
 
     .contact-details-list li {
@@ -1619,8 +1617,8 @@
       justify-content: space-between;
       gap: 12px;
       color: var(--cocoa);
-      font-size: 0.96rem;
-      line-height: 1.5;
+      font-size: 0.92rem;
+      line-height: 1.35;
     }
 
     .contact-label {
@@ -1656,9 +1654,9 @@
     }
 
     .final .btn {
-      margin-top: 18px;
-      min-height: 42px;
-      padding: 10px 22px;
+      margin-top: 14px;
+      min-height: 40px;
+      padding: 9px 20px;
       box-shadow:
         0 10px 24px rgba(47, 33, 28, 0.18),
         0 3px 0 rgba(35, 19, 42, 0.70),
@@ -1683,8 +1681,8 @@
     }
 
     .footer {
-      padding: 28px 0;
-      background: #2f211c;
+      padding: 18px 0;
+      background: #3a2922;
       color: rgba(255, 250, 243, 0.72);
       text-align: center;
       font-size: 0.86rem;
@@ -1798,7 +1796,7 @@
       }
 
       .details-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
       .steps {
@@ -1966,11 +1964,24 @@
       }
 
       .editorial {
-        padding: 68px 0 76px;
+        padding: 48px 0 54px;
       }
 
       .editorial-text {
-        padding: 38px 28px;
+        padding: 30px 22px;
+      }
+
+      .editorial-text h2 {
+        font-size: clamp(1.55rem, 6.6vw, 2.05rem);
+      }
+
+      .details-grid {
+        gap: 12px;
+        margin-top: 18px;
+      }
+
+      .detail-card {
+        padding: 16px 14px 17px;
       }
 
       .editorial-card {
@@ -1978,7 +1989,7 @@
       }
 
       .final {
-        padding: 62px 0 54px;
+        padding: 42px 0 36px;
         min-height: 0;
       }
 
@@ -2052,14 +2063,14 @@
       }
 
       .instagram-section {
-        padding: 40px 0 52px;
+        padding: 34px 0 40px;
       }
 
       .instagram-card {
-        width: calc(100% - 32px);
-        min-height: 360px;
-        border-radius: 26px;
-        box-shadow: 0 20px 55px rgba(20, 10, 30, 0.55);
+        width: calc(100% - 28px);
+        min-height: 310px;
+        border-radius: 24px;
+        box-shadow: 0 20px 55px rgba(20, 10, 30, 0.48);
       }
 
       .instagram-content {
@@ -2074,9 +2085,9 @@
       }
 
       .instagram-title {
-        font-size: 30px;
-        line-height: 1.2;
-        margin-bottom: 12px;
+        font-size: clamp(1.55rem, 7vw, 1.9rem);
+        line-height: 1.18;
+        margin-bottom: 10px;
       }
 
       .instagram-text {
@@ -2126,15 +2137,6 @@
         font-size: 0.92rem;
       }
 
-      .kashrut {
-        padding: 6px 0 18px;
-      }
-
-      .kashrut-line {
-        font-size: 0.74rem;
-        letter-spacing: 0.1em;
-        padding: 8px 14px;
-      }
 
       .why.section-pad {
         padding-top: 74px;
@@ -2167,7 +2169,7 @@
       display: none;
       align-items: center;
       justify-content: center;
-      padding: 22px;
+      padding: 24px;
       background:
         radial-gradient(circle at center, rgba(247, 240, 230, 0.16), transparent 42%),
         rgba(47, 33, 28, 0.56);
@@ -2179,8 +2181,8 @@
     }
 
     .order-modal-card {
-      width: min(460px, calc(100vw - 32px));
-      max-height: min(88vh, 720px);
+      width: min(92vw, 560px);
+      max-height: calc(100vh - 48px);
       overflow-y: auto;
       background: linear-gradient(
         180deg,
@@ -2188,11 +2190,12 @@
         rgba(242, 234, 223, 0.92) 100%
       );
       border: 1px solid rgba(200, 194, 184, 0.52);
-      border-radius: 26px;
+      border-radius: 28px;
       box-shadow:
-        0 28px 80px rgba(47, 33, 28, 0.30),
+        0 24px 70px rgba(0, 0, 0, 0.22),
+        0 2px 14px rgba(85, 50, 30, 0.10),
         inset 0 1px 0 rgba(255, 255, 255, 0.55);
-      padding: 28px 30px 26px;
+      padding: clamp(24px, 3vw, 36px);
       position: relative;
     }
 
@@ -2239,13 +2242,13 @@
 
     .order-modal-close {
       position: absolute;
-      top: 16px;
-      left: 16px;
-      width: 32px;
-      height: 32px;
+      top: 18px;
+      left: 18px;
+      width: 36px;
+      height: 36px;
       border-radius: 999px;
       border: 1px solid rgba(200, 194, 184, 0.45);
-      background: rgba(255, 250, 243, 0.72);
+      background: rgba(255, 250, 243, 0.88);
       color: #3D2249;
       cursor: pointer;
       font-size: 1.15rem;
@@ -2255,17 +2258,17 @@
     .order-modal h2 {
       margin: 0 0 8px;
       font-family: var(--font-body);
-      font-size: clamp(1.65rem, 3vw, 2.15rem);
-      line-height: 1.25;
+      font-size: clamp(1.55rem, 2.4vw, 2rem);
+      line-height: 1.18;
       font-weight: 500;
       color: #2F211C;
       text-align: right;
     }
 
     .order-modal-subtitle {
-      margin: 0 0 20px;
-      color: #7A665C;
-      line-height: 1.65;
+      margin: 0 0 16px;
+      color: #5f4a41;
+      line-height: 1.55;
       font-size: 0.92rem;
       font-weight: 300;
       text-align: right;
@@ -2273,7 +2276,7 @@
 
     .order-form {
       display: grid;
-      gap: 11px;
+      gap: 9px;
     }
 
     .order-field {
@@ -2293,8 +2296,9 @@
       border: 1px solid rgba(200, 194, 184, 0.56);
       background: rgba(255, 250, 243, 0.78);
       color: #2F211C;
-      border-radius: 14px;
-      padding: 10px 12px;
+      border-radius: 18px;
+      padding: 12px 16px;
+      min-height: 50px;
       font-family: inherit;
       font-size: 0.9rem;
       outline: none;
@@ -2302,7 +2306,7 @@
     }
 
     .order-field textarea {
-      min-height: 72px;
+      min-height: 76px;
       resize: vertical;
     }
 
@@ -2331,10 +2335,44 @@
     .order-submit {
       width: 100%;
       margin-top: 6px;
-      min-height: 42px;
-      padding: 10px 20px;
+      min-height: 54px;
+      padding: 12px 20px;
       font-size: 0.9rem;
     }
+
+
+    .order-field-phone {
+      max-width: 260px;
+    }
+
+    .order-field-quantity {
+      max-width: 140px;
+    }
+
+    .order-field-date {
+      max-width: 220px;
+    }
+
+    @media (max-width: 640px) {
+      .order-modal {
+        align-items: flex-start;
+        padding: 16px;
+      }
+
+      .order-modal-card {
+        width: min(100%, 560px);
+        max-height: calc(100vh - 32px);
+        border-radius: 24px;
+        padding: 24px 20px 22px;
+      }
+
+      .order-field-phone,
+      .order-field-quantity,
+      .order-field-date {
+        max-width: 100%;
+      }
+    }
+
 
     body.has-modal {
       overflow: hidden;
@@ -2554,6 +2592,7 @@
               <p class="home-flavors-lede">
                 הקולקציה שלנו משלבת טעמים עשירים ובלתי נשכחים, כשכל עוגייה מביאה איתה אופי, מרקם וחוויה משלה.
               </p>
+              <div class="trust-badge" aria-label="תגית אמון">כשר למהדרין</div>
               <div class="cta-row flavors-actions">
                 <a class="btn" href="#" data-order data-content-key="hero_primary_button_text">להזמנה</a>
               </div>
@@ -2648,10 +2687,6 @@
         </div>
       </section>
 
-      <section class="kashrut">
-        <div class="kashrut-line">כשר למהדרין</div>
-      </section>
-
       <section class="final" id="contact">
         <div class="container">
           <div class="reveal">
@@ -2682,7 +2717,6 @@
       <button class="nav-dot" data-target="#home"      data-label="הטעמים שלנו" aria-label="הטעמים שלנו"></button>
       <button class="nav-dot" data-target="#instagram" data-label="גלריה"                   aria-label="גלריה"></button>
       <button class="nav-dot" data-target=".editorial" data-label="עבודת יד"               aria-label="עבודת יד"></button>
-      <button class="nav-dot" data-target=".kashrut"   data-label="כשרות"                  aria-label="כשרות"></button>
       <button class="nav-dot" data-target="#contact"   data-label="צור קשר"                aria-label="צור קשר"></button>
     </nav>
     </main>
@@ -2703,30 +2737,30 @@
         מלאו כמה פרטים קצרים וההזמנה תישלח לליאור ב־WhatsApp.
       </p>
 
-      <form class="order-form" id="orderForm">
+      <form class="order-form" id="orderForm" novalidate>
         <div class="order-field">
-          <label for="customerName">שם מלא</label>
-          <input id="customerName" name="customerName" type="text" autocomplete="name">
+          <label for="customerName">שם מלא *</label>
+          <input id="customerName" name="customerName" type="text" autocomplete="name" required>
+        </div>
+
+        <div class="order-field order-field-phone">
+          <label for="customerPhone">טלפון *</label>
+          <input id="customerPhone" name="customerPhone" type="tel" autocomplete="tel" required>
         </div>
 
         <div class="order-field">
-          <label for="customerPhone">טלפון</label>
-          <input id="customerPhone" name="customerPhone" type="tel" autocomplete="tel">
+          <label for="orderProduct">מוצר / הזמנה מבוקשת *</label>
+          <input id="orderProduct" name="orderProduct" type="text" placeholder="לדוגמה: מארז עוגיות, מיקס טעמים, עוגייה אישית, קינוח לאירוח או מוצר אחר" required>
         </div>
 
-        <div class="order-field">
-          <label for="orderProduct">מוצר / טעמים</label>
-          <input id="orderProduct" name="orderProduct" type="text">
+        <div class="order-field order-field-quantity">
+          <label for="orderQuantity">כמות *</label>
+          <input id="orderQuantity" name="orderQuantity" type="text" required>
         </div>
 
-        <div class="order-field">
-          <label for="orderQuantity">כמות</label>
-          <input id="orderQuantity" name="orderQuantity" type="text">
-        </div>
-
-        <div class="order-field">
+        <div class="order-field order-field-date">
           <label for="orderDate">תאריך רצוי</label>
-          <input id="orderDate" name="orderDate" type="text" placeholder="לדוגמה: חמישי הקרוב / 12.6">
+          <input id="orderDate" name="orderDate" type="date">
         </div>
 
         <div class="order-field">
@@ -2735,7 +2769,7 @@
         </div>
 
         <div class="order-error" id="orderError">
-          נא למלא את כל פרטי ההזמנה הנדרשים.
+          יש למלא שם, טלפון, מוצר/הזמנה וכמות כדי לשלוח הזמנה.
         </div>
 
         <button class="btn order-submit" type="submit">
@@ -2854,13 +2888,12 @@
     ];
 
     function getWhatsAppUrl(productName = "") {
-      const productLine = productName ? `שם המוצר: ${productName}` : "שם המוצר:";
+      const productLine = productName ? `מוצר / הזמנה: ${productName}` : "מוצר / הזמנה:";
       const message = `שלום ליאור, אשמח לבצע הזמנה מ־Lior’s Pâtisserie.
 ${productLine}
 כמות:
-תאריך רצוי:
 שם מלא:
-הערות:`;
+טלפון:`;
 
       return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
     }
@@ -3052,16 +3085,24 @@ ${productLine}
     }
 
     function buildOrderWhatsAppUrl(data) {
-      const notes = data.notes && data.notes.trim() ? data.notes.trim() : "ללא";
+      const messageLines = [
+        "שלום ליאור, אשמח לבצע הזמנה מ־Lior’s Pâtisserie.",
+        "",
+        `שם מלא: ${data.name}`,
+        `טלפון: ${data.phone}`,
+        `מוצר / הזמנה: ${data.product}`,
+        `כמות: ${data.quantity}`
+      ];
 
-      const message = `שלום ליאור, אשמח לבצע הזמנה מ־Lior’s Pâtisserie.
+      if (data.date) {
+        messageLines.push(`תאריך רצוי: ${data.date}`);
+      }
 
-שם מלא: ${data.name}
-טלפון: ${data.phone}
-מוצר / טעמים: ${data.product}
-כמות: ${data.quantity}
-תאריך רצוי: ${data.date}
-הערות: ${notes}`;
+      if (data.notes) {
+        messageLines.push(`הערות: ${data.notes}`);
+      }
+
+      const message = messageLines.join("\n");
 
       return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
     }
@@ -3112,7 +3153,7 @@ ${productLine}
             notes: document.getElementById("orderNotes").value.trim()
           };
 
-          const isValid = data.name && data.phone && data.product && data.quantity && data.date;
+          const isValid = data.name && data.phone && data.product && data.quantity;
 
           if (!isValid) {
             if (error) error.classList.add("is-visible");
