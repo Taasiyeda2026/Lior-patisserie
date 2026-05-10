@@ -154,29 +154,18 @@
 
 
   function productSignatureValue(product) {
-    return [
-      product.name || "",
-      product.description || "",
-      productImageValue(product) || ""
-    ].map((value) => String(value).trim()).join("||");
+    return {
+      id: product.id || "",
+      name: String(product.name || "").trim(),
+      description: String(product.description || "").trim(),
+      image_url: String(product.image_url || "").trim(),
+      display_order: product.display_order || 0,
+      is_active: product.is_active !== false
+    };
   }
 
   function productsSignature(productsList) {
-    return productsList.map(productSignatureValue).join("@@");
-  }
-
-  function currentProductsSignature(grid) {
-    const cards = Array.from(grid.querySelectorAll(".product-card"));
-    if (!cards.length) return "";
-
-    return cards.map((card) => {
-      const image = card.querySelector("img");
-      return [
-        card.querySelector("h3")?.textContent || "",
-        card.querySelector("p")?.textContent || "",
-        image?.dataset.productImage || image?.dataset.fallbackImage || image?.getAttribute("src") || ""
-      ].map((value) => String(value).trim()).join("||");
-    }).join("@@");
+    return JSON.stringify(productsList.map(productSignatureValue));
   }
 
   function renderManagedProducts(rows) {
@@ -190,8 +179,9 @@
     if (!activeProducts.length) return;
 
     const nextSignature = productsSignature(activeProducts);
-    const previousSignature = grid.dataset.productsSignature || currentProductsSignature(grid);
+    const previousSignature = grid.dataset.renderSignature || grid.dataset.productsSignature || "";
     if (nextSignature && nextSignature === previousSignature) {
+      grid.dataset.renderSignature = nextSignature;
       grid.dataset.productsSignature = nextSignature;
       return;
     }
@@ -220,11 +210,13 @@
     }).join("");
 
     if (grid.innerHTML.trim() === nextHtml.trim()) {
+      grid.dataset.renderSignature = nextSignature;
       grid.dataset.productsSignature = nextSignature;
       return;
     }
 
     grid.innerHTML = nextHtml;
+    grid.dataset.renderSignature = nextSignature;
     grid.dataset.productsSignature = nextSignature;
 
     grid.querySelectorAll("img[data-fallback-image]").forEach((img) => {

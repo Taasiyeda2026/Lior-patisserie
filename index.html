@@ -2567,6 +2567,20 @@
         min-height: 100svh;
       }
 
+      .home-hero-panel,
+      .hero-scroll-link,
+      .image-lightbox-content {
+        animation: none;
+      }
+
+      .hero-bg img {
+        transform: none;
+      }
+
+      .hero-logo {
+        filter: none;
+      }
+
       .reveal,
       .section-unlock,
       .section-unlock.is-unlocked {
@@ -2585,8 +2599,56 @@
       .product-card,
       .signature-card,
       .editorial-card,
-      .instagram-card {
+      .instagram-card,
+      .detail-card {
         filter: none;
+      }
+
+      .product-card,
+      .signature-card,
+      .editorial-card,
+      .detail-card {
+        box-shadow:
+          0 10px 24px rgba(47, 33, 28, 0.08),
+          inset 0 1px 0 rgba(255, 255, 255, 0.5);
+      }
+
+      .instagram-card {
+        box-shadow:
+          0 16px 36px rgba(20, 10, 30, 0.32),
+          0 0 0 1px rgba(200, 169, 106, 0.18);
+      }
+
+      .btn:hover,
+      .instagram-button:hover,
+      .product-card:hover,
+      .signature-card:hover,
+      .floating-wa:hover {
+        transform: none;
+      }
+
+      .btn:hover {
+        filter: none;
+      }
+
+      .nav-dot.is-active {
+        transform: none;
+      }
+
+      .product-card:hover .product-image img,
+      .signature-card:hover .signature-image img {
+        transform: none;
+      }
+
+      .product-image img,
+      .signature-image img,
+      .product-card,
+      .signature-card,
+      .editorial-card,
+      .detail-card,
+      .instagram-card,
+      .floating-wa {
+        transition: opacity 0.2s ease, border-color 0.2s ease;
       }
     }
 
@@ -3035,13 +3097,30 @@ ${productLine}
 
       if (!images.length) return;
 
+      const markReady = (img) => {
+        img.dataset.imageReady = "true";
+        if (img.complete && img.naturalWidth) img.classList.add("is-loaded");
+      };
+
       const loadImage = (img) => {
+        if (img.dataset.imageReady === "true") {
+          markReady(img);
+          return;
+        }
+
         if (img.dataset.imageQueued === "loaded") return;
 
         const name = getManagedImageName(img);
         if (!name) return;
 
+        const currentSrc = img.getAttribute("src") || "";
+        if (currentSrc && ((img.complete && img.naturalWidth) || (currentSrc.includes(name) && img.classList.contains("is-loaded")))) {
+          markReady(img);
+          return;
+        }
+
         img.dataset.imageQueued = "loaded";
+        img.dataset.imageReady = "true";
         setImageWithFallback(img, name);
       };
 
@@ -3067,13 +3146,19 @@ ${productLine}
       images.forEach((img) => {
         const shouldLoadImmediately = img.loading === "eager" || img.fetchPriority === "high";
 
+        if (img.dataset.imageReady === "true") {
+          markReady(img);
+          return;
+        }
+
+        if (img.dataset.imageObserved === "true") return;
+
         if (shouldLoadImmediately) {
           img.dataset.imageObserved = "true";
           loadImage(img);
           return;
         }
 
-        if (img.dataset.imageObserved === "true") return;
         img.dataset.imageObserved = "true";
         window.__liorImageObserver.observe(img);
       });
@@ -3234,6 +3319,7 @@ ${productLine}
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               entry.target.classList.add("is-unlocked");
+              entry.target.dataset.sectionUnlockReady = "true";
               window.__liorSectionUnlockObserver.unobserve(entry.target);
             }
           });
@@ -3279,6 +3365,7 @@ ${productLine}
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               entry.target.classList.add("is-visible");
+              entry.target.dataset.revealReady = "true";
               window.__liorRevealObserver.unobserve(entry.target);
             }
           });
