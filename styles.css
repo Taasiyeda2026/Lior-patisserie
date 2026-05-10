@@ -489,12 +489,14 @@
     }
 
     .home-lead-text {
-      max-width: 640px;
-      margin: 6px auto 0;
-      font-size: clamp(0.9rem, 1.32vw, 1.04rem);
-      line-height: 1.66;
+      max-width: 720px;
+      margin-inline: auto;
+      margin-top: 6px;
+      margin-bottom: 12px;
+      font-size: clamp(1rem, 1.35vw, 1.15rem);
+      line-height: 1.85;
       font-weight: 400;
-      color: #52362C;
+      color: rgba(47, 33, 28, 0.86);
     }
 
     .home-flavors-heading {
@@ -528,11 +530,13 @@
     }
 
     .home-flavors-lede {
-      max-width: 560px;
-      margin: 4px auto 0;
-      font-size: clamp(0.88rem, 1.2vw, 1rem);
-      line-height: 1.62;
-      color: #5E4A42;
+      max-width: 720px;
+      margin-inline: auto;
+      margin-top: 0;
+      margin-bottom: 0;
+      font-size: clamp(1rem, 1.35vw, 1.15rem);
+      line-height: 1.85;
+      color: rgba(47, 33, 28, 0.86);
       font-weight: 400;
     }
 
@@ -618,7 +622,9 @@
     }
 
     .flavors-actions {
-      margin: 16px auto 30px;
+      margin-top: 18px;
+      margin-bottom: 30px;
+      display: flex;
       justify-content: center;
     }
 
@@ -626,20 +632,36 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      margin: 12px auto 0;
-      padding: 6px 13px;
+      width: fit-content;
+      margin: 18px auto 0;
+      padding: 5px 13px;
       border-radius: 999px;
-      border: 1px solid rgba(200, 169, 106, 0.34);
-      background: rgba(255, 249, 242, 0.62);
-      color: rgba(92, 61, 50, 0.86);
-      font-size: 0.74rem;
+      font-size: 0.82rem;
       font-weight: 600;
-      letter-spacing: 0.08em;
-      box-shadow: 0 8px 20px rgba(47, 33, 28, 0.06), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+      line-height: 1.2;
+      color: #6d4d31;
+      background: rgba(255, 249, 242, 0.72);
+      border: 1px solid rgba(200, 169, 106, 0.34);
+      box-shadow: none;
+      letter-spacing: 0.01em;
     }
 
     .flavors-actions .btn {
-      min-width: 154px;
+      min-width: 148px;
+      max-width: 180px;
+      min-height: 44px;
+      padding: 10px 22px;
+      border-radius: 18px;
+      font-size: 1rem;
+      font-weight: 700;
+      box-shadow:
+        0 10px 22px rgba(47, 33, 28, 0.18),
+        0 3px 0 rgba(35, 19, 42, 0.58),
+        inset 0 1px 0 rgba(255, 255, 255, 0.16);
+    }
+
+    .flavors-actions .btn:hover {
+      transform: translateY(-1px);
     }
 
     .home-hero .btn {
@@ -892,6 +914,12 @@
       color: var(--plum-soft);
       opacity: 0.68;
       text-transform: uppercase;
+    }
+
+    .home-opening-copy {
+      text-align: center;
+      max-width: 860px;
+      margin-inline: auto;
     }
 
     .home-opening-copy .home-flavors-heading {
@@ -1901,8 +1929,9 @@
 
       .home-lead-text {
         margin-top: 4px;
-        font-size: clamp(0.88rem, 3.5vw, 1rem);
-        line-height: 1.58;
+        margin-bottom: 12px;
+        font-size: clamp(1rem, 3.5vw, 1.05rem);
+        line-height: 1.82;
       }
 
       .products-kicker {
@@ -1919,8 +1948,9 @@
       }
 
       .home-flavors-lede {
-        margin-top: 3px;
-        font-size: 0.88rem;
+        margin-top: 0;
+        font-size: clamp(1rem, 3.5vw, 1.05rem);
+        line-height: 1.82;
       }
 
       .home-opening .products-grid {
