@@ -1,4 +1,3 @@
-const TEMP_ADMIN_PASSWORD = "change-me-now"; // הגנה זמנית בלבד. להחליף ל־Supabase Auth לפני שימוש אמיתי.
 const WEBP_QUALITY = 0.82;
 const BUCKET = (window.LIOR_SUPABASE_CONFIG && window.LIOR_SUPABASE_CONFIG.STORAGE_BUCKET) || "site-images";
 
@@ -27,6 +26,25 @@ function showUploadMessage(message, ok = false) {
     loginNotice.textContent = message;
     loginNotice.className = `notice is-visible ${ok ? "ok" : "error"}`;
   }
+}
+
+function showLoginError(message) {
+  const notice = document.getElementById("loginNotice");
+  if (!notice) return;
+  notice.textContent = message;
+  notice.className = "notice is-visible error";
+}
+
+function showAdminApp() {
+  document.getElementById("loginCard").classList.add("hidden");
+  document.getElementById("adminApp").classList.remove("hidden");
+}
+
+function showLoginScreen() {
+  document.getElementById("adminApp").classList.add("hidden");
+  document.getElementById("loginCard").classList.remove("hidden");
+  const notice = document.getElementById("loginNotice");
+  if (notice) notice.className = "notice error";
 }
 
 function cleanFileName(name) {
@@ -217,15 +235,44 @@ async function initAdmin() {
 
 function setupEvents() {
   document.getElementById("loginButton").addEventListener("click", async () => {
-    const ok = document.getElementById("adminPassword").value === TEMP_ADMIN_PASSWORD;
-    if (!ok) {
-      document.getElementById("loginNotice").textContent = "סיסמה שגויה";
-      document.getElementById("loginNotice").className = "notice is-visible error";
+    const email = (document.getElementById("adminEmail").value || "").trim();
+    const password = document.getElementById("adminPassword").value || "";
+
+    if (!email || !password) {
+      showLoginError("נא למלא אימייל וסיסמה");
       return;
     }
-    document.getElementById("loginCard").classList.add("hidden");
-    document.getElementById("adminApp").classList.remove("hidden");
-    try { await initAdmin(); } catch (error) { showUploadMessage(error.message || "טעינת נתונים נכשלה", false); }
+
+    const btn = document.getElementById("loginButton");
+    btn.disabled = true;
+    btn.textContent = "מתחבר...";
+
+    try {
+      const { error } = await client().auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      showAdminApp();
+      await initAdmin();
+    } catch {
+      showLoginError("פרטי ההתחברות שגויים");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "כניסה לניהול";
+    }
+  });
+
+  const logoutBtn = document.getElementById("logoutButton");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", async () => {
+      await client().auth.signOut();
+      showLoginScreen();
+    });
+  }
+
+  document.getElementById("adminEmail").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("adminPassword").focus();
+  });
+  document.getElementById("adminPassword").addEventListener("keydown", (e) => {
+    if (e.key === "Enter") document.getElementById("loginButton").click();
   });
 
   document.addEventListener("click", async (event) => {
@@ -267,6 +314,17 @@ function setupEvents() {
   });
 }
 
+async function checkExistingSession() {
+  try {
+    const { data } = await client().auth.getSession();
+    if (data && data.session) {
+      showAdminApp();
+      await initAdmin();
+    }
+  } catch {
+  }
+}
+
 window.uploadImageAsWebP = uploadImageAsWebP;
 window.convertImageToWebP = convertImageToWebP;
 window.saveProduct = saveProduct;
@@ -274,4 +332,7 @@ window.saveSettings = saveSettings;
 window.loadSettings = loadSettings;
 window.loadProducts = loadProducts;
 
-document.addEventListener("DOMContentLoaded", setupEvents);
+document.addEventListener("DOMContentLoaded", async () => {
+  setupEvents();
+  await checkExistingSession();
+});

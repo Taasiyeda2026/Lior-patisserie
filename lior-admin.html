@@ -3,34 +3,40 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ניהול אתר Lior’s Pâtisserie</title>
+  <title>ניהול אתר Lior's Pâtisserie</title>
   <link rel="preload" href="assets/fonts/IBMPlexSansHebrew-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="preload" href="assets/fonts/Lora-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <link rel="stylesheet" href="admin.css">
 </head>
 <body>
   <main class="admin-shell">
-    <header class="admin-hero" aria-label="ניהול אתר Lior’s Pâtisserie">
+    <header class="admin-hero" aria-label="ניהול אתר Lior's Pâtisserie">
       <div class="brand-panel">
-        <img class="admin-logo" src="assets/logo.png" alt="Lior’s Pâtisserie" width="96" height="96">
+        <img class="admin-logo" src="assets/logo.png" alt="Lior's Pâtisserie" width="96" height="96">
         <div>
-          <p class="eyebrow">Lior’s Pâtisserie</p>
-          <h1>ניהול אתר Lior’s Pâtisserie</h1>
+          <p class="eyebrow">Lior's Pâtisserie</p>
+          <h1>ניהול אתר Lior's Pâtisserie</h1>
         </div>
       </div>
-      <a class="ghost-link" href="index.html">צפייה באתר</a>
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+        <a class="ghost-link" href="index.html">צפייה באתר</a>
+        <button id="logoutButton" class="ghost-link hidden" type="button">התנתקות</button>
+      </div>
     </header>
 
     <section id="loginCard" class="login-card editor-card">
       <div class="section-heading">
         <span class="section-number">כניסה</span>
         <div>
-          <h2>התחברות בסיסית</h2>
+          <h2>התחברות לאדמין</h2>
         </div>
       </div>
       <div class="login-form">
+        <label class="field-label">אימייל
+          <input id="adminEmail" type="email" autocomplete="email" placeholder="your@email.com" inputmode="email">
+        </label>
         <label class="field-label">סיסמת ניהול
-          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="הקלידו סיסמה">
+          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="••••••••">
         </label>
         <button id="loginButton" class="admin-button" type="button">כניסה לניהול</button>
       </div>

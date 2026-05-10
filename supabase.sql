@@ -1,5 +1,5 @@
--- Lior’s Pâtisserie Supabase schema
--- Run in Supabase SQL Editor. Replace temporary write policies with Supabase Auth before real production use.
+-- Lior's Pâtisserie Supabase schema
+-- Run in Supabase SQL Editor.
 
 create extension if not exists "pgcrypto";
 
@@ -75,7 +75,8 @@ alter table public.products enable row level security;
 alter table public.site_features enable row level security;
 alter table public.gallery_images enable row level security;
 
--- Public read policies for the static GitHub Pages site.
+-- ── Public read (the static site on GitHub Pages) ──────────────────────────
+
 drop policy if exists "Public read site_settings" on public.site_settings;
 create policy "Public read site_settings"
 on public.site_settings for select
@@ -100,60 +101,76 @@ on public.gallery_images for select
 to anon, authenticated
 using (true);
 
--- TEMPORARY WRITE POLICIES.
--- These allow writes with the anon public key so lior-admin.html can work before Auth exists.
--- Remove these before real public use and replace them with Supabase Auth policies, for example: to authenticated with a checked admin role.
-drop policy if exists "Temporary anon write site_settings" on public.site_settings;
-create policy "Temporary anon write site_settings"
-on public.site_settings for all
-to anon
-using (true)
-with check (true);
+-- ── Remove old temporary anon write policies ───────────────────────────────
 
-drop policy if exists "Temporary anon write products" on public.products;
-create policy "Temporary anon write products"
-on public.products for all
-to anon
-using (true)
-with check (true);
-
-drop policy if exists "Temporary anon write site_features" on public.site_features;
-create policy "Temporary anon write site_features"
-on public.site_features for all
-to anon
-using (true)
-with check (true);
-
+drop policy if exists "Temporary anon write site_settings"  on public.site_settings;
+drop policy if exists "Temporary anon write products"       on public.products;
+drop policy if exists "Temporary anon write site_features"  on public.site_features;
 drop policy if exists "Temporary anon write gallery_images" on public.gallery_images;
-create policy "Temporary anon write gallery_images"
-on public.gallery_images for all
-to anon
+
+-- ── Authenticated write policies (admin only) ──────────────────────────────
+
+drop policy if exists "Authenticated write site_settings" on public.site_settings;
+create policy "Authenticated write site_settings"
+on public.site_settings for all
+to authenticated
 using (true)
 with check (true);
 
--- Storage bucket for all managed site images.
+drop policy if exists "Authenticated write products" on public.products;
+create policy "Authenticated write products"
+on public.products for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Authenticated write site_features" on public.site_features;
+create policy "Authenticated write site_features"
+on public.site_features for all
+to authenticated
+using (true)
+with check (true);
+
+drop policy if exists "Authenticated write gallery_images" on public.gallery_images;
+create policy "Authenticated write gallery_images"
+on public.gallery_images for all
+to authenticated
+using (true)
+with check (true);
+
+-- ── Storage bucket ─────────────────────────────────────────────────────────
+
 insert into storage.buckets (id, name, public)
 values ('site-images', 'site-images', true)
 on conflict (id) do update set public = excluded.public;
 
--- Public read for uploaded images.
+-- Public read for all uploaded images (needed by the public site).
 drop policy if exists "Public read site-images" on storage.objects;
 create policy "Public read site-images"
 on storage.objects for select
 to anon, authenticated
 using (bucket_id = 'site-images');
 
--- TEMPORARY Storage write policies for lior-admin.html before Supabase Auth is configured.
--- Remove before production and restrict upload/update to authenticated admins only.
+-- Remove old temporary anon storage write policies.
 drop policy if exists "Temporary anon upload site-images" on storage.objects;
-create policy "Temporary anon upload site-images"
+drop policy if exists "Temporary anon update site-images" on storage.objects;
+
+-- Authenticated upload / update / delete (admin only).
+drop policy if exists "Authenticated upload site-images" on storage.objects;
+create policy "Authenticated upload site-images"
 on storage.objects for insert
-to anon
+to authenticated
 with check (bucket_id = 'site-images');
 
-drop policy if exists "Temporary anon update site-images" on storage.objects;
-create policy "Temporary anon update site-images"
+drop policy if exists "Authenticated update site-images" on storage.objects;
+create policy "Authenticated update site-images"
 on storage.objects for update
-to anon
+to authenticated
 using (bucket_id = 'site-images')
 with check (bucket_id = 'site-images');
+
+drop policy if exists "Authenticated delete site-images" on storage.objects;
+create policy "Authenticated delete site-images"
+on storage.objects for delete
+to authenticated
+using (bucket_id = 'site-images');
