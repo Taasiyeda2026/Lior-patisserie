@@ -126,12 +126,14 @@ async function loadSettings() {
   });
 }
 
-async function saveSettings(scope = "home-settings") {
-  const rows = Array.from(document.querySelectorAll("[data-setting]")).map((input) => ({
+async function saveSettings(scope = "hero-settings", root = document) {
+  const inputs = Array.from(root.querySelectorAll("[data-setting]"));
+  const rows = inputs.map((input) => ({
     key: input.dataset.setting,
     value: input.value.trim(),
     updated_at: new Date().toISOString()
   }));
+  if (!rows.length) return;
   const { error } = await client().from("site_settings").upsert(rows, { onConflict: "key" });
   if (error) throw error;
   showNotice(scope, "ההגדרות נשמרו בהצלחה");
@@ -141,12 +143,11 @@ function productTemplate(product = {}) {
   const id = product.id || crypto.randomUUID();
   return `<article class="product-row" data-product-id="${id}">
     <div class="grid">
-      <label class="field-label">שם <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
-      <label class="field-label">מחיר <input data-field="price" value="${escapeHtml(product.price || "")}"></label>
-      <label class="field-label">סדר תצוגה <input data-field="display_order" type="number" value="${product.display_order || 0}"></label>
-      <label class="field-label">פעיל <select data-field="is_active"><option value="true" ${product.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${product.is_active === false ? "selected" : ""}>לא</option></select></label>
-      <label class="field-label">תיאור <textarea data-field="description">${escapeHtml(product.description || "")}</textarea></label>
-      <label class="field-label wide">תמונה
+      <label class="field-label">שם מוצר - מוצג בכרטיס המוצר <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
+      <label class="field-label">סדר תצוגה - מיקום בכרטיסי הטעמים <input data-field="display_order" type="number" value="${product.display_order || 0}"></label>
+      <label class="field-label">פעיל / לא פעיל - קובע אם המוצר מוצג באתר <select data-field="is_active"><option value="true" ${product.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${product.is_active === false ? "selected" : ""}>לא</option></select></label>
+      <label class="field-label">תיאור מוצר - מוצג בכרטיס המוצר <textarea data-field="description">${escapeHtml(product.description || "")}</textarea></label>
+      <label class="field-label wide">תמונת מוצר - מוצגת בכרטיס המוצר
         <div class="image-tools">
           <img class="preview" src="${escapeHtml(product.image_url || "assets/logo.png")}" alt="Preview">
           <div>
@@ -177,11 +178,11 @@ function featureTemplate(feature = {}) {
   const id = feature.id || crypto.randomUUID();
   return `<article class="feature-row" data-feature-id="${id}">
     <div class="grid">
-      <label class="field-label">כותרת <input data-field="title" value="${escapeHtml(feature.title || "")}"></label>
-      <label class="field-label">סדר תצוגה <input data-field="display_order" type="number" value="${feature.display_order || 0}"></label>
-      <label class="field-label">פעיל <select data-field="is_active"><option value="true" ${feature.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${feature.is_active === false ? "selected" : ""}>לא</option></select></label>
-      <label class="field-label">טקסט <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
-      <label class="field-label wide">תמונה / אייקון
+      <label class="field-label">כותרת יתרון - מוצגת בכרטיס היתרון <input data-field="title" value="${escapeHtml(feature.title || "")}"></label>
+      <label class="field-label">סדר תצוגה - מיקום בשלושת היתרונות <input data-field="display_order" type="number" value="${feature.display_order || 0}"></label>
+      <label class="field-label">פעיל / לא פעיל - קובע אם היתרון מוצג באתר <select data-field="is_active"><option value="true" ${feature.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${feature.is_active === false ? "selected" : ""}>לא</option></select></label>
+      <label class="field-label">טקסט יתרון - מוצג בכרטיס היתרון <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
+      <label class="field-label wide">תמונה / אייקון יתרון - אופציונלי
         <div class="image-tools">
           <img class="preview" src="${escapeHtml(feature.image_url || "assets/logo.png")}" alt="Preview">
           <div>
@@ -222,7 +223,6 @@ function rowPayload(row, type) {
   if (type === "product") {
     payload.name ||= "";
     payload.description ||= "";
-    payload.price ||= "";
     payload.image_url ||= "";
   }
   return payload;
@@ -288,7 +288,8 @@ function setupEvents() {
   document.addEventListener("click", async (event) => {
     if (event.target.matches("[data-save-settings]")) {
       const scope = event.target.dataset.saveSettings || "home-settings";
-      try { await saveSettings(scope); } catch (error) { showNotice(scope, error.message, false); }
+      const settingsRoot = event.target.closest(".editor-card") || document;
+      try { await saveSettings(scope, settingsRoot); } catch (error) { showNotice(scope, error.message, false); }
     }
     if (event.target.id === "addProduct") {
       document.getElementById("productsAdmin").insertAdjacentHTML("beforeend", productTemplate({ display_order: 0, is_active: true }));

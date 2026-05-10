@@ -1,6 +1,6 @@
     document.documentElement.classList.add("js");
 
-    const WHATSAPP_PHONE = "972506422900";
+    let WHATSAPP_PHONE = "972506422900";
 
     function normalizeWhatsappPhone(value) {
       const digits = String(value || "").replace(/[^0-9]/g, "");
@@ -773,6 +773,13 @@ ${productLine}
       setTimeout(() => load(0), 200);
     }
 
+    function setLiorContactSettings(settings = {}) {
+      if (settings.whatsappNumber) {
+        WHATSAPP_PHONE = String(settings.whatsappNumber).replace(/[^0-9]/g, "") || WHATSAPP_PHONE;
+      }
+    }
+
+    window.setLiorContactSettings = setLiorContactSettings;
     window.setImageWithFallback = setImageWithFallback;
     window.setupImages = setupImages;
     window.setupWhatsappLinks = setupWhatsappLinks;
