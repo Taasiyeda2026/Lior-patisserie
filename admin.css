@@ -70,16 +70,16 @@ button { border: 0; }
 .admin-shell {
   width: min(1180px, calc(100% - 32px));
   margin: 0 auto;
-  padding: clamp(18px, 3vw, 34px) 0 64px;
+  padding: clamp(12px, 2vw, 20px) 0 36px;
 }
 
 .admin-hero {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 22px;
-  padding: clamp(20px, 3vw, 34px);
-  margin-bottom: 22px;
+  gap: 14px;
+  padding: clamp(12px, 2vw, 18px);
+  margin-bottom: 14px;
   border: 1px solid rgba(255, 249, 242, 0.28);
   border-radius: 34px;
   background:
@@ -91,11 +91,11 @@ button { border: 0; }
 .brand-panel {
   display: flex;
   align-items: center;
-  gap: 18px;
+  gap: 12px;
 }
 
 .admin-logo {
-  width: clamp(104px, 9vw, 136px);
+  width: clamp(58px, 5.5vw, 80px);
   height: auto;
   object-fit: contain;
   padding: 0;
@@ -122,9 +122,9 @@ h3,
 p { margin-top: 0; }
 
 h1 {
-  margin-bottom: 8px;
+  margin-bottom: 4px;
   font-family: var(--font-display);
-  font-size: clamp(2rem, 5vw, 3.7rem);
+  font-size: clamp(1.45rem, 3vw, 2.2rem);
   font-weight: 400;
   line-height: 1.12;
 }
@@ -142,9 +142,9 @@ h1 {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  min-height: 38px;
-  padding: 8px 16px;
-  font-size: 0.88rem;
+  min-height: 32px;
+  padding: 6px 14px;
+  font-size: 0.82rem;
   border-radius: 999px;
   cursor: pointer;
   text-decoration: none;
@@ -189,9 +189,9 @@ h1 {
 .login-card {
   position: relative;
   overflow: hidden;
-  margin-bottom: 20px;
-  padding: clamp(20px, 3vw, 30px);
-  border-radius: 30px;
+  margin-bottom: 12px;
+  padding: clamp(14px, 2vw, 20px);
+  border-radius: 22px;
   background:
     linear-gradient(180deg, rgba(255, 249, 242, 0.94) 0%, rgba(242, 234, 223, 0.84) 100%);
   border: 1px solid rgba(200, 194, 184, 0.42);
@@ -218,13 +218,13 @@ h1 {
 .section-heading {
   display: flex;
   align-items: flex-start;
-  gap: 16px;
-  margin-bottom: 22px;
+  gap: 12px;
+  margin-bottom: 14px;
 }
 
 .section-number {
-  min-width: 58px;
-  min-height: 58px;
+  min-width: 42px;
+  min-height: 42px;
   display: grid;
   place-items: center;
   margin: 0;
@@ -233,25 +233,25 @@ h1 {
   letter-spacing: 0.06em;
   background: rgba(255, 249, 242, 0.78);
   border: 1px solid rgba(200, 169, 106, 0.30);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.64), 0 8px 18px rgba(47, 33, 28, 0.10);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.64), 0 6px 14px rgba(47, 33, 28, 0.10);
 }
 
 .section-heading h2 {
-  margin-bottom: 4px;
+  margin-bottom: 2px;
   font-family: var(--font-display);
   font-weight: 400;
-  font-size: clamp(1.55rem, 3vw, 2.35rem);
+  font-size: clamp(1.18rem, 2vw, 1.6rem);
 }
 
 .admin-tabs {
   position: sticky;
-  top: 12px;
+  top: 8px;
   z-index: 20;
   display: grid;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  gap: 10px;
-  margin: 0 0 20px;
-  padding: 10px;
+  gap: 6px;
+  margin: 0 0 14px;
+  padding: 7px;
   border-radius: 999px;
   background: rgba(255, 249, 242, 0.78);
   border: 1px solid rgba(200, 194, 184, 0.42);
@@ -263,8 +263,9 @@ h1 {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 40px;
+  min-height: 30px;
   border-radius: 999px;
+  font-size: 0.82rem;
   color: var(--plum);
   text-decoration: none;
   font-weight: 700;
@@ -279,7 +280,7 @@ h1 {
 .grid,
 .login-form {
   display: grid;
-  gap: 16px;
+  gap: 10px;
 }
 
 .login-form {
@@ -315,8 +316,8 @@ textarea,
 select {
   width: 100%;
   border: 1px solid rgba(200, 194, 184, 0.62);
-  border-radius: 16px;
-  padding: 12px 14px;
+  border-radius: 12px;
+  padding: 8px 12px;
   color: var(--espresso);
   background: rgba(255, 250, 243, 0.88);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.62);
@@ -325,7 +326,7 @@ select {
 }
 
 textarea {
-  min-height: 116px;
+  min-height: 80px;
   resize: vertical;
 }
 
@@ -368,30 +369,30 @@ input[type="file"]::file-selector-button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 14px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-top: 18px;
+  margin-top: 12px;
 }
 
 .subsection-head {
-  margin-top: 30px;
-  padding-top: 22px;
+  margin-top: 20px;
+  padding-top: 16px;
   border-top: 1px solid rgba(200, 194, 184, 0.38);
 }
 
 .subsection-head h3 {
   margin: 0;
   font-family: var(--font-display);
-  font-size: 1.45rem;
+  font-size: 1.18rem;
   font-weight: 400;
 }
 
 .notice {
   display: none;
-  min-height: 42px;
+  min-height: 34px;
   align-items: center;
-  padding: 10px 14px;
-  border-radius: 16px;
+  padding: 7px 12px;
+  border-radius: 12px;
   font-weight: 700;
   border: 1px solid transparent;
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.44);
@@ -411,14 +412,14 @@ input[type="file"]::file-selector-button {
 
 .stack-list {
   display: grid;
-  gap: 14px;
-  margin-top: 16px;
+  gap: 10px;
+  margin-top: 12px;
 }
 
 .product-row,
 .feature-row {
-  padding: 18px;
-  border-radius: 24px;
+  padding: 14px;
+  border-radius: 18px;
   background:
     linear-gradient(180deg, rgba(255, 249, 242, 0.88) 0%, rgba(242, 234, 223, 0.66) 100%);
   border: 1px solid rgba(200, 194, 184, 0.44);
@@ -433,13 +434,13 @@ input[type="file"]::file-selector-button {
 .image-grid {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 18px;
+  gap: 12px;
 }
 
 .image-card,
 .image-tools {
-  padding: 16px;
-  border-radius: 24px;
+  padding: 12px;
+  border-radius: 16px;
   background: rgba(255, 249, 242, 0.58);
   border: 1px solid rgba(200, 194, 184, 0.42);
 }
@@ -505,7 +506,7 @@ input[type="file"]::file-selector-button {
   }
 
   .admin-logo {
-    width: 112px;
+    width: 72px;
   }
 
   .ghost-link { width: 100%; }
@@ -513,7 +514,7 @@ input[type="file"]::file-selector-button {
   .admin-tabs {
     position: static;
     grid-template-columns: repeat(2, 1fr);
-    border-radius: 24px;
+    border-radius: 18px;
   }
 
   .two-columns,
@@ -524,8 +525,8 @@ input[type="file"]::file-selector-button {
   }
 
   .section-number {
-    min-width: 48px;
-    min-height: 48px;
+    min-width: 36px;
+    min-height: 36px;
   }
 }
 
@@ -550,7 +551,7 @@ input[type="file"]::file-selector-button {
   }
 
   .admin-shell { width: min(100% - 20px, 1180px); }
-  .admin-logo { width: 112px; }
+  .admin-logo { width: 64px; }
   .admin-tabs { grid-template-columns: 1fr; }
   .actions-row,
   .top-action { align-items: stretch; }

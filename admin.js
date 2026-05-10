@@ -1,7 +1,3 @@
-const ADMIN_USERS = {
-  lior: "lior.patisserie@outlook.com"
-};
-
 const WEBP_QUALITY = 0.82;
 const BUCKET = (window.LIOR_SUPABASE_CONFIG && window.LIOR_SUPABASE_CONFIG.STORAGE_BUCKET) || "site-images";
 
@@ -239,17 +235,11 @@ async function initAdmin() {
 
 function setupEvents() {
   document.getElementById("loginButton").addEventListener("click", async () => {
-    const username = (document.getElementById("adminUsername").value || "").trim().toLowerCase();
+    const email = (document.getElementById("adminEmail").value || "").trim();
     const password = document.getElementById("adminPassword").value || "";
 
-    if (!username || !password) {
-      showLoginError("שם המשתמש או הסיסמה שגויים");
-      return;
-    }
-
-    const email = ADMIN_USERS[username];
-    if (!email) {
-      showLoginError("שם המשתמש או הסיסמה שגויים");
+    if (!email || !password) {
+      showLoginError("יש להזין כתובת מייל וסיסמה");
       return;
     }
 
@@ -260,10 +250,11 @@ function setupEvents() {
     try {
       const { error } = await client().auth.signInWithPassword({ email, password });
       if (error) throw error;
+      document.getElementById("logoutButton").classList.remove("hidden");
       showAdminApp();
       await initAdmin();
     } catch {
-      showLoginError("שם המשתמש או הסיסמה שגויים");
+      showLoginError("כתובת המייל או הסיסמה שגויים");
     } finally {
       btn.disabled = false;
       btn.textContent = "כניסה לניהול";
@@ -278,7 +269,7 @@ function setupEvents() {
     });
   }
 
-  document.getElementById("adminUsername").addEventListener("keydown", (e) => {
+  document.getElementById("adminEmail").addEventListener("keydown", (e) => {
     if (e.key === "Enter") document.getElementById("adminPassword").focus();
   });
   document.getElementById("adminPassword").addEventListener("keydown", (e) => {
@@ -329,6 +320,7 @@ async function checkExistingSession() {
   try {
     const { data } = await client().auth.getSession();
     if (data && data.session) {
+      document.getElementById("logoutButton").classList.remove("hidden");
       showAdminApp();
       await initAdmin();
     }
