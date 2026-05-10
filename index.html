@@ -16,6 +16,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preload" href="assets/fonts/IBMPlexSansHebrew-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <script>
+    if (!sessionStorage.getItem("liorHeroUnlocked")) {
+      document.documentElement.classList.add("hero-locked");
+    }
+  </script>
 
   <link rel="preload" as="image" href="prdimages/A7405559-hero.webp" fetchpriority="high">
 
@@ -135,9 +140,9 @@
         <div class="container">
           <div class="reveal">
             <div class="section-label">- בואו נדבר -</div>
-            <h2>רוצים להזמין טעם שאהבתם?</h2>
+            <h2>רוצים להזמין?</h2>
             <p data-content-key="pickup_delivery_text">
-              ספרו לליאור איזה טעם אהבתם ונמשיך משם בצורה פשוטה ונעימה.
+              בחרו את הטעמים שאהבתם או כתבו לליאור מה תרצו, ונמשיך משם בצורה פשוטה ונעימה.
             </p>
             <div class="contact-details-card" aria-label="פרטי יצירת קשר">
               <ul class="contact-details-list">
