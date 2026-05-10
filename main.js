@@ -201,9 +201,7 @@ ${productLine}
           <div class="signature-body">
             <h3>${product.name}</h3>
             <p>${product.description}</p>
-            <a class="product-link" href="#" data-order data-product="${product.name}">
-              🛒 הוספה
-            </a>
+            <a class="product-link" href="#" data-order data-product="${product.name}">🛒</a>
           </div>
         </article>
       `).join("");
@@ -221,9 +219,7 @@ ${productLine}
           <div class="product-body">
             <h3>${product.name}</h3>
             <p>${product.description}</p>
-            <a class="product-link" href="#" data-order data-product="${product.name}">
-              🛒 הוספה
-            </a>
+            <a class="product-link" href="#" data-order data-product="${product.name}">🛒</a>
           </div>
         </article>
       `).join("");
@@ -414,6 +410,15 @@ ${productLine}
         .replace(/'/g, "&#039;");
     }
 
+    function updateFloatingCartCount() {
+      const btn = document.getElementById("floatingCart");
+      const badge = document.getElementById("floatingCartCount");
+      if (!btn || !badge) return;
+      const total = orderCart.reduce((sum, item) => sum + item.quantity, 0);
+      badge.textContent = total;
+      badge.hidden = total === 0;
+    }
+
     function renderOrderCart() {
       const cartWrap = document.getElementById("orderCartWrap");
       const cartList = document.getElementById("orderCartList");
@@ -452,6 +457,7 @@ ${productLine}
           </div>
         </div>
       `).join("");
+      updateFloatingCartCount();
     }
 
     function openOrderModal(productName = "") {
@@ -532,6 +538,13 @@ ${productLine}
 
       loadOrderCart();
       renderOrderCart();
+
+      const floatingCartBtn = document.getElementById("floatingCart");
+      if (floatingCartBtn) {
+        floatingCartBtn.addEventListener("click", () => {
+          openOrderModal("");
+        });
+      }
 
       document.addEventListener("click", (event) => {
         const button = event.target.closest("[data-order]");

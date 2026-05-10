@@ -482,7 +482,7 @@
       position: relative;
       z-index: 1;
       margin-top: 0;
-      padding: 42px 0 56px;
+      padding: 30px 0 42px;
       text-align: center;
       background:
         linear-gradient(180deg, rgba(255, 249, 242, 0.62) 0%, rgba(247, 240, 230, 0.94) 10%, rgba(255, 249, 242, 0.35) 28%, transparent 42%),
@@ -503,7 +503,7 @@
       max-width: 620px;
       margin-inline: auto;
       font-size: clamp(0.98rem, 1.15vw, 1.08rem);
-      line-height: 1.72;
+      line-height: 1.8;
       color: rgba(47, 33, 28, 0.86);
       text-align: center;
       text-wrap: pretty;
@@ -518,7 +518,7 @@
     .home-flavors-heading {
       margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(1.82rem, 3.65vw, 3.25rem);
+      font-size: clamp(1.55rem, 3vw, 2.6rem);
       line-height: 1.12;
       font-weight: 500;
       color: #2F211C;
@@ -552,7 +552,7 @@
     }
 
     .home-opening .products-grid {
-      margin-top: 14px;
+      margin-top: 28px;
     }
 
     .home-opening .reveal {
@@ -574,14 +574,14 @@
       align-items: center;
       justify-content: center;
       gap: 9px;
-      min-height: 44px;
-      padding: 11px 28px;
+      min-height: 40px;
+      padding: 9px 22px;
       border-radius: 999px;
       border: 1px solid rgba(200, 169, 106, 0.32);
       background: linear-gradient(180deg, #4a2a58 0%, #3d2249 55%, #2f1938 100%);
       color: #fffaf3;
       font-weight: 600;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       letter-spacing: 0.03em;
       box-shadow:
         0 12px 26px rgba(47, 33, 28, 0.22),
@@ -643,29 +643,29 @@
       align-items: center;
       justify-content: center;
       width: fit-content;
-      margin: 12px auto 0;
-      padding: 2px 8px;
+      margin: 14px auto 10px;
+      padding: 3px 10px;
       min-height: 0;
       border-radius: 999px;
-      font-size: 0.68rem;
+      font-size: 0.72rem;
       font-weight: 500;
       line-height: 1.2;
       color: rgba(109, 77, 49, 0.86);
       background: rgba(255, 249, 242, 0.42);
       border: 1px solid rgba(200, 169, 106, 0.18);
-      box-shadow: 0 1px 3px rgba(47, 33, 28, 0.04);
+      box-shadow: none;
       cursor: default;
       pointer-events: none;
     }
 
     .flavors-actions .btn {
       width: auto;
-      min-width: 96px;
-      max-width: 122px;
-      min-height: 34px;
-      padding: 7px 16px;
-      border-radius: 999px;
-      font-size: 0.86rem;
+      min-width: 110px;
+      max-width: 135px;
+      min-height: 36px;
+      padding: 8px 16px;
+      border-radius: 14px;
+      font-size: 0.88rem;
       line-height: 1.15;
       font-weight: 600;
       letter-spacing: 0.015em;
@@ -778,7 +778,7 @@
     }
 
     .section-pad {
-      padding: 96px 0;
+      padding: 72px 0;
     }
 
     main > section {
@@ -807,7 +807,7 @@
 
     .section-title {
       text-align: center;
-      margin-bottom: 54px;
+      margin-bottom: 36px;
     }
 
     .section-label {
@@ -822,7 +822,7 @@
     .section-title h2 {
       margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-size: clamp(1.9rem, 4vw, 3.1rem);
       line-height: 1.16;
       font-weight: 500;
       color: var(--espresso);
@@ -850,10 +850,10 @@
     }
 
     .section-title p {
-      max-width: 640px;
-      margin: 18px auto 0;
-      font-size: 1.08rem;
-      line-height: 1.9;
+      max-width: 620px;
+      margin: 14px auto 0;
+      font-size: 0.97rem;
+      line-height: 1.75;
       color: var(--muted);
       font-weight: 300;
     }
@@ -1025,7 +1025,7 @@
       flex: 1;
       flex-direction: column;
       align-items: center;
-      padding: 20px 20px 22px;
+      padding: 13px 16px 14px;
     }
 
     .product-body h3 {
@@ -1061,31 +1061,30 @@
     }
 
     .product-body p {
-      margin: 0 0 14px;
+      margin: 0 0 10px;
       color: #52362C;
-      font-size: 0.93rem;
-      line-height: 1.68;
+      font-size: 0.88rem;
+      line-height: 1.58;
       font-weight: 400;
       min-height: 0;
       text-wrap: pretty;
+      flex: 1;
     }
 
     .product-link {
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(111, 74, 124, 0.54);
-      background: rgba(90, 57, 103, 0.07);
+      border: 1px solid rgba(111, 74, 124, 0.30);
+      background: rgba(90, 57, 103, 0.06);
       color: #4A2460;
       border-radius: 999px;
-      padding: 6px 12px;
+      padding: 5px 10px;
       font-size: 0.78rem;
       font-weight: 600;
-      letter-spacing: 0.02em;
-      box-shadow:
-        0 2px 8px rgba(90, 57, 103, 0.12),
-        inset 0 1px 0 rgba(255, 255, 255, 0.40);
-      transition: all 0.25s ease;
+      letter-spacing: 0;
+      box-shadow: 0 1px 5px rgba(90, 57, 103, 0.08);
+      transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
 
     .product-card .product-link,
@@ -1094,28 +1093,26 @@
     .product-card [data-order] {
       min-height: 30px;
       margin-top: auto;
-      padding: 5px 11px;
+      padding: 5px 10px;
       border-radius: 999px;
       font-size: 0.78rem;
       line-height: 1.15;
       width: auto;
-      min-width: 86px;
-      max-width: 108px;
+      min-width: 36px;
+      max-width: 60px;
       white-space: nowrap;
     }
 
     .product-link:hover {
-      background: rgba(90, 57, 103, 0.14);
-      border-color: rgba(111, 74, 124, 0.72);
-      box-shadow:
-        0 4px 14px rgba(90, 57, 103, 0.18),
-        inset 0 1px 0 rgba(255, 255, 255, 0.44);
+      background: rgba(90, 57, 103, 0.11);
+      border-color: rgba(111, 74, 124, 0.52);
+      box-shadow: 0 2px 10px rgba(90, 57, 103, 0.14);
       transform: translateY(-1px);
     }
 
     .editorial {
       position: relative;
-      padding: 66px 0 72px;
+      padding: 46px 0 52px;
       background:
         radial-gradient(circle at 14% 24%, rgba(200, 169, 106, 0.1), transparent 38%),
         radial-gradient(circle at 88% 18%, rgba(199, 178, 214, 0.1), transparent 34%),
@@ -1160,7 +1157,7 @@
     }
 
     .editorial-text {
-      padding: 42px 40px;
+      padding: 30px 32px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -1169,17 +1166,18 @@
     .editorial-text h2 {
       margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(1.72rem, 3vw, 2.75rem);
+      font-size: clamp(1.45rem, 2.6vw, 2.2rem);
       line-height: 1.2;
       font-weight: 500;
     }
 
     .editorial-text p {
-      margin: 16px 0 0;
+      margin: 12px 0 0;
       color: #5c453c;
-      font-size: 1rem;
-      line-height: 1.72;
+      font-size: 0.94rem;
+      line-height: 1.68;
       font-weight: 400;
+      max-width: 520px;
     }
 
     .why {
@@ -1193,8 +1191,8 @@
     }
 
     .why.section-pad {
-      padding-top: 88px;
-      padding-bottom: 72px;
+      padding-top: 64px;
+      padding-bottom: 54px;
     }
 
     .why .section-title {
@@ -1295,7 +1293,7 @@
 
     .detail-card {
       min-height: 0;
-      padding: 18px 16px 19px;
+      padding: 14px 14px 16px;
       text-align: center;
       background: linear-gradient(180deg, rgba(255, 249, 242, 0.76) 0%, rgba(242, 234, 223, 0.62) 100%);
       border: 1px solid rgba(200, 194, 184, 0.38);
@@ -1641,7 +1639,7 @@
       min-height: 0;
       display: grid;
       place-items: center;
-      padding: 56px 0 46px;
+      padding: 40px 0 34px;
       text-align: center;
       background:
         radial-gradient(circle at 50% 22%, rgba(199, 178, 214, 0.1), transparent 40%),
@@ -1678,17 +1676,17 @@
     .final h2 {
       margin: 2px 0 0;
       font-family: var(--font-display);
-      font-size: clamp(2.08rem, 5vw, 3.5rem);
+      font-size: clamp(1.7rem, 4vw, 2.7rem);
       font-weight: 500;
       line-height: 1.18;
     }
 
     .final p {
-      margin: 10px auto 0;
+      margin: 8px auto 0;
       max-width: 500px;
       color: rgba(92, 61, 50, 0.94);
-      font-size: 1.03rem;
-      line-height: 1.86;
+      font-size: 0.94rem;
+      line-height: 1.72;
       font-weight: 400;
     }
 
@@ -1787,17 +1785,18 @@
     }
 
     .footer {
-      padding: 18px 0 16px;
-      background: #3a2922;
-      color: rgba(255, 250, 243, 0.72);
+      padding: 14px 0 12px;
+      background: var(--cream-2);
+      color: rgba(47, 33, 28, 0.50);
       text-align: center;
-      font-size: 0.86rem;
+      font-size: 0.82rem;
+      border-top: 1px solid rgba(200, 194, 184, 0.30);
     }
 
     .ig-closing {
-      margin: 0 0 10px;
-      font-size: 0.84rem;
-      color: rgba(255, 250, 243, 0.60);
+      margin: 0 0 6px;
+      font-size: 0.80rem;
+      color: rgba(47, 33, 28, 0.52);
       line-height: 1.6;
       text-align: center;
     }
@@ -1807,17 +1806,17 @@
       align-items: center;
       gap: 0.25em;
       white-space: nowrap;
-      color: rgba(218, 190, 126, 0.88);
+      color: rgba(92, 61, 50, 0.80);
       font-weight: 600;
       text-decoration: underline;
       text-underline-offset: 2px;
-      text-decoration-color: rgba(218, 190, 126, 0.40);
+      text-decoration-color: rgba(92, 61, 50, 0.28);
       transition: color 0.2s ease, text-decoration-color 0.2s ease;
     }
 
     .instagram-closing-link:hover {
-      color: rgba(232, 207, 145, 1);
-      text-decoration-color: rgba(232, 207, 145, 0.70);
+      color: var(--plum);
+      text-decoration-color: rgba(61, 34, 73, 0.50);
     }
 
     .instagram-inline-icon {
@@ -1852,6 +1851,49 @@
     .floating-wa svg {
       width: 22px;
       height: 22px;
+    }
+
+    .floating-cart {
+      position: fixed;
+      right: 22px;
+      bottom: 22px;
+      z-index: 60;
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      display: grid;
+      place-items: center;
+      background: var(--plum);
+      color: var(--ivory);
+      border: 1px solid rgba(200, 194, 184, 0.35);
+      box-shadow: 0 10px 28px rgba(47, 33, 28, 0.24);
+      transition: transform 0.25s ease;
+      cursor: pointer;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+
+    .floating-cart:hover {
+      transform: translateY(-3px) scale(1.02);
+    }
+
+    .floating-cart-count {
+      position: absolute;
+      top: -4px;
+      right: -4px;
+      min-width: 18px;
+      height: 18px;
+      border-radius: 999px;
+      background: var(--gold);
+      color: var(--espresso);
+      font-size: 0.68rem;
+      font-weight: 700;
+      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      pointer-events: none;
     }
 
     .reveal {
@@ -2074,7 +2116,7 @@
       }
 
       .section-pad {
-        padding: 76px 0;
+        padding: 54px 0;
       }
 
       .section-title h2::after {
