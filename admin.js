@@ -178,33 +178,29 @@ const SITE_PRODUCTS_STATIC = [
 ];
 
 async function loadProducts() {
-  let supabaseProducts = [];
-  try {
-    const { data } = await client().from("products").select("*").order("display_order", { ascending: true });
-    supabaseProducts = data || [];
-  } catch (_) {}
+  const { data, error } = await client().from("products").select("*").order("display_order", { ascending: true });
+  if (error) {
+    showNotice("products", "שגיאה בטעינת המוצרים: " + error.message, false);
+    return;
+  }
 
-  const supabaseByName = new Map(supabaseProducts.map((p) => [String(p.name || "").trim(), p]));
+  const supabaseProducts = data || [];
+  let displayProducts;
 
-  const merged = SITE_PRODUCTS_STATIC.map((sp, index) => {
-    const saved = supabaseByName.get(sp.name);
-    if (saved) {
-      supabaseByName.delete(sp.name);
-      return saved;
-    }
-    return {
+  if (supabaseProducts.length === 0) {
+    displayProducts = SITE_PRODUCTS_STATIC.map((sp, index) => ({
       id: crypto.randomUUID(),
       name: sp.name,
       description: sp.description,
       image_url: "prdimages/" + sp.image,
       display_order: index,
       is_active: true
-    };
-  });
+    }));
+  } else {
+    displayProducts = supabaseProducts;
+  }
 
-  supabaseByName.forEach((p) => merged.push(p));
-
-  document.getElementById("productsAdmin").innerHTML = merged.map(productTemplate).join("");
+  document.getElementById("productsAdmin").innerHTML = displayProducts.map(productTemplate).join("");
 }
 
 async function saveProduct(row) {
