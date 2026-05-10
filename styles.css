@@ -482,7 +482,7 @@
       position: relative;
       z-index: 1;
       margin-top: 0;
-      padding: 42px 0 56px;
+      padding: 30px 0 42px;
       text-align: center;
       background:
         linear-gradient(180deg, rgba(255, 249, 242, 0.62) 0%, rgba(247, 240, 230, 0.94) 10%, rgba(255, 249, 242, 0.35) 28%, transparent 42%),
@@ -518,7 +518,7 @@
     .home-flavors-heading {
       margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(1.82rem, 3.65vw, 3.25rem);
+      font-size: clamp(1.55rem, 3vw, 2.6rem);
       line-height: 1.12;
       font-weight: 500;
       color: #2F211C;
@@ -574,14 +574,14 @@
       align-items: center;
       justify-content: center;
       gap: 9px;
-      min-height: 44px;
-      padding: 11px 28px;
+      min-height: 40px;
+      padding: 9px 22px;
       border-radius: 999px;
       border: 1px solid rgba(200, 169, 106, 0.32);
       background: linear-gradient(180deg, #4a2a58 0%, #3d2249 55%, #2f1938 100%);
       color: #fffaf3;
       font-weight: 600;
-      font-size: 0.92rem;
+      font-size: 0.88rem;
       letter-spacing: 0.03em;
       box-shadow:
         0 12px 26px rgba(47, 33, 28, 0.22),
@@ -778,7 +778,7 @@
     }
 
     .section-pad {
-      padding: 96px 0;
+      padding: 72px 0;
     }
 
     main > section {
@@ -807,7 +807,7 @@
 
     .section-title {
       text-align: center;
-      margin-bottom: 54px;
+      margin-bottom: 36px;
     }
 
     .section-label {
@@ -822,7 +822,7 @@
     .section-title h2 {
       margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(2.2rem, 5vw, 4rem);
+      font-size: clamp(1.9rem, 4vw, 3.1rem);
       line-height: 1.16;
       font-weight: 500;
       color: var(--espresso);
@@ -850,10 +850,10 @@
     }
 
     .section-title p {
-      max-width: 640px;
-      margin: 18px auto 0;
-      font-size: 1.08rem;
-      line-height: 1.9;
+      max-width: 620px;
+      margin: 14px auto 0;
+      font-size: 0.97rem;
+      line-height: 1.75;
       color: var(--muted);
       font-weight: 300;
     }
@@ -1112,7 +1112,7 @@
 
     .editorial {
       position: relative;
-      padding: 66px 0 72px;
+      padding: 46px 0 52px;
       background:
         radial-gradient(circle at 14% 24%, rgba(200, 169, 106, 0.1), transparent 38%),
         radial-gradient(circle at 88% 18%, rgba(199, 178, 214, 0.1), transparent 34%),
@@ -1157,7 +1157,7 @@
     }
 
     .editorial-text {
-      padding: 42px 40px;
+      padding: 30px 32px;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -1166,16 +1166,16 @@
     .editorial-text h2 {
       margin: 0;
       font-family: var(--font-display);
-      font-size: clamp(1.72rem, 3vw, 2.75rem);
+      font-size: clamp(1.45rem, 2.6vw, 2.2rem);
       line-height: 1.2;
       font-weight: 500;
     }
 
     .editorial-text p {
-      margin: 16px 0 0;
+      margin: 12px 0 0;
       color: #5c453c;
-      font-size: 1rem;
-      line-height: 1.72;
+      font-size: 0.94rem;
+      line-height: 1.68;
       font-weight: 400;
       max-width: 520px;
     }
@@ -1191,8 +1191,8 @@
     }
 
     .why.section-pad {
-      padding-top: 88px;
-      padding-bottom: 72px;
+      padding-top: 64px;
+      padding-bottom: 54px;
     }
 
     .why .section-title {
@@ -1639,7 +1639,7 @@
       min-height: 0;
       display: grid;
       place-items: center;
-      padding: 56px 0 46px;
+      padding: 40px 0 34px;
       text-align: center;
       background:
         radial-gradient(circle at 50% 22%, rgba(199, 178, 214, 0.1), transparent 40%),
@@ -1676,17 +1676,17 @@
     .final h2 {
       margin: 2px 0 0;
       font-family: var(--font-display);
-      font-size: clamp(2.08rem, 5vw, 3.5rem);
+      font-size: clamp(1.7rem, 4vw, 2.7rem);
       font-weight: 500;
       line-height: 1.18;
     }
 
     .final p {
-      margin: 10px auto 0;
+      margin: 8px auto 0;
       max-width: 500px;
       color: rgba(92, 61, 50, 0.94);
-      font-size: 1.03rem;
-      line-height: 1.86;
+      font-size: 0.94rem;
+      line-height: 1.72;
       font-weight: 400;
     }
 
@@ -2116,7 +2116,7 @@
       }
 
       .section-pad {
-        padding: 76px 0;
+        padding: 54px 0;
       }
 
       .section-title h2::after {
