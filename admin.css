@@ -95,14 +95,16 @@ button { border: 0; }
 }
 
 .admin-logo {
-  width: 86px;
-  height: 86px;
+  width: clamp(68px, 7vw, 96px);
+  height: auto;
+  aspect-ratio: 1 / 1;
   object-fit: contain;
-  padding: 8px;
-  border-radius: 24px;
-  background: rgba(255, 249, 242, 0.76);
-  border: 1px solid rgba(200, 169, 106, 0.28);
-  box-shadow: 0 12px 30px rgba(47, 33, 28, 0.12);
+  padding: 6px;
+  border-radius: 22px;
+  background: rgba(255, 249, 242, 0.72);
+  border: 1px solid rgba(200, 169, 106, 0.22);
+  box-shadow: 0 10px 24px rgba(47, 33, 28, 0.12);
+  cursor: default;
 }
 
 .eyebrow,
@@ -501,7 +503,13 @@ input[type="file"]::file-selector-button {
   }
 
   .admin-shell { width: min(100% - 20px, 1180px); }
-  .admin-logo { width: 72px; height: 72px; }
+  .admin-logo { width: 74px; }
+
+  .brand-panel {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
   .admin-tabs { grid-template-columns: 1fr; }
   .actions-row,
   .top-action { align-items: stretch; }

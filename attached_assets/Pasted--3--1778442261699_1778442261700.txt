@@ -1,0 +1,137 @@
+צריך לתקן את הלוגו בעמוד הכניסה לאדמין וגם להפעיל עליו כניסה נסתרת בלחיצה 3 פעמים.
+
+קבצים רלוונטיים:
+lior-admin.html
+admin.css
+admin.js
+
+בעיה קיימת:
+בעמוד lior-admin.html יש לוגו:
+<img class="admin-logo" src="assets/logo.png" alt="Lior’s Pâtisserie" width="96" height="96">
+
+אבל:
+1. הלוגו לא ממוקם טוב בעמוד הכניסה.
+2. הלוגו לא נראה חלק טבעי מהעיצוב.
+3. הלוגו לא מגיב ללחיצה 3 פעמים.
+4. אין לו data-admin-trigger.
+5. אין קוד JS שמאזין ל־3 לחיצות.
+
+דרישות עיצוב:
+1. למקם את הלוגו בעמוד הכניסה בצורה מרכזית, נקייה ויוקרתית יותר.
+2. בדסקטופ:
+   - הלוגו יהיה מיושר טוב בתוך אזור ה־brand/header.
+   - לא יהיה גדול מדי ולא קטן מדי.
+   - גודל מומלץ: 84px–96px.
+3. במובייל:
+   - הלוגו יהיה ממורכז מעל שם המותג או בתחילת אזור הכניסה.
+   - גודל מומלץ: 68px–76px.
+4. לא להשתמש בלוגו כמדבקה בתוך ריבוע גס מדי.
+5. לשפר את ה־CSS של .admin-logo כך שיראה כמו מותג בוטיק:
+   - object-fit: contain
+   - border-radius עדין
+   - רקע בהיר עדין או שקוף
+   - צל רך בלבד
+   - לא לחתוך את הלוגו
+6. לוודא שהנתיב נשאר:
+   assets/logo.png
+   אלא אם בפועל שם הקובץ שונה.
+
+דרישות HTML:
+1. להוסיף ללוגו:
+   data-admin-trigger="true"
+2. אם הלוגו עטוף בקישור, לוודא שהטריגר עובד על האלמנט הנכון.
+3. לא להוסיף כפתור אדמין גלוי.
+
+דוגמה:
+<img
+  class="admin-logo"
+  src="assets/logo.png"
+  alt="Lior’s Pâtisserie"
+  width="96"
+  height="96"
+  data-admin-trigger="true"
+/>
+
+דרישות JS:
+1. להוסיף ב־admin.js פונקציה שמאזינה ללחיצה 3 פעמים על:
+   [data-admin-trigger="true"]
+
+2. בלחיצה 3 פעמים בתוך 3 שניות:
+   - אם נמצאים באתר הרגיל: לעבור ל־lior-admin.html
+   - אם כבר נמצאים בעמוד lior-admin.html: לא לעשות redirect מיותר, רק להשאיר את ההתנהגות בלי שגיאה.
+
+3. אם עברו יותר מ־3 שניות בין הלחיצות:
+   לאפס את הספירה.
+
+4. לא להציג הודעה לגולש.
+5. לא לשנות את מנגנון ההתחברות עצמו.
+6. הכניסה לאדמין עדיין חייבת להישאר עם Supabase Auth:
+   username: lior
+   password: הסיסמה ב־Supabase
+7. לא לשים סיסמה בקוד.
+8. לא להשתמש ב־service_role key.
+
+קוד JS מומלץ:
+
+let hiddenAdminClickCount = 0;
+let hiddenAdminTimer = null;
+
+function setupHiddenAdminEntry() {
+  const trigger = document.querySelector('[data-admin-trigger="true"]');
+  if (!trigger) return;
+
+  trigger.addEventListener("click", function (event) {
+    hiddenAdminClickCount += 1;
+
+    clearTimeout(hiddenAdminTimer);
+    hiddenAdminTimer = setTimeout(function () {
+      hiddenAdminClickCount = 0;
+    }, 3000);
+
+    if (hiddenAdminClickCount >= 3) {
+      event.preventDefault();
+      hiddenAdminClickCount = 0;
+      clearTimeout(hiddenAdminTimer);
+
+      if (!window.location.pathname.endsWith("lior-admin.html")) {
+        window.location.href = "lior-admin.html";
+      }
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", setupHiddenAdminEntry);
+
+דרישות CSS מומלצות:
+
+.admin-logo {
+  width: clamp(68px, 7vw, 96px);
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: contain;
+  padding: 6px;
+  border-radius: 22px;
+  background: rgba(255, 249, 242, 0.72);
+  border: 1px solid rgba(200, 169, 106, 0.22);
+  box-shadow: 0 10px 24px rgba(47, 33, 28, 0.12);
+  cursor: default;
+}
+
+@media (max-width: 860px) {
+  .brand-panel {
+    align-items: center;
+    text-align: center;
+    width: 100%;
+  }
+
+  .admin-logo {
+    width: 74px;
+  }
+}
+
+בסיום:
+- לבצע commit.
+- לציין אילו קבצים שונו.
+- לבדוק שהלוגו מוצג נכון בעמוד הכניסה.
+- לבדוק שלחיצה 3 פעמים על הלוגו עובדת.
+- לבדוק שלא נוסף כפתור אדמין גלוי.
