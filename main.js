@@ -41,91 +41,23 @@
     const signatureProductNames = ["אוראו דרים", "קוקילוטוס", "פיסטצ׳יו", "שוקולד דובאי"];
 
     const products = [
-      {
-        name: "אוראו דרים",
-        image: "A7404929.webp",
-        description: "עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל."
-      },
-      {
-        name: "כריות נוגט",
-        image: "A7404958.webp",
-        description: "עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן."
-      },
-      {
-        name: "קוקילוטוס",
-        image: "A7404990.webp",
-        description: "עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל."
-      },
-      {
-        name: "פיסטצ׳יו",
-        image: "A7404980.webp",
-        description: "עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס."
-      },
-      {
-        name: "במבה רד",
-        image: "A7405005.webp",
-        description: "עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה."
-      },
-      {
-        name: "קונפטי פאן",
-        image: "A7404978.webp",
-        description: "עוגייה צבעונית ושמחה עם סוכריות צבעוניות, שוקולד לבן וקרם ורוד."
-      },
-      {
-        name: "ס׳מורשמלו",
-        image: "A7404945.webp",
-        description: "עוגיית קקאו עשירה עם שוקולד מריר, קרם אגוזי לוז ומרשמלו שרוף מעל."
-      },
-      {
-        name: "קינדר",
-        image: "A7404950.webp",
-        description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם קינדר בואנו ופניני שוקולד קראנץ׳."
-      },
-      {
-        name: "קורנפלקס שוקולד לבן",
-        image: "A7404939.webp",
-        description: "עוגייה עשירה עם קורנפלקס, שוקולד לבן, קרם שוקולד לבן וקראנץ׳ מפנק."
-      },
-      {
-        name: "קורנפלקס שוקולד חלב",
-        image: "A7404956.webp",
-        description: "עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי."
-      },
-      {
-        name: "אמסטרדם",
-        image: "A7404918.webp",
-        description: "עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן."
-      },
-      {
-        name: "שוקוצ׳יפס",
-        image: "A7404900.webp",
-        description: "עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד."
-      },
-      {
-        name: "חצי־חצי",
-        image: "A7404971.webp",
-        description: "חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים."
-      },
-      {
-        name: "ברוקי",
-        image: "A7404968.webp",
-        description: "בראוניז שוקולד עשיר עם חתיכות בצק עוגיות, קרם שוקולד וזילוף אגוזי לוז."
-      },
-      {
-        name: "שוקולד דובאי",
-        image: "A7404987.webp",
-        description: "עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף."
-      },
-      {
-        name: "מגולגלת קינדר",
-        image: "A7404964.webp",
-        description: "עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל."
-      },
-      {
-        name: "פתיבר",
-        image: "A7404912.webp",
-        description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם פתיבר, עוגיית פתיבר וסוכריות צבעוניות."
-      }
+      { name: "אוראו דרים",           image: "A7404929.webp", cardImage: "cards/A7404929-card.webp", description: "עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל." },
+      { name: "כריות נוגט",           image: "A7404958.webp", cardImage: "cards/A7404958-card.webp", description: "עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן." },
+      { name: "קוקילוטוס",            image: "A7404990.webp", cardImage: "cards/A7404990-card.webp", description: "עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל." },
+      { name: "פיסטצ׳יו",             image: "A7404980.webp", cardImage: "cards/A7404980-card.webp", description: "עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס." },
+      { name: "במבה רד",              image: "A7405005.webp", cardImage: "cards/A7405005-card.webp", description: "עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה." },
+      { name: "קונפטי פאן",           image: "A7404978.webp", cardImage: "cards/A7404978-card.webp", description: "עוגייה צבעונית ושמחה עם סוכריות צבעוניות, שוקולד לבן וקרם ורוד." },
+      { name: "ס׳מורשמלו",            image: "A7404945.webp", cardImage: "cards/A7404945-card.webp", description: "עוגיית קקאו עשירה עם שוקולד מריר, קרם אגוזי לוז ומרשמלו שרוף מעל." },
+      { name: "קינדר",                image: "A7404950.webp", cardImage: "cards/A7404950-card.webp", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם קינדר בואנו ופניני שוקולד קראנץ׳." },
+      { name: "קורנפלקס שוקולד לבן",  image: "A7404939.webp", cardImage: "cards/A7404939-card.webp", description: "עוגייה עשירה עם קורנפלקס, שוקולד לבן, קרם שוקולד לבן וקראנץ׳ מפנק." },
+      { name: "קורנפלקס שוקולד חלב",  image: "A7404956.webp", cardImage: "cards/A7404956-card.webp", description: "עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי." },
+      { name: "אמסטרדם",              image: "A7404918.webp", cardImage: "cards/A7404918-card.webp", description: "עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן." },
+      { name: "שוקוצ׳יפס",            image: "A7404900.webp", cardImage: "cards/A7404900-card.webp", description: "עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד." },
+      { name: "חצי־חצי",              image: "A7404971.webp", cardImage: "cards/A7404971-card.webp", description: "חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים." },
+      { name: "ברוקי",                image: "A7404968.webp", cardImage: "cards/A7404968-card.webp", description: "בראוניז שוקולד עשיר עם חתיכות בצק עוגיות, קרם שוקולד וזילוף אגוזי לוז." },
+      { name: "שוקולד דובאי",         image: "A7404987.webp", cardImage: "cards/A7404987-card.webp", description: "עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף." },
+      { name: "מגולגלת קינדר",        image: "A7404964.webp", cardImage: "cards/A7404964-card.webp", description: "עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל." },
+      { name: "פתיבר",                image: "A7404912.webp", cardImage: "cards/A7404912-card.webp", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם פתיבר, עוגיית פתיבר וסוכריות צבעוניות." }
     ];
 
     function getWhatsAppUrl(productName = "") {
@@ -211,10 +143,18 @@ ${productLine}
     function renderProducts() {
       const grid = document.getElementById("productsGrid");
 
-      grid.innerHTML = products.map((product) => `
+      grid.innerHTML = products.map((product, index) => `
         <article class="product-card reveal">
           <div class="product-image">
-            <img data-product-image="${product.image}" alt="${product.name}" width="1200" height="1032" loading="lazy" decoding="async">
+            <img
+              data-product-image="${product.cardImage || product.image}"
+              data-full-image="${product.image}"
+              alt="${product.name}"
+              width="800"
+              height="688"
+              loading="${index < 4 ? "eager" : "lazy"}"
+              fetchpriority="${index < 4 ? "high" : "auto"}"
+              decoding="async">
           </div>
           <div class="product-body">
             <h3>${product.name}</h3>
@@ -786,7 +726,9 @@ ${productLine}
 
       document.querySelectorAll(".product-image img").forEach((img) => {
         img.addEventListener("click", () => {
-          openImageLightbox(img.currentSrc || img.src, img.alt || "");
+          const fullName = img.dataset.fullImage;
+          const src = fullName ? imagePath(fullName) : (img.currentSrc || img.src);
+          openImageLightbox(src, img.alt || "");
         });
       });
 
@@ -811,7 +753,7 @@ ${productLine}
 
 
     function preloadAllImages() {
-      const allImages = products.map((p) => p.image);
+      const allImages = products.slice(4).map((p) => p.cardImage || p.image);
 
       const load = (index) => {
         if (index >= allImages.length) return;

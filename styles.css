@@ -134,12 +134,12 @@
     img[data-img],
     img[data-product-image] {
       opacity: 1;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.35s ease;
     }
 
     .js img[data-img]:not(.is-loaded),
     .js img[data-product-image]:not(.is-loaded) {
-      opacity: 0.12;
+      opacity: 0;
     }
 
     img.is-loaded {
@@ -1011,7 +1011,7 @@
       position: relative;
       aspect-ratio: 1 / 0.86;
       overflow: hidden;
-      background: #eadfce;
+      background: linear-gradient(135deg, rgba(255, 249, 242, 0.70), rgba(234, 223, 206, 0.95));
     }
 
     .product-image::after {
