@@ -1,0 +1,113 @@
+צריך לשנות את מיקום וגודל הלוגו בעמוד הבית.
+
+החלטה עיצובית:
+הלוגו צריך להיות גדול יותר וממוקם במרכז מעל העוגה, בתוך אזור ה-Hero.
+
+קבצים רלוונטיים:
+index.html
+styles.css
+main.js אם יש טריגר כניסה נסתר
+
+דרישות:
+1. הלוגו יישאר בתוך אזור ה-Hero.
+2. הלוגו יהיה ממורכז אופקית מעל העוגה.
+3. הלוגו יהיה גדול יותר מהמצב הנוכחי.
+4. הלוגו לא יהיה בפינה.
+5. הלוגו לא יהיה צמוד לכפתור "גללו מטה".
+6. הכפתור "גללו מטה" יישאר מתחת ללוגו / מתחת לעוגה, בצורה נפרדת וברורה.
+7. הלוגו צריך להרגיש כמו אלמנט מיתוג מרכזי, לא כמו אייקון קטן.
+8. לשמור על:
+   data-admin-trigger="true"
+   כדי ש־3 לחיצות עליו יובילו לאדמין.
+9. לא להוסיף כפתור אדמין גלוי.
+10. לא לשנות Supabase או מנגנון התחברות.
+11. לא לשנות את תמונת ה-Hero.
+
+מבנה מומלץ:
+בתוך .home-hero, להשאיר / ליצור קישור לוגו נפרד:
+
+<a class="hero-brand-logo" href="index.html" aria-label="Lior's Pâtisserie" data-admin-trigger="true">
+  <img class="hero-logo" src="assets/logo.png" alt="Lior's Pâtisserie" width="180" height="180">
+</a>
+
+ולהשאיר את home-hero-panel רק עבור "גללו מטה":
+
+<div class="home-hero-panel">
+  <a class="hero-scroll-link" href="#products" aria-label="גלילה לאזור הטעמים">גללו מטה</a>
+</div>
+
+CSS מומלץ:
+
+.home-hero {
+  position: relative;
+}
+
+.hero-brand-logo {
+  position: absolute;
+  left: 50%;
+  top: clamp(42%, 46vw, 50%);
+  transform: translate(-50%, -50%);
+  z-index: 6;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+
+  width: clamp(128px, 13vw, 190px);
+  height: clamp(128px, 13vw, 190px);
+  padding: 10px;
+
+  border-radius: 999px;
+  background: rgba(255, 249, 242, 0.18);
+  border: 1px solid rgba(200, 169, 106, 0.24);
+  box-shadow:
+    0 18px 42px rgba(31, 18, 36, 0.28),
+    inset 0 1px 0 rgba(255, 255, 255, 0.38);
+  backdrop-filter: blur(3px);
+  text-decoration: none;
+}
+
+.hero-logo {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  display: block;
+  filter: drop-shadow(0 10px 18px rgba(0, 0, 0, 0.22));
+}
+
+.home-hero-panel {
+  position: absolute;
+  left: 50%;
+  bottom: clamp(24px, 4vw, 48px);
+  transform: translateX(-50%);
+  z-index: 5;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@media (max-width: 700px) {
+  .hero-brand-logo {
+    width: 118px;
+    height: 118px;
+    top: 46%;
+    padding: 8px;
+  }
+
+  .home-hero-panel {
+    bottom: 22px;
+  }
+}
+
+חשוב:
+אם יש כרגע .brand-logo-link בתוך .home-hero-panel, צריך להוציא אותו משם, כדי שהלוגו לא יישב באותה קבוצה עם "גללו מטה".
+
+בסיום לבדוק:
+1. הלוגו גדול יותר.
+2. הלוגו במרכז מעל העוגה.
+3. הלוגו לא מסתיר לגמרי את העוגה.
+4. "גללו מטה" נשאר נפרד וברור.
+5. שלוש לחיצות על הלוגו עדיין מובילות לאדמין.
+6. אין כפתור אדמין גלוי.
+7. נראה טוב גם בדסקטופ וגם במובייל.
