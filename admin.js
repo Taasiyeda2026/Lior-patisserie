@@ -1,3 +1,7 @@
+const ADMIN_USERS = {
+  lior: "lior.patisserie@outlook.com"
+};
+
 const WEBP_QUALITY = 0.82;
 const BUCKET = (window.LIOR_SUPABASE_CONFIG && window.LIOR_SUPABASE_CONFIG.STORAGE_BUCKET) || "site-images";
 
@@ -235,11 +239,17 @@ async function initAdmin() {
 
 function setupEvents() {
   document.getElementById("loginButton").addEventListener("click", async () => {
-    const email = (document.getElementById("adminEmail").value || "").trim();
+    const username = (document.getElementById("adminUsername").value || "").trim().toLowerCase();
     const password = document.getElementById("adminPassword").value || "";
 
-    if (!email || !password) {
-      showLoginError("נא למלא אימייל וסיסמה");
+    if (!username || !password) {
+      showLoginError("שם המשתמש או הסיסמה שגויים");
+      return;
+    }
+
+    const email = ADMIN_USERS[username];
+    if (!email) {
+      showLoginError("שם המשתמש או הסיסמה שגויים");
       return;
     }
 
@@ -253,7 +263,7 @@ function setupEvents() {
       showAdminApp();
       await initAdmin();
     } catch {
-      showLoginError("פרטי ההתחברות שגויים");
+      showLoginError("שם המשתמש או הסיסמה שגויים");
     } finally {
       btn.disabled = false;
       btn.textContent = "כניסה לניהול";
@@ -268,7 +278,7 @@ function setupEvents() {
     });
   }
 
-  document.getElementById("adminEmail").addEventListener("keydown", (e) => {
+  document.getElementById("adminUsername").addEventListener("keydown", (e) => {
     if (e.key === "Enter") document.getElementById("adminPassword").focus();
   });
   document.getElementById("adminPassword").addEventListener("keydown", (e) => {
