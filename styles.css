@@ -134,12 +134,12 @@
     img[data-img],
     img[data-product-image] {
       opacity: 1;
-      transition: opacity 0.25s ease;
+      transition: opacity 0.35s ease;
     }
 
     .js img[data-img]:not(.is-loaded),
     .js img[data-product-image]:not(.is-loaded) {
-      opacity: 0.12;
+      opacity: 0;
     }
 
     img.is-loaded {
@@ -559,6 +559,13 @@
       margin-top: 0;
       margin-bottom: 0;
       font-weight: 400;
+    }
+
+    .products-intro-text {
+      max-width: 620px;
+      margin: 6px auto;
+      line-height: 1.55;
+      text-align: center;
     }
 
     .home-opening .products-grid {
@@ -1004,7 +1011,7 @@
       position: relative;
       aspect-ratio: 1 / 0.86;
       overflow: hidden;
-      background: #eadfce;
+      background: linear-gradient(135deg, rgba(255, 249, 242, 0.70), rgba(234, 223, 206, 0.95));
     }
 
     .product-image::after {
@@ -1907,10 +1914,19 @@
       color: var(--ivory);
       border: 1px solid rgba(200, 194, 184, 0.35);
       box-shadow: 0 10px 28px rgba(47, 33, 28, 0.24);
-      transition: transform 0.25s ease;
       cursor: pointer;
       font-size: 1.2rem;
       line-height: 1;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(12px);
+      transition: opacity 0.25s ease, transform 0.25s ease;
+    }
+
+    body.show-order-actions .floating-cart {
+      opacity: 1;
+      pointer-events: auto;
+      transform: translateY(0);
     }
 
     .floating-cart:hover {
@@ -3010,6 +3026,17 @@
       .instagram-card,
       .floating-wa {
         transition: opacity 0.2s ease, border-color 0.2s ease;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .products-intro-text {
+        max-width: 92%;
+        line-height: 1.55;
+      }
+
+      .products-intro-text br {
+        display: none;
       }
     }
 
