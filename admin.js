@@ -137,11 +137,12 @@ async function saveSettings(scope = "hero-settings", root = document) {
 
 function productTemplate(product = {}) {
   const id = product.id || crypto.randomUUID();
-  return `<article class="product-row" data-product-id="${id}">
+  const isActive = product.is_active !== false;
+  return `<article class="product-row${isActive ? "" : " product-inactive"}" data-product-id="${id}">
     <div class="grid">
       <label class="field-label">שם הטעם <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
       <label class="field-label">סדר <input data-field="display_order" type="number" value="${product.display_order || 0}"></label>
-      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${product.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${product.is_active === false ? "selected" : ""}>לא</option></select></label>
+      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
       <label class="field-label">תיאור <textarea data-field="description">${escapeHtml(product.description || "")}</textarea></label>
       <label class="field-label wide">תמונה
         <div class="image-tools">
@@ -153,7 +154,10 @@ function productTemplate(product = {}) {
         </div>
       </label>
     </div>
-    <button class="admin-button" type="button" data-save-product>שמירה</button>
+    <div class="product-actions">
+      <button class="admin-button" type="button" data-save-product>שמירת מוצר</button>
+      <button class="admin-button ${isActive ? "muted" : "secondary"}" type="button" data-toggle-product data-active="${isActive}">${isActive ? "הסתר מהאתר" : "הצג באתר"}</button>
+    </div>
   </article>`;
 }
 
@@ -178,40 +182,64 @@ const SITE_PRODUCTS_STATIC = [
 ];
 
 async function loadProducts() {
-  let supabaseProducts = [];
-  try {
-    const { data } = await client().from("products").select("*").order("display_order", { ascending: true });
-    supabaseProducts = data || [];
-  } catch (_) {}
+  const { data, error } = await client().from("products").select("*").order("display_order", { ascending: true });
+  if (error) {
+    showNotice("products", "שגיאה בטעינת המוצרים: " + error.message, false);
+    return;
+  }
 
-  const supabaseByName = new Map(supabaseProducts.map((p) => [String(p.name || "").trim(), p]));
+  const supabaseProducts = data || [];
+  let displayProducts;
 
-  const merged = SITE_PRODUCTS_STATIC.map((sp, index) => {
-    const saved = supabaseByName.get(sp.name);
-    if (saved) {
-      supabaseByName.delete(sp.name);
-      return saved;
-    }
-    return {
+  if (supabaseProducts.length === 0) {
+    displayProducts = SITE_PRODUCTS_STATIC.map((sp, index) => ({
       id: crypto.randomUUID(),
       name: sp.name,
       description: sp.description,
       image_url: "prdimages/" + sp.image,
       display_order: index,
       is_active: true
-    };
-  });
+    }));
+  } else {
+    displayProducts = supabaseProducts;
+  }
 
-  supabaseByName.forEach((p) => merged.push(p));
-
-  document.getElementById("productsAdmin").innerHTML = merged.map(productTemplate).join("");
+  document.getElementById("productsAdmin").innerHTML = displayProducts.map(productTemplate).join("");
 }
 
 async function saveProduct(row) {
   const payload = rowPayload(row, "product");
   const { error } = await client().from("products").upsert(payload, { onConflict: "id" });
   if (error) throw error;
+  row.classList.toggle("product-inactive", !payload.is_active);
+  const toggleBtn = row.querySelector("[data-toggle-product]");
+  if (toggleBtn) {
+    toggleBtn.dataset.active = String(payload.is_active);
+    toggleBtn.textContent = payload.is_active ? "הסתר מהאתר" : "הצג באתר";
+    toggleBtn.className = `admin-button ${payload.is_active ? "muted" : "secondary"}`;
+  }
   showNotice("products", "המוצר נשמר בהצלחה");
+}
+
+async function toggleProductActive(row) {
+  const id = row.dataset.productId;
+  const btn = row.querySelector("[data-toggle-product]");
+  const select = row.querySelector('[data-field="is_active"]');
+  const currentActive = btn.dataset.active === "true";
+  const newActive = !currentActive;
+
+  const { error } = await client()
+    .from("products")
+    .update({ is_active: newActive, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw error;
+
+  btn.dataset.active = String(newActive);
+  btn.textContent = newActive ? "הסתר מהאתר" : "הצג באתר";
+  btn.className = `admin-button ${newActive ? "muted" : "secondary"}`;
+  if (select) select.value = String(newActive);
+  row.classList.toggle("product-inactive", !newActive);
+  showNotice("products", newActive ? "המוצר מוצג באתר" : "המוצר הוסתר מהאתר");
 }
 
 function featureTemplate(feature = {}) {
@@ -341,6 +369,9 @@ function setupEvents() {
     }
     if (event.target.matches("[data-save-product]")) {
       try { await saveProduct(event.target.closest(".product-row")); } catch (error) { showNotice("products", error.message, false); }
+    }
+    if (event.target.matches("[data-toggle-product]")) {
+      try { await toggleProductActive(event.target.closest(".product-row")); } catch (error) { showNotice("products", error.message, false); }
     }
     if (event.target.matches("[data-save-feature]")) {
       try { await saveFeature(event.target.closest(".feature-row")); } catch (error) { showNotice("features", error.message, false); }
