@@ -677,7 +677,7 @@ ${productLine}
       setupOrderModal();
       setupImageLightbox();
       setupNavDots();
-      setupInstagramLinks();   // async — runs in background, updates links when ready
+      setupInstagramLinks();   // async - runs in background, updates links when ready
       preloadAllImages();
       setupHiddenAdminEntry();
     });
@@ -688,14 +688,17 @@ ${productLine}
     function setupHiddenAdminEntry() {
       const trigger = document.querySelector('[data-admin-trigger="true"]');
       if (!trigger) return;
+
       trigger.addEventListener("click", function (event) {
+        event.preventDefault();
         hiddenAdminClickCount += 1;
+
         clearTimeout(hiddenAdminTimer);
         hiddenAdminTimer = setTimeout(function () {
           hiddenAdminClickCount = 0;
         }, 3000);
+
         if (hiddenAdminClickCount >= 3) {
-          event.preventDefault();
           hiddenAdminClickCount = 0;
           clearTimeout(hiddenAdminTimer);
           window.location.href = "lior-admin.html";

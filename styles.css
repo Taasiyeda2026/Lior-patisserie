@@ -494,15 +494,19 @@
       z-index: 2;
     }
 
-    .home-lead-text {
-      max-width: 720px;
+    .home-lead-text,
+    .home-flavors-lede {
+      max-width: 700px;
       margin-inline: auto;
+      font-size: clamp(1rem, 1.25vw, 1.12rem);
+      line-height: 1.85;
+      color: rgba(47, 33, 28, 0.86);
+    }
+
+    .home-lead-text {
       margin-top: 6px;
       margin-bottom: 12px;
-      font-size: clamp(1rem, 1.35vw, 1.15rem);
-      line-height: 1.85;
       font-weight: 400;
-      color: rgba(47, 33, 28, 0.86);
     }
 
     .home-flavors-heading {
@@ -536,13 +540,8 @@
     }
 
     .home-flavors-lede {
-      max-width: 720px;
-      margin-inline: auto;
       margin-top: 0;
       margin-bottom: 0;
-      font-size: clamp(1rem, 1.35vw, 1.15rem);
-      line-height: 1.85;
-      color: rgba(47, 33, 28, 0.86);
       font-weight: 400;
     }
 
@@ -629,7 +628,6 @@
 
     .flavors-actions {
       margin-top: 18px;
-      margin-bottom: 30px;
       display: flex;
       justify-content: center;
     }
@@ -639,26 +637,30 @@
       align-items: center;
       justify-content: center;
       width: fit-content;
-      margin: 18px auto 0;
-      padding: 5px 13px;
+      margin: 16px auto 0;
+      padding: 4px 12px;
+      min-height: 0;
       border-radius: 999px;
-      font-size: 0.82rem;
+      font-size: 0.78rem;
       font-weight: 600;
-      line-height: 1.2;
+      line-height: 1.25;
       color: #6d4d31;
-      background: rgba(255, 249, 242, 0.72);
-      border: 1px solid rgba(200, 169, 106, 0.34);
+      background: rgba(255, 249, 242, 0.62);
+      border: 1px solid rgba(200, 169, 106, 0.30);
       box-shadow: none;
-      letter-spacing: 0.01em;
+      cursor: default;
+      pointer-events: none;
     }
 
     .flavors-actions .btn {
-      min-width: 148px;
-      max-width: 180px;
-      min-height: 44px;
-      padding: 10px 22px;
-      border-radius: 18px;
-      font-size: 1rem;
+      width: auto;
+      min-width: 132px;
+      max-width: 164px;
+      min-height: 40px;
+      padding: 9px 20px;
+      border-radius: 16px;
+      font-size: 0.96rem;
+      line-height: 1.2;
       font-weight: 700;
       box-shadow:
         0 10px 22px rgba(47, 33, 28, 0.18),
@@ -704,28 +706,29 @@
 
     .hero-scroll-link {
       flex-shrink: 0;
-      margin: 0;
       padding: 9px 18px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
+      margin: 0 auto;
       width: auto;
       max-width: 100%;
       box-sizing: border-box;
+      white-space: nowrap;
       font-size: 0.86rem;
       font-weight: 500;
       letter-spacing: 0.08em;
       line-height: 1.45;
       text-align: center;
       border-radius: 999px;
-      color: rgba(255, 249, 242, 0.96);
-      background: linear-gradient(180deg, rgba(255, 249, 242, 0.18), rgba(255, 249, 242, 0.08));
-      border: 1px solid rgba(232, 207, 145, 0.62);
+      color: rgba(255, 249, 242, 0.98);
+      background: linear-gradient(180deg, rgba(255, 249, 242, 0.20), rgba(255, 249, 242, 0.08));
+      border: 1px solid rgba(232, 207, 145, 0.68);
       box-shadow:
-        0 0 20px rgba(232, 207, 145, 0.30),
+        0 0 22px rgba(232, 207, 145, 0.34),
         0 12px 30px rgba(0, 0, 0, 0.30),
-        inset 0 1px 0 rgba(255, 255, 255, 0.34);
-      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.44);
+        inset 0 1px 0 rgba(255, 255, 255, 0.36);
+      text-shadow: 0 1px 8px rgba(0, 0, 0, 0.45);
       backdrop-filter: blur(10px);
       transition: border-color 0.22s ease, box-shadow 0.22s ease, transform 0.22s ease;
       animation: scrollBreath 2.4s ease-in-out infinite;
@@ -739,11 +742,11 @@
 
     .hero-scroll-link:hover {
       border-color: rgba(232, 207, 145, 0.82);
-      box-shadow:
-        0 0 24px rgba(232, 207, 145, 0.38),
-        0 12px 32px rgba(0, 0, 0, 0.30),
-        inset 0 1px 0 rgba(255, 255, 255, 0.42);
       transform: translateY(-2px);
+      box-shadow:
+        0 0 28px rgba(232, 207, 145, 0.42),
+        0 14px 34px rgba(0, 0, 0, 0.32),
+        inset 0 1px 0 rgba(255, 255, 255, 0.42);
     }
 
     .hero-scroll-link:focus-visible {
@@ -1056,6 +1059,20 @@
         0 2px 8px rgba(90, 57, 103, 0.12),
         inset 0 1px 0 rgba(255, 255, 255, 0.40);
       transition: all 0.25s ease;
+    }
+
+    .product-card .product-link,
+    .product-card .btn,
+    .product-card button,
+    .product-card [data-order] {
+      min-height: 36px;
+      padding: 7px 14px;
+      border-radius: 14px;
+      font-size: 0.88rem;
+      line-height: 1.2;
+      width: auto;
+      min-width: 104px;
+      max-width: 132px;
     }
 
     .product-link:hover {
@@ -1756,7 +1773,10 @@
       text-align: center;
     }
 
-    .ig-closing-link {
+    .instagram-closing-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35em;
       color: rgba(218, 190, 126, 0.88);
       font-weight: 600;
       text-decoration: underline;
@@ -1765,20 +1785,17 @@
       transition: color 0.2s ease, text-decoration-color 0.2s ease;
     }
 
-    .ig-closing-link:hover {
+    .instagram-closing-link:hover {
       color: rgba(232, 207, 145, 1);
       text-decoration-color: rgba(232, 207, 145, 0.70);
     }
 
-    .ig-icon {
-      display: inline-block;
+    .instagram-inline-icon {
       width: 1em;
       height: 1em;
-      vertical-align: middle;
-      margin-inline-end: 3px;
-      position: relative;
-      top: -0.06em;
-      filter: invert(80%) sepia(30%) saturate(400%) hue-rotate(5deg) brightness(1.1);
+      display: inline-block;
+      vertical-align: -0.12em;
+      object-fit: contain;
     }
 
     .floating-wa {
@@ -1968,7 +1985,7 @@
       }
 
       .home-hero-panel {
-        bottom: 24px;
+        bottom: clamp(34px, 5vw, 58px);
       }
 
       .hero-scroll-link {
@@ -2287,9 +2304,9 @@
     }
 
     .order-modal-card {
-      width: min(94vw, 480px);
-      max-height: calc(100vh - 48px);
-      overflow-y: auto;
+      width: min(520px, calc(100% - 32px));
+      max-height: none;
+      overflow: visible;
       background: linear-gradient(
         180deg,
         rgba(255, 249, 242, 0.97) 0%,
@@ -2301,21 +2318,8 @@
         0 20px 56px rgba(0, 0, 0, 0.20),
         0 2px 10px rgba(85, 50, 30, 0.09),
         inset 0 1px 0 rgba(255, 255, 255, 0.55);
-      padding: 28px 26px 26px;
+      padding: 24px 28px;
       position: relative;
-    }
-
-    .order-modal-card::-webkit-scrollbar {
-      width: 6px;
-    }
-
-    .order-modal-card::-webkit-scrollbar-track {
-      background: transparent;
-    }
-
-    .order-modal-card::-webkit-scrollbar-thumb {
-      background: rgba(111, 74, 124, 0.28);
-      border-radius: 999px;
     }
 
     .home-opening::before,
@@ -2377,9 +2381,9 @@
     }
 
     .order-modal-subtitle {
-      margin: 0 0 18px;
+      margin: 0 0 14px;
       color: #5f4a41;
-      line-height: 1.55;
+      line-height: 1.5;
       font-size: 0.88rem;
       font-weight: 300;
       text-align: right;
@@ -2387,17 +2391,17 @@
 
     .order-form {
       display: grid;
-      gap: 8px;
+      gap: 10px;
     }
 
     .order-field {
       display: grid;
-      gap: 5px;
+      gap: 4px;
     }
 
     .order-field label {
       color: #5C3D32;
-      font-size: 0.84rem;
+      font-size: 0.82rem;
       font-weight: 600;
       letter-spacing: 0.01em;
     }
@@ -2410,8 +2414,8 @@
       background: rgba(255, 250, 243, 0.82);
       color: #2F211C;
       border-radius: 14px;
-      padding: 10px 14px;
-      min-height: 44px;
+      min-height: 42px;
+      padding: 9px 12px;
       font-family: inherit;
       font-size: 0.9rem;
       outline: none;
@@ -2432,13 +2436,13 @@
 
     .order-error {
       display: none;
-      margin: 4px 0 0;
+      margin: 2px 0 0;
       color: #7A2E2E;
       background: rgba(122, 46, 46, 0.08);
       border: 1px solid rgba(122, 46, 46, 0.16);
       border-radius: 14px;
-      padding: 10px 12px;
-      font-size: 0.9rem;
+      padding: 9px 12px;
+      font-size: 0.88rem;
     }
 
     .order-error.is-visible {
@@ -2446,38 +2450,86 @@
     }
 
     .order-submit {
-      width: 100%;
-      margin-top: 8px;
-      min-height: 46px;
-      padding: 10px 20px;
+      width: auto;
+      min-width: 190px;
+      max-width: 260px;
+      margin-inline: auto;
+      min-height: 42px;
+      padding: 10px 22px;
+      border-radius: 16px;
       font-size: 0.9rem;
       box-shadow:
         0 6px 18px rgba(63, 39, 82, 0.22),
         inset 0 1px 0 rgba(255, 255, 255, 0.14);
     }
 
-
     .order-field-phone,
     .order-field-quantity,
     .order-field-date {
-      max-width: 100%;
+      width: 100%;
+    }
+
+    @media (min-width: 720px) {
+      .order-form {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        column-gap: 12px;
+        row-gap: 10px;
+      }
+
+      .order-field {
+        grid-column: 1 / -1;
+      }
+
+      .order-field-phone,
+      .order-field-quantity,
+      .order-field-date {
+        grid-column: auto;
+      }
+
+      .order-submit,
+      .order-error {
+        grid-column: 1 / -1;
+      }
     }
 
     @media (max-width: 640px) {
       .order-modal {
-        align-items: flex-end;
-        padding: 0;
+        align-items: center;
+        padding: 12px;
+        overflow-y: auto;
       }
 
       .order-modal-card {
-        width: 100%;
-        max-height: 92svh;
-        border-radius: 20px 20px 0 0;
-        padding: 22px 18px 28px;
-        overflow-y: auto;
+        width: min(100%, 440px);
+        padding: 20px 18px 22px;
+        border-radius: 20px;
+      }
+
+      .order-modal h2 {
+        font-size: 1.25rem;
+        line-height: 1.24;
+        padding-left: 36px;
+      }
+
+      .order-modal-subtitle {
+        font-size: 0.86rem;
+        margin-bottom: 12px;
+      }
+
+      .order-form {
+        gap: 9px;
+      }
+
+      .order-field input,
+      .order-field textarea {
+        font-size: 0.88rem;
+      }
+
+      .order-field textarea {
+        min-height: 64px;
       }
     }
-
 
     body.has-modal {
       overflow: hidden;
@@ -2563,38 +2615,6 @@
         left: 16px;
       }
 
-      .order-modal {
-        padding: 12px;
-        align-items: center;
-      }
-
-      .order-modal-card {
-        width: min(100%, 440px);
-        max-height: calc(100vh - 24px);
-        padding: 22px 20px 24px;
-        border-radius: 20px;
-      }
-
-      .order-modal h2 {
-        font-size: 1.3rem;
-        line-height: 1.28;
-        padding-left: 36px;
-      }
-
-      .order-modal-subtitle {
-        font-size: 0.86rem;
-        margin-bottom: 14px;
-      }
-
-      .order-field input,
-      .order-field textarea {
-        padding: 9px 12px;
-        font-size: 0.88rem;
-      }
-
-      .order-field textarea {
-        min-height: 64px;
-      }
     }
 
     /* ── Section navigation dots ── */
