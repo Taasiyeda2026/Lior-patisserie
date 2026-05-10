@@ -1741,11 +1741,33 @@
     }
 
     .footer {
-      padding: 18px 0;
+      padding: 18px 0 16px;
       background: #3a2922;
       color: rgba(255, 250, 243, 0.72);
       text-align: center;
       font-size: 0.86rem;
+    }
+
+    .ig-closing {
+      margin: 0 0 10px;
+      font-size: 0.84rem;
+      color: rgba(255, 250, 243, 0.60);
+      line-height: 1.6;
+      text-align: center;
+    }
+
+    .ig-closing-link {
+      color: rgba(218, 190, 126, 0.88);
+      font-weight: 600;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: rgba(218, 190, 126, 0.40);
+      transition: color 0.2s ease, text-decoration-color 0.2s ease;
+    }
+
+    .ig-closing-link:hover {
+      color: rgba(232, 207, 145, 1);
+      text-decoration-color: rgba(232, 207, 145, 0.70);
     }
 
     .floating-wa {
