@@ -175,7 +175,7 @@
     <div class="order-modal-card" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle" dir="rtl">
       <button class="order-modal-close" id="orderModalClose" type="button" aria-label="סגירת חלונית">×</button>
 
-      <h2 id="orderModalTitle">נשמח לדעת מה תרצו להזמין</h2>
+      <h2 id="orderModalTitle">ההזמנה שלכם</h2>
       <p class="order-modal-subtitle">
         מלאו כמה פרטים קצרים וההזמנה תישלח לליאור ב־WhatsApp.
       </p>
@@ -191,14 +191,17 @@
           <input id="customerPhone" name="customerPhone" type="tel" autocomplete="tel" required>
         </div>
 
-        <div class="order-field">
-          <label for="orderProduct">מה תרצו להזמין? *</label>
-          <input id="orderProduct" name="orderProduct" type="text" placeholder="לדוגמה: מארז עוגיות, מיקס טעמים, עוגייה אישית או קינוח לאירוח" required>
+        <div class="order-cart-wrap" id="orderCartWrap" hidden>
+          <div class="order-cart-header">
+            <div class="order-cart-title">סל ההזמנה</div>
+            <button class="order-cart-clear" id="clearCartButton" type="button" hidden>ניקוי סל</button>
+          </div>
+          <div class="order-cart-list" id="orderCartList" aria-live="polite"></div>
         </div>
 
-        <div class="order-field order-field-quantity">
-          <label for="orderQuantity">כמות *</label>
-          <input id="orderQuantity" name="orderQuantity" type="text" required>
+        <div class="order-field" id="manualOrderField">
+          <label for="orderProduct">מה תרצו להזמין? *</label>
+          <input id="orderProduct" name="orderProduct" type="text" placeholder="לדוגמה: מארז עוגיות, מיקס טעמים, עוגייה אישית או קינוח לאירוח" required>
         </div>
 
         <div class="order-field order-field-date">
@@ -212,7 +215,7 @@
         </div>
 
         <div class="order-error" id="orderError">
-          יש למלא שם, טלפון, מוצר/הזמנה וכמות כדי לשלוח הזמנה.
+          יש למלא שם, טלפון והזמנה כדי לשלוח הזמנה.
         </div>
 
         <button class="btn order-submit" type="submit">

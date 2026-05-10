@@ -214,7 +214,7 @@
             <h3>${escapeHtml(product.name || "")}</h3>
             <p>${escapeHtml(product.description || "")}</p>
             <a class="product-link" href="#" data-order data-product="${escapeHtml(product.name || "")}">
-              להזמנה ←
+              הוספה להזמנה ←
             </a>
           </div>
         </article>

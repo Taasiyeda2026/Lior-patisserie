@@ -176,7 +176,7 @@ ${productLine}
             <h3>${product.name}</h3>
             <p>${product.description}</p>
             <a class="product-link" href="#" data-order data-product="${product.name}">
-              להזמנה
+              הוספה להזמנה
             </a>
           </div>
         </article>
@@ -196,7 +196,7 @@ ${productLine}
             <h3>${product.name}</h3>
             <p>${product.description}</p>
             <a class="product-link" href="#" data-order data-product="${product.name}">
-              להזמנה ←
+              הוספה להזמנה ←
             </a>
           </div>
         </article>
@@ -307,16 +307,138 @@ ${productLine}
       });
     }
 
+    const ORDER_CART_STORAGE_KEY = "liorOrderCart";
+    let orderCart = [];
+
+    function saveOrderCart() {
+      localStorage.setItem(ORDER_CART_STORAGE_KEY, JSON.stringify(orderCart));
+    }
+
+    function clearOrderCart() {
+      orderCart = [];
+      localStorage.removeItem(ORDER_CART_STORAGE_KEY);
+      renderOrderCart();
+    }
+
+    function loadOrderCart() {
+      const savedCart = localStorage.getItem(ORDER_CART_STORAGE_KEY);
+      if (!savedCart) return;
+
+      try {
+        const parsedCart = JSON.parse(savedCart);
+        if (!Array.isArray(parsedCart)) return;
+
+        orderCart = parsedCart
+          .filter((item) => item && typeof item.name === "string" && Number(item.quantity) > 0)
+          .map((item) => ({
+            name: item.name,
+            quantity: Math.max(1, Math.floor(Number(item.quantity)))
+          }));
+      } catch (_) {
+        localStorage.removeItem(ORDER_CART_STORAGE_KEY);
+      }
+    }
+
+    function getCartItem(productName) {
+      return orderCart.find((item) => item.name === productName);
+    }
+
+    function addProductToCart(productName) {
+      if (!productName) return;
+
+      const existingItem = getCartItem(productName);
+      if (existingItem) {
+        existingItem.quantity += 1;
+        saveOrderCart();
+        return;
+      }
+
+      orderCart.push({ name: productName, quantity: 1 });
+      saveOrderCart();
+    }
+
+    function updateCartItem(productName, change) {
+      const item = getCartItem(productName);
+      if (!item) return;
+
+      item.quantity += change;
+      if (item.quantity <= 0) {
+        removeCartItem(productName);
+      } else {
+        saveOrderCart();
+        renderOrderCart();
+      }
+    }
+
+    function removeCartItem(productName) {
+      const itemIndex = orderCart.findIndex((item) => item.name === productName);
+      if (itemIndex === -1) return;
+
+      orderCart.splice(itemIndex, 1);
+      saveOrderCart();
+      renderOrderCart();
+    }
+
+    function escapeHtml(value) {
+      return String(value || "")
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+    }
+
+    function renderOrderCart() {
+      const cartWrap = document.getElementById("orderCartWrap");
+      const cartList = document.getElementById("orderCartList");
+      const clearCartButton = document.getElementById("clearCartButton");
+      const manualField = document.getElementById("manualOrderField");
+      const manualInput = document.getElementById("orderProduct");
+      const hasItems = orderCart.length > 0;
+
+      if (cartWrap) {
+        cartWrap.hidden = !hasItems;
+      }
+
+      if (clearCartButton) {
+        clearCartButton.hidden = !hasItems;
+      }
+
+      if (manualField) {
+        manualField.hidden = hasItems;
+      }
+
+      if (manualInput) {
+        manualInput.required = !hasItems;
+        if (hasItems) manualInput.value = "";
+      }
+
+      if (!cartList) return;
+
+      cartList.innerHTML = orderCart.map((item) => `
+        <div class="order-cart-item">
+          <div class="order-cart-name">${escapeHtml(item.name)}</div>
+          <div class="order-cart-actions" aria-label="כמות עבור ${escapeHtml(item.name)}">
+            <button class="order-cart-btn" type="button" data-cart-decrease="${escapeHtml(item.name)}" aria-label="הפחתת כמות ${escapeHtml(item.name)}">−</button>
+            <span class="order-cart-qty" aria-label="כמות">${item.quantity}</span>
+            <button class="order-cart-btn" type="button" data-cart-increase="${escapeHtml(item.name)}" aria-label="הגדלת כמות ${escapeHtml(item.name)}">+</button>
+            <button class="order-cart-remove" type="button" data-cart-remove="${escapeHtml(item.name)}">הסרה</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
     function openOrderModal(productName = "") {
       const modal = document.getElementById("orderModal");
-      const productInput = document.getElementById("orderProduct");
       const error = document.getElementById("orderError");
 
       if (!modal) return;
 
-      if (productInput) {
-        productInput.value = productName || "";
+      if (productName) {
+        addProductToCart(productName);
       }
+
+      renderOrderCart();
 
       if (error) {
         error.classList.remove("is-visible");
@@ -341,14 +463,24 @@ ${productLine}
       document.body.classList.remove("has-modal");
     }
 
+    function getOrderProductsText(manualProduct = "") {
+      if (orderCart.length) {
+        return orderCart
+          .map((item) => `- ${item.name} × ${item.quantity}`)
+          .join("\n");
+      }
+
+      return manualProduct;
+    }
+
     function buildOrderWhatsAppUrl(data) {
       const messageLines = [
         "שלום ליאור, אשמח לבצע הזמנה מ־Lior’s Pâtisserie.",
         "",
         `שם מלא: ${data.name}`,
         `טלפון: ${data.phone}`,
-        `מוצר / הזמנה: ${data.product}`,
-        `כמות: ${data.quantity}`
+        "מוצרים:",
+        data.products
       ];
 
       if (data.date) {
@@ -369,6 +501,11 @@ ${productLine}
       const closeBtn = document.getElementById("orderModalClose");
       const form = document.getElementById("orderForm");
       const error = document.getElementById("orderError");
+      const cartList = document.getElementById("orderCartList");
+      const clearCartButton = document.getElementById("clearCartButton");
+
+      loadOrderCart();
+      renderOrderCart();
 
       document.addEventListener("click", (event) => {
         const button = event.target.closest("[data-order]");
@@ -378,6 +515,26 @@ ${productLine}
         openOrderModal(productName);
       });
       window.openOrderModal = openOrderModal;
+
+      if (clearCartButton) {
+        clearCartButton.addEventListener("click", clearOrderCart);
+      }
+
+      if (cartList) {
+        cartList.addEventListener("click", (event) => {
+          const increaseButton = event.target.closest("[data-cart-increase]");
+          const decreaseButton = event.target.closest("[data-cart-decrease]");
+          const removeButton = event.target.closest("[data-cart-remove]");
+
+          if (increaseButton) {
+            updateCartItem(increaseButton.getAttribute("data-cart-increase"), 1);
+          } else if (decreaseButton) {
+            updateCartItem(decreaseButton.getAttribute("data-cart-decrease"), -1);
+          } else if (removeButton) {
+            removeCartItem(removeButton.getAttribute("data-cart-remove"));
+          }
+        });
+      }
 
       if (closeBtn) {
         closeBtn.addEventListener("click", closeOrderModal);
@@ -401,16 +558,16 @@ ${productLine}
         form.addEventListener("submit", (event) => {
           event.preventDefault();
 
+          const manualProduct = document.getElementById("orderProduct").value.trim();
           const data = {
             name: document.getElementById("customerName").value.trim(),
             phone: document.getElementById("customerPhone").value.trim(),
-            product: document.getElementById("orderProduct").value.trim(),
-            quantity: document.getElementById("orderQuantity").value.trim(),
+            products: getOrderProductsText(manualProduct),
             date: document.getElementById("orderDate").value.trim(),
             notes: document.getElementById("orderNotes").value.trim()
           };
 
-          const isValid = data.name && data.phone && data.product && data.quantity;
+          const isValid = data.name && data.phone && data.products;
 
           if (!isValid) {
             if (error) error.classList.add("is-visible");
@@ -421,6 +578,7 @@ ${productLine}
 
           const url = buildOrderWhatsAppUrl(data);
           window.open(url, "_blank", "noopener,noreferrer");
+          clearOrderCart();
         });
       }
     }
