@@ -4,8 +4,8 @@
   Never place a service role key in client-side code.
 */
 window.LIOR_SUPABASE_CONFIG = {
-  SUPABASE_URL: "",
-  SUPABASE_ANON_KEY: "",
+  SUPABASE_URL: "https://osehkbkeydhpesjlisuk.supabase.co",
+  SUPABASE_ANON_KEY: "sb_publishable_YMY-BeSAPGGYTa9L-PHsSg_JvCRteCP",
   STORAGE_BUCKET: "site-images"
 };
 
