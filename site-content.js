@@ -29,6 +29,15 @@
     return String(value || "").replace(/[^0-9]/g, "");
   }
 
+  function normalizeWhatsappPhone(value) {
+    const digits = String(value || "").replace(/[^0-9]/g, "");
+    if (!digits) return "";
+    if (digits.startsWith("0") && digits.length === 10) return "972" + digits.slice(1);
+    if (digits.startsWith("972") && digits.length === 12) return digits;
+    if (digits.startsWith("00972")) return digits.replace(/^00/, "");
+    return digits;
+  }
+
   function formatPhoneForDisplay(value) {
     const digits = normalizePhone(value);
     if (digits.startsWith("972") && digits.length === 12) {
@@ -76,7 +85,7 @@
   }
 
   function applyContactSettings(settings) {
-    const phone = normalizePhone(settings.whatsapp_number);
+    const phone = normalizeWhatsappPhone(settings.whatsapp_number || "") || normalizeWhatsappPhone("972506422900");
     if (phone) {
       document.querySelectorAll("[data-phone-link]").forEach((link) => {
         link.href = `tel:+${phone}`;

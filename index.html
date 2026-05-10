@@ -2752,6 +2752,15 @@
 
   <script>
     const WHATSAPP_PHONE = "972506422900";
+
+    function normalizeWhatsappPhone(value) {
+      const digits = String(value || "").replace(/[^0-9]/g, "");
+      if (!digits) return "";
+      if (digits.startsWith("0") && digits.length === 10) return "972" + digits.slice(1);
+      if (digits.startsWith("972") && digits.length === 12) return digits;
+      if (digits.startsWith("00972")) return digits.replace(/^00/, "");
+      return digits;
+    }
     const INSTAGRAM_URL = "https://www.instagram.com/liornahum/";
 
     const signatureProductNames = ["אוראו דרים", "קוקילוטוס", "פיסטצ׳יו", "שוקולד דובאי"];
@@ -2853,7 +2862,7 @@ ${productLine}
 שם מלא:
 הערות:`;
 
-      return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+      return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
     }
 
     function imagePath(name) {
@@ -3054,7 +3063,7 @@ ${productLine}
 תאריך רצוי: ${data.date}
 הערות: ${notes}`;
 
-      return `https://wa.me/${WHATSAPP_PHONE}?text=${encodeURIComponent(message)}`;
+      return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
     }
 
     function setupOrderModal() {
@@ -3063,13 +3072,14 @@ ${productLine}
       const form = document.getElementById("orderForm");
       const error = document.getElementById("orderError");
 
-      document.querySelectorAll("[data-order]").forEach((button) => {
-        button.addEventListener("click", (event) => {
-          event.preventDefault();
-          const productName = button.getAttribute("data-product") || "";
-          openOrderModal(productName);
-        });
+      document.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-order]");
+        if (!button) return;
+        event.preventDefault();
+        const productName = button.getAttribute("data-product") || "";
+        openOrderModal(productName);
       });
+      window.openOrderModal = openOrderModal;
 
       if (closeBtn) {
         closeBtn.addEventListener("click", closeOrderModal);
