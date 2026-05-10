@@ -1,0 +1,104 @@
+בצע תיקון קטן וממוקד בריפו:
+Taasiyeda2026/Lior-patisserie
+
+מטרה:
+להפעיל favicon ואייקון שמירה למסך הבית במובייל, על בסיס קבצי האייקונים שכבר הועלו לריפו.
+
+חשוב:
+לא ליצור תמונות חדשות.
+לא לערוך תמונות.
+לא לשנות עיצוב.
+לא לשנות CSS מעבר למה שלא נדרש.
+לא לשנות JS.
+לא לשנות Supabase.
+לא לשנות את האדמין מעבר להוספת תגיות favicon ב־head.
+לא לשנות טקסטים באתר.
+
+השתמש בקבצים שכבר קיימים בריפו:
+
+assets/icons/favicon-16x16.png
+assets/icons/favicon-32x32.png
+assets/icons/apple-touch-icon.png
+assets/icons/android-chrome-192x192.png
+assets/icons/android-chrome-512x512.png
+assets/icons/favicon.ico
+site.webmanifest
+
+1. לעדכן את index.html בתוך תגית <head>
+
+להוסיף את התגיות הבאות, בלי למחוק תגיות קיימות:
+
+<link rel="icon" href="assets/icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<link rel="manifest" href="site.webmanifest">
+<meta name="theme-color" content="#3D2249">
+<meta name="apple-mobile-web-app-title" content="Lior’s">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+
+2. לוודא שקובץ site.webmanifest קיים בשורש הריפו
+
+הנתיב צריך להיות:
+
+site.webmanifest
+
+אם הקובץ כבר קיים — רק לוודא שהתוכן שלו תקין.
+אם חסר — ליצור אותו עם התוכן הבא:
+
+{
+  "name": "Lior’s Pâtisserie",
+  "short_name": "Lior’s",
+  "description": "עוגיות וקינוחים בעבודת יד להזמנה",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#F7F0E6",
+  "theme_color": "#3D2249",
+  "dir": "rtl",
+  "lang": "he",
+  "icons": [
+    {
+      "src": "assets/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "assets/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
+
+3. לעדכן גם את lior-admin.html בתוך תגית <head>
+
+להוסיף את התגיות הבאות, כדי שגם עמוד האדמין יציג אייקון בטאב:
+
+<link rel="icon" href="assets/icons/favicon.ico" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="16x16" href="assets/icons/favicon-16x16.png">
+<link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+<meta name="theme-color" content="#3D2249">
+
+4. בדיקות חובה
+
+לאחר השינוי לבדוק:
+
+- index.html נטען תקין.
+- lior-admin.html נטען תקין.
+- אין שגיאות Console.
+- האייקון מופיע בטאב הדפדפן.
+- במובייל, כאשר מוסיפים את האתר למסך הבית, מופיע אייקון Lior’s.
+- לא השתנה שום עיצוב באתר.
+- לא השתנה שום JS.
+- לא השתנה שום דבר ב־Supabase.
+
+5. Summary
+
+ב־Summary לכתוב:
+- נוספו תגיות favicon/mobile icon ל־index.html.
+- נוספו תגיות favicon ל־lior-admin.html.
+- נבדק/נוצר site.webmanifest.
+- לא בוצעו שינויי עיצוב או לוגיקה.
