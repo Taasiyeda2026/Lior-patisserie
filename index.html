@@ -2530,6 +2530,7 @@
             <img
               src="prdimages/A7405559-hero.webp"
               data-img="A7405559-hero.webp"
+              data-cms-image="hero_image"
               alt="עוגיית לוטוס בעבודת יד של Lior’s Pâtisserie"
               width="2752"
               height="1536"
@@ -2546,15 +2547,15 @@
         <div class="home-opening" id="products">
           <div class="container home-opening-inner">
             <div class="reveal home-opening-copy">
-              <h1 class="home-flavors-heading">הטעמים שלנו</h1>
-              <p class="home-lead-text">
+              <h1 class="home-flavors-heading" data-content-key="hero_title">הטעמים שלנו</h1>
+              <p class="home-lead-text" data-content-key="hero_subtitle">
                 ב־Lior’s Pâtisserie כל עוגיית Crumble נאפית בעבודת יד, עם בצק עשיר, מילויים מפנקים ונראות מוקפדת שמרגישה כמו מתנה קטנה.
               </p>
               <p class="home-flavors-lede">
                 הקולקציה שלנו משלבת טעמים עשירים ובלתי נשכחים, כשכל עוגייה מביאה איתה אופי, מרקם וחוויה משלה.
               </p>
               <div class="cta-row flavors-actions">
-                <a class="btn" href="#" data-order>להזמנה</a>
+                <a class="btn" href="#" data-order data-content-key="hero_primary_button_text">להזמנה</a>
               </div>
             </div>
             <div class="products-grid" id="productsGrid"></div>
@@ -2568,6 +2569,7 @@
             <img
               class="instagram-bg"
               src="images/instagram-collage.webp"
+              data-cms-image="instagram_image"
               alt="קולאז׳ קינוחים ועוגיות של Lior’s Pâtisserie באינסטגרם"
               width="1212"
               height="678"
@@ -2580,7 +2582,7 @@
                 רוצים לראות טעמים חדשים, מארזים, הצצות מהאפייה ורעיונות לאירוח?<br>
                 עקבו אחרי Lior’s Pâtisserie באינסטגרם.
               </p>
-              <a class="instagram-btn instagram-button" href="#" target="_blank" rel="noopener noreferrer">
+              <a class="instagram-btn instagram-button" href="#" target="_blank" rel="noopener noreferrer" data-content-key="hero_secondary_button_text">
                 לאינסטגרם
               </a>
             </div>
@@ -2600,7 +2602,7 @@
               <p>
                 מהבצק ועד הקרם, מהקישוט ועד האריזה — כל פרט נבחר כדי ליצור קינוח שנראה חגיגי, מרגיש אישי ובעיקר עושה חשק.
               </p>
-              <div class="details-grid" aria-label="היתרונות של Lior’s Pâtisserie">
+              <div class="details-grid" id="featuresGrid" aria-label="היתרונות של Lior’s Pâtisserie">
                 <article class="detail-card reveal">
                   <div class="icon-circle" aria-hidden="true">
                     <svg class="pastry-icon" viewBox="0 0 48 48" focusable="false">
@@ -2655,14 +2657,14 @@
           <div class="reveal">
             <div class="section-label">— בואו נדבר —</div>
             <h2>רוצים להזמין טעם שאהבתם?</h2>
-            <p>
+            <p data-content-key="pickup_delivery_text">
               ספרו לליאור איזה טעם אהבתם, ונמשיך משם בצורה פשוטה ונעימה.
             </p>
             <div class="contact-details-card" aria-label="פרטי יצירת קשר">
               <ul class="contact-details-list">
                 <li>
                   <span class="contact-label">☎ נייד</span>
-                  <a class="contact-value phone-link" href="tel:+972506422900">050-642-2900</a>
+                  <a class="contact-value phone-link" href="tel:+972506422900" data-phone-link>050-642-2900</a>
                 </li>
                 <li>
                   <span class="contact-label">✉ מייל</span>
@@ -2670,7 +2672,7 @@
                 </li>
               </ul>
             </div>
-            <a class="btn" href="#" data-order>שליחת הזמנה</a>
+            <a class="btn" href="#" data-order data-content-key="order_button_text">שליחת הזמנה</a>
             <div class="signature">באהבה, ליאור</div>
           </div>
         </div>
@@ -3305,5 +3307,8 @@ ${productLine}
       preloadAllImages();
     });
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="site-content.js"></script>
 </body>
 </html>

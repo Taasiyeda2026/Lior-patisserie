@@ -1,0 +1,31 @@
+/*
+  Supabase public configuration for GitHub Pages.
+  Replace the placeholders below with your Supabase project URL and anon public key.
+  Never place a service role key in client-side code.
+*/
+window.LIOR_SUPABASE_CONFIG = {
+  SUPABASE_URL: "",
+  SUPABASE_ANON_KEY: "",
+  STORAGE_BUCKET: "site-images"
+};
+
+window.getLiorSupabaseClient = function getLiorSupabaseClient() {
+  const config = window.LIOR_SUPABASE_CONFIG || {};
+
+  if (!config.SUPABASE_URL || !config.SUPABASE_ANON_KEY) {
+    return null;
+  }
+
+  if (!window.supabase || typeof window.supabase.createClient !== "function") {
+    return null;
+  }
+
+  if (!window.liorSupabaseClient) {
+    window.liorSupabaseClient = window.supabase.createClient(
+      config.SUPABASE_URL,
+      config.SUPABASE_ANON_KEY
+    );
+  }
+
+  return window.liorSupabaseClient;
+};
