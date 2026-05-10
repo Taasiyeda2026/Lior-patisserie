@@ -915,7 +915,22 @@ ${productLine}
       setupInstagramLinks();   // async - runs in background, updates links when ready
       preloadAllImages();
       setupHiddenAdminEntry();
+      setupOrderActionsVisibility();
     });
+
+    function setupOrderActionsVisibility() {
+      function update() {
+        const hero = document.querySelector(".home-hero");
+        const scrollY = window.scrollY || window.pageYOffset;
+        const threshold = hero
+          ? hero.offsetTop + hero.offsetHeight - 120
+          : 420;
+        document.body.classList.toggle("show-order-actions", scrollY > threshold);
+      }
+
+      window.addEventListener("scroll", update, { passive: true });
+      update();
+    }
 
     let hiddenAdminClickCount = 0;
     let hiddenAdminTimer = null;
