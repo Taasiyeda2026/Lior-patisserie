@@ -1770,6 +1770,17 @@
       text-decoration-color: rgba(232, 207, 145, 0.70);
     }
 
+    .ig-icon {
+      display: inline-block;
+      width: 1em;
+      height: 1em;
+      vertical-align: middle;
+      margin-inline-end: 3px;
+      position: relative;
+      top: -0.06em;
+      filter: invert(80%) sepia(30%) saturate(400%) hue-rotate(5deg) brightness(1.1);
+    }
+
     .floating-wa {
       position: fixed;
       left: 22px;
