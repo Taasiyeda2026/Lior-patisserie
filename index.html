@@ -122,8 +122,13 @@
 
     img[data-img],
     img[data-product-image] {
-      opacity: 0;
-      transition: opacity 0.35s ease;
+      opacity: 1;
+      transition: opacity 0.25s ease;
+    }
+
+    .js img[data-img]:not(.is-loaded),
+    .js img[data-product-image]:not(.is-loaded) {
+      opacity: 0.12;
     }
 
     img.is-loaded {
@@ -721,21 +726,14 @@
     }
 
     .section-unlock {
-      opacity: 0.42;
-      transform: scale(0.990);
+      opacity: 0.88;
       transform-origin: center top;
-      filter: drop-shadow(0 22px 34px rgba(47, 33, 28, 0.10));
-      transition:
-        opacity 0.56s ease,
-        transform 0.56s cubic-bezier(0.22, 1, 0.36, 1),
-        filter 0.56s ease;
-      will-change: opacity, transform;
+      transition: opacity 0.32s ease;
+      will-change: opacity;
     }
 
     .section-unlock.is-unlocked {
       opacity: 1;
-      transform: scale(1);
-      filter: drop-shadow(0 0 0 rgba(47, 33, 28, 0));
       will-change: auto;
     }
 
@@ -1744,7 +1742,6 @@
         opacity: 1;
       }
     }
-
     @media (prefers-reduced-motion: reduce) {
       html {
         scroll-behavior: auto;
@@ -2555,6 +2552,44 @@
       .section-nav { display: none; }
     }
 
+    @media (max-width: 768px) {
+      html {
+        scroll-snap-type: none;
+      }
+
+      .header {
+        backdrop-filter: none;
+        -webkit-backdrop-filter: none;
+      }
+
+      .home-hero {
+        height: auto;
+        min-height: 100svh;
+      }
+
+      .reveal,
+      .section-unlock,
+      .section-unlock.is-unlocked {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        transition: none !important;
+      }
+
+      .section-unlock,
+      main > section:not(:first-child).section-unlock {
+        box-shadow: none;
+      }
+
+      .page,
+      .product-card,
+      .signature-card,
+      .editorial-card,
+      .instagram-card {
+        filter: none;
+      }
+    }
+
   </style>
 </head>
 
@@ -2785,6 +2820,8 @@
   </div>
 
   <script>
+    document.documentElement.classList.add("js");
+
     const WHATSAPP_PHONE = "972506422900";
 
     function normalizeWhatsappPhone(value) {
@@ -2922,17 +2959,8 @@ ${productLine}
 
       let index = 0;
 
-      img.classList.remove("is-loaded");
-
       img.onload = function () {
         img.classList.add("is-loaded");
-      };
-
-      img.onerror = function () {
-        index += 1;
-        if (index < options.length) {
-          img.src = options[index];
-        }
       };
 
       if (img.getAttribute("src") === options[index]) {
@@ -2942,6 +2970,14 @@ ${productLine}
         return;
       }
 
+      img.onerror = function () {
+        index += 1;
+        if (index < options.length) {
+          img.src = options[index];
+        }
+      };
+
+      img.classList.remove("is-loaded");
       img.src = options[index];
     }
 
@@ -3010,28 +3046,36 @@ ${productLine}
       };
 
       if (!("IntersectionObserver" in window)) {
-        images.forEach(loadImage);
+        images.forEach((img) => {
+          img.dataset.imageObserved = "true";
+          loadImage(img);
+        });
         return;
       }
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            loadImage(entry.target);
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { rootMargin: "650px 0px", threshold: 0.01 });
+      if (!window.__liorImageObserver) {
+        window.__liorImageObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              loadImage(entry.target);
+              window.__liorImageObserver.unobserve(entry.target);
+            }
+          });
+        }, { rootMargin: "650px 0px", threshold: 0.01 });
+      }
 
       images.forEach((img) => {
         const shouldLoadImmediately = img.loading === "eager" || img.fetchPriority === "high";
 
         if (shouldLoadImmediately) {
+          img.dataset.imageObserved = "true";
           loadImage(img);
           return;
         }
 
-        observer.observe(img);
+        if (img.dataset.imageObserved === "true") return;
+        img.dataset.imageObserved = "true";
+        window.__liorImageObserver.observe(img);
       });
     }
 
@@ -3169,45 +3213,87 @@ ${productLine}
     }
 
     function setupSectionUnlockAnimations() {
-      const sections = document.querySelectorAll("main > section");
+      const sections = Array.from(document.querySelectorAll("main > section"));
 
       if (!sections.length) return;
 
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        sections.forEach((section) => section.classList.add("section-unlock", "is-unlocked"));
+      const unlockImmediately = window.matchMedia("(max-width: 768px)").matches ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+        !("IntersectionObserver" in window);
+
+      if (unlockImmediately) {
+        sections.forEach((section) => {
+          section.classList.add("section-unlock", "is-unlocked");
+          section.dataset.sectionUnlockReady = "true";
+        });
         return;
       }
 
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-unlocked");
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.12, rootMargin: "0px 0px -10% 0px" });
+      if (!window.__liorSectionUnlockObserver) {
+        window.__liorSectionUnlockObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-unlocked");
+              window.__liorSectionUnlockObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.12, rootMargin: "0px 0px -10% 0px" });
+      }
 
       sections.forEach((section, index) => {
         section.classList.add("section-unlock");
-        if (index === 0) {
-          section.classList.add("is-unlocked");
+        if (section.classList.contains("is-unlocked")) {
+          section.dataset.sectionUnlockReady = "true";
           return;
         }
-        observer.observe(section);
+        if (index === 0) {
+          section.classList.add("is-unlocked");
+          section.dataset.sectionUnlockReady = "true";
+          return;
+        }
+        if (section.dataset.sectionUnlockReady === "true") return;
+        section.dataset.sectionUnlockReady = "true";
+        window.__liorSectionUnlockObserver.observe(section);
       });
     }
 
     function setupRevealAnimations() {
-      const observer = new IntersectionObserver((entries) => {
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
-          }
-        });
-      }, { threshold: 0.14 });
+      const reveals = Array.from(document.querySelectorAll(".reveal"));
 
-      document.querySelectorAll(".reveal").forEach((el) => observer.observe(el));
+      if (!reveals.length) return;
+
+      const revealImmediately = window.matchMedia("(max-width: 768px)").matches ||
+        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+        !("IntersectionObserver" in window);
+
+      if (revealImmediately) {
+        reveals.forEach((el) => {
+          el.classList.add("is-visible");
+          el.dataset.revealReady = "true";
+        });
+        return;
+      }
+
+      if (!window.__liorRevealObserver) {
+        window.__liorRevealObserver = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              window.__liorRevealObserver.unobserve(entry.target);
+            }
+          });
+        }, { threshold: 0.14 });
+      }
+
+      reveals.forEach((el) => {
+        if (el.classList.contains("is-visible")) {
+          el.dataset.revealReady = "true";
+          return;
+        }
+        if (el.dataset.revealReady === "true") return;
+        el.dataset.revealReady = "true";
+        window.__liorRevealObserver.observe(el);
+      });
     }
 
     function setupMobileMenu() {
@@ -3313,6 +3399,19 @@ ${productLine}
 
       setTimeout(() => load(0), 200);
     }
+
+
+    window.addEventListener("pageshow", () => {
+      document.querySelectorAll(".reveal, .section-unlock").forEach((el) => {
+        el.classList.add("is-visible");
+        el.classList.add("is-unlocked");
+      });
+
+      document.querySelectorAll("img[data-img], img[data-product-image]").forEach((img) => {
+        img.style.opacity = "1";
+        if (img.complete && img.naturalWidth) img.classList.add("is-loaded");
+      });
+    });
 
     document.addEventListener("DOMContentLoaded", () => {
 

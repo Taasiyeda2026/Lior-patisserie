@@ -60,10 +60,15 @@
     const fallbackSrc = img.getAttribute("src") || "";
     const fallbackDataImg = img.dataset.img || img.dataset.productImage || "";
 
-    img.classList.remove("is-loaded");
+    const nextSrc = imageUrl.trim();
     img.onload = function () {
       img.classList.add("is-loaded");
     };
+
+    if (img.getAttribute("src") === nextSrc) {
+      if (img.complete && img.naturalWidth) img.classList.add("is-loaded");
+      return;
+    }
     img.onerror = function () {
       img.onerror = null;
       if (fallbackDataImg && typeof window.setImageWithFallback === "function") {
@@ -72,7 +77,8 @@
       }
       if (fallbackSrc) img.src = fallbackSrc;
     };
-    img.src = imageUrl.trim();
+    img.classList.remove("is-loaded");
+    img.src = nextSrc;
   }
 
   function applyTextSettings(settings) {
@@ -146,17 +152,51 @@
     return getLocalProductImage(product.name || "");
   }
 
+
+  function productSignatureValue(product) {
+    return [
+      product.name || "",
+      product.description || "",
+      productImageValue(product) || ""
+    ].map((value) => String(value).trim()).join("||");
+  }
+
+  function productsSignature(productsList) {
+    return productsList.map(productSignatureValue).join("@@");
+  }
+
+  function currentProductsSignature(grid) {
+    const cards = Array.from(grid.querySelectorAll(".product-card"));
+    if (!cards.length) return "";
+
+    return cards.map((card) => {
+      const image = card.querySelector("img");
+      return [
+        card.querySelector("h3")?.textContent || "",
+        card.querySelector("p")?.textContent || "",
+        image?.dataset.productImage || image?.dataset.fallbackImage || image?.getAttribute("src") || ""
+      ].map((value) => String(value).trim()).join("||");
+    }).join("@@");
+  }
+
   function renderManagedProducts(rows) {
     const grid = document.getElementById("productsGrid");
-    if (!grid || !Array.isArray(rows)) return;
+    if (!grid || !Array.isArray(rows) || !rows.length) return;
 
     const activeProducts = rows
-      .filter((product) => product && product.is_active !== false)
+      .filter((product) => product && product.is_active !== false && hasText(product.name))
       .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
 
-    if (!rows.length) return;
+    if (!activeProducts.length) return;
 
-    grid.innerHTML = activeProducts.map((product) => {
+    const nextSignature = productsSignature(activeProducts);
+    const previousSignature = grid.dataset.productsSignature || currentProductsSignature(grid);
+    if (nextSignature && nextSignature === previousSignature) {
+      grid.dataset.productsSignature = nextSignature;
+      return;
+    }
+
+    const nextHtml = activeProducts.map((product) => {
       const imageValue = productImageValue(product);
       const localFallback = getLocalProductImage(product.name || "");
       const localName = hasText(product.image_url) ? "" : imageValue;
@@ -164,7 +204,7 @@
       const dataAttr = localName ? `data-product-image="${escapeHtml(localName)}"` : "";
 
       return `
-        <article class="product-card reveal">
+        <article class="product-card reveal is-visible" data-reveal-ready="true">
           <div class="product-image">
             <img ${srcAttr} ${dataAttr} alt="${escapeHtml(product.name || "")}" width="1200" height="1032" loading="lazy" decoding="async">
           </div>
@@ -178,6 +218,14 @@
         </article>
       `;
     }).join("");
+
+    if (grid.innerHTML.trim() === nextHtml.trim()) {
+      grid.dataset.productsSignature = nextSignature;
+      return;
+    }
+
+    grid.innerHTML = nextHtml;
+    grid.dataset.productsSignature = nextSignature;
 
     grid.querySelectorAll("img[data-fallback-image]").forEach((img) => {
       const fallback = img.dataset.fallbackImage;
