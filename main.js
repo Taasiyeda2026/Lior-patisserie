@@ -667,4 +667,26 @@ ${productLine}
       setupNavDots();
       setupInstagramLinks();
       preloadAllImages();
+      setupHiddenAdminEntry();
     });
+
+    let hiddenAdminClickCount = 0;
+    let hiddenAdminTimer = null;
+
+    function setupHiddenAdminEntry() {
+      const trigger = document.querySelector('[data-admin-trigger="true"]');
+      if (!trigger) return;
+      trigger.addEventListener("click", function (event) {
+        hiddenAdminClickCount += 1;
+        clearTimeout(hiddenAdminTimer);
+        hiddenAdminTimer = setTimeout(function () {
+          hiddenAdminClickCount = 0;
+        }, 3000);
+        if (hiddenAdminClickCount >= 3) {
+          event.preventDefault();
+          hiddenAdminClickCount = 0;
+          clearTimeout(hiddenAdminTimer);
+          window.location.href = "lior-admin.html";
+        }
+      });
+    }

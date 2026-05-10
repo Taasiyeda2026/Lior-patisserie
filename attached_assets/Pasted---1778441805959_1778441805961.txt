@@ -1,0 +1,108 @@
+צריך לתקן את האתר כך שיופיע לוגו גלוי וברור באתר הרגיל, ולא להשתמש בשם המותג בלבד כתחליף ללוגו.
+
+דרישות:
+
+1. להוסיף לוגו גלוי לאתר הראשי index.html.
+   להשתמש בקובץ הלוגו הקיים אם קיים:
+   assets/logo.png
+
+2. למקם את הלוגו באזור העליון של האתר, כחלק מה־header / hero.
+   הלוגו צריך להרגיש חלק מהמיתוג, לא מדבקה ולא אלמנט זר.
+
+3. הלוגו צריך להיות בגודל מאוזן:
+   בדסקטופ: בערך 72px–96px
+   במובייל: בערך 56px–72px
+
+4. הלוגו צריך להיות רספונסיבי:
+   לא להימתח
+   לא להיחתך
+   לא לשבור את מבנה העמוד
+   לשמור על aspect-ratio
+
+5. אם יש אזור מותג עם הטקסט:
+   Lior’s Pâtisserie
+   הלוגו צריך להופיע לידו או מעליו בצורה אלגנטית.
+
+6. להוסיף ללוגו attribute ברור:
+   data-admin-trigger="true"
+
+7. להוסיף כניסה נסתרת לאדמין דרך הלוגו:
+   לחיצה 3 פעמים על הלוגו בתוך 3 שניות תעביר אל:
+   lior-admin.html
+
+8. אם עברו יותר מ־3 שניות בין הלחיצות, לאפס את הספירה.
+
+9. לא להציג כפתור אדמין גלוי.
+
+10. לא להציג הודעה לגולש בזמן הלחיצות.
+
+11. לא לשנות את העיצוב הכללי לרעה.
+    הלוגו צריך להשתלב עם השפה הקיימת של האתר:
+    יוקרתי, בוטיק, נקי, מתוק, אלגנטי.
+
+12. הכניסה עצמה לאדמין עדיין חייבת להיות מוגנת דרך Supabase Auth:
+    Username: lior
+    Password: הסיסמה שהוגדרה ב־Supabase
+
+13. לא לשים סיסמה בקוד.
+14. לא להשתמש ב־service_role key.
+15. לא לפתוח הרשאות כתיבה לציבור.
+
+דוגמת HTML אפשרית:
+
+<a class="brand-logo-link" href="index.html" aria-label="Lior’s Pâtisserie" data-admin-trigger="true">
+  <img class="brand-logo" src="assets/logo.png" alt="Lior’s Pâtisserie">
+</a>
+
+דוגמת CSS אפשרית:
+
+.brand-logo-link {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+}
+
+.brand-logo {
+  width: clamp(56px, 7vw, 96px);
+  height: auto;
+  display: block;
+  object-fit: contain;
+  filter: drop-shadow(0 10px 22px rgba(58, 28, 65, 0.18));
+}
+
+דוגמת JS:
+
+let hiddenAdminClickCount = 0;
+let hiddenAdminTimer = null;
+
+function setupHiddenAdminEntry() {
+  const trigger = document.querySelector('[data-admin-trigger="true"]');
+
+  if (!trigger) return;
+
+  trigger.addEventListener("click", function (event) {
+    hiddenAdminClickCount += 1;
+
+    clearTimeout(hiddenAdminTimer);
+    hiddenAdminTimer = setTimeout(function () {
+      hiddenAdminClickCount = 0;
+    }, 3000);
+
+    if (hiddenAdminClickCount >= 3) {
+      event.preventDefault();
+      hiddenAdminClickCount = 0;
+      clearTimeout(hiddenAdminTimer);
+      window.location.href = "lior-admin.html";
+    }
+  });
+}
+
+document.addEventListener("DOMContentLoaded", setupHiddenAdminEntry);
+
+בסיום:
+- לבצע commit.
+- לציין באילו קבצים בוצע שינוי.
+- לבדוק שהלוגו מופיע באתר הרגיל גם בדסקטופ וגם במובייל.
+- לבדוק שאין כפתור אדמין גלוי.
+- לבדוק שלחיצה 3 פעמים על הלוגו מעבירה ל־lior-admin.html.

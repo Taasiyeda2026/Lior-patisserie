@@ -411,14 +411,23 @@
       animation: fadeUp 0.55s ease both;
     }
 
-    .hero-logo {
-      width: clamp(132px, 18vw, 224px);
-      height: auto;
+    .brand-logo-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
       margin-top: clamp(18px, 8vh, 80px);
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .hero-logo {
+      width: clamp(72px, 6vw, 96px);
+      height: auto;
       object-fit: contain;
+      display: block;
       filter:
-        drop-shadow(0 18px 34px rgba(47, 33, 28, 0.28))
-        drop-shadow(0 2px 0 rgba(255, 249, 242, 0.24));
+        drop-shadow(0 10px 22px rgba(58, 28, 65, 0.18))
+        drop-shadow(0 2px 0 rgba(255, 249, 242, 0.22));
     }
 
     .home-hero-ctas {
@@ -1860,8 +1869,8 @@
       }
 
       .hero-logo {
-        width: clamp(118px, 36vw, 168px);
-        margin-top: clamp(18px, 7vh, 58px);
+        width: clamp(56px, 14vw, 72px);
+        margin-top: 0;
       }
 
       .home-opening {
