@@ -1,6 +1,6 @@
 .hero-brand-logo {
   top: 28% !important;
-  width: 170px !important;
+  width: 195px !important;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -31,7 +31,7 @@
 @media (max-width: 700px) {
   .hero-brand-logo {
     top: 26% !important;
-    width: 130px !important;
+    width: 148px !important;
   }
 
   .home-hero-panel {
