@@ -367,5 +367,6 @@ window.loadProducts = loadProducts;
 
 document.addEventListener("DOMContentLoaded", async () => {
   setupEvents();
+  setupHiddenAdminEntry();
   await checkExistingSession();
 });
