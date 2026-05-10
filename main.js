@@ -201,9 +201,7 @@ ${productLine}
           <div class="signature-body">
             <h3>${product.name}</h3>
             <p>${product.description}</p>
-            <a class="product-link" href="#" data-order data-product="${product.name}">
-              🛒 הוספה
-            </a>
+            <a class="product-link" href="#" data-order data-product="${product.name}">🛒</a>
           </div>
         </article>
       `).join("");
@@ -221,9 +219,7 @@ ${productLine}
           <div class="product-body">
             <h3>${product.name}</h3>
             <p>${product.description}</p>
-            <a class="product-link" href="#" data-order data-product="${product.name}">
-              🛒 הוספה
-            </a>
+            <a class="product-link" href="#" data-order data-product="${product.name}">🛒</a>
           </div>
         </article>
       `).join("");
