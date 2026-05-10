@@ -12,6 +12,32 @@
     }
     const INSTAGRAM_URL = "https://www.instagram.com/_liornahum_/";
 
+
+    const HERO_UNLOCK_STORAGE_KEY = "liorHeroUnlocked";
+
+    function isHeroUnlocked() {
+      return sessionStorage.getItem(HERO_UNLOCK_STORAGE_KEY) === "true";
+    }
+
+    function applyHeroLockState() {
+      const locked = !isHeroUnlocked();
+      document.documentElement.classList.toggle("hero-locked", locked);
+      if (document.body) {
+        document.body.classList.toggle("hero-locked", locked);
+      }
+    }
+
+    function setupHeroUnlock() {
+      applyHeroLockState();
+
+      document.querySelectorAll(".hero-scroll-link").forEach((link) => {
+        link.addEventListener("click", () => {
+          sessionStorage.setItem(HERO_UNLOCK_STORAGE_KEY, "true");
+          applyHeroLockState();
+        });
+      });
+    }
+
     const signatureProductNames = ["אוראו דרים", "קוקילוטוס", "פיסטצ׳יו", "שוקולד דובאי"];
 
     const products = [
@@ -176,7 +202,7 @@ ${productLine}
             <h3>${product.name}</h3>
             <p>${product.description}</p>
             <a class="product-link" href="#" data-order data-product="${product.name}">
-              הוספה להזמנה
+              🛒 הוספה
             </a>
           </div>
         </article>
@@ -196,7 +222,7 @@ ${productLine}
             <h3>${product.name}</h3>
             <p>${product.description}</p>
             <a class="product-link" href="#" data-order data-product="${product.name}">
-              הוספה להזמנה ←
+              🛒 הוספה
             </a>
           </div>
         </article>
@@ -833,6 +859,7 @@ ${productLine}
       updateActive();
     }
 
+      setupHeroUnlock();
       renderSignatureProducts();
       renderProducts();
       setupImages();

@@ -16,6 +16,11 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <link rel="preload" href="assets/fonts/IBMPlexSansHebrew-Regular.ttf" as="font" type="font/ttf" crossorigin>
+  <script>
+    if (!sessionStorage.getItem("liorHeroUnlocked")) {
+      document.documentElement.classList.add("hero-locked");
+    }
+  </script>
 
   <link rel="preload" as="image" href="prdimages/A7405559-hero.webp" fetchpriority="high">
 
