@@ -109,8 +109,8 @@
   }
 
   function buildWhatsAppUrl(phone, productName = "") {
-    const productLine = productName ? `שם המוצר: ${productName}` : "שם המוצר:";
-    const message = `שלום ליאור, אשמח לבצע הזמנה מ־Lior’s Pâtisserie.\n${productLine}\nכמות:\nתאריך רצוי:\nשם מלא:\nהערות:`;
+    const productLine = productName ? `מוצר / הזמנה: ${productName}` : "מוצר / הזמנה:";
+    const message = `שלום ליאור, אשמח לבצע הזמנה מ־Lior’s Pâtisserie.\n${productLine}\nכמות:\nשם מלא:\nטלפון:`;
     return `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
   }
 
