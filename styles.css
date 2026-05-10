@@ -88,6 +88,16 @@
       box-sizing: border-box;
     }
 
+    :focus-visible {
+      outline: 2px solid rgba(61, 34, 73, 0.70);
+      outline-offset: 3px;
+      border-radius: 4px;
+    }
+
+    :focus:not(:focus-visible) {
+      outline: none;
+    }
+
     html {
       scroll-behavior: smooth;
       scroll-snap-type: y proximity;
@@ -1825,6 +1835,36 @@
       display: inline-block;
       vertical-align: -0.12em;
       object-fit: contain;
+    }
+
+    .footer-legal {
+      margin: 6px 0 2px;
+      font-size: 0.76rem;
+      color: rgba(47, 33, 28, 0.44);
+    }
+
+    .footer-copy {
+      margin: 2px 0 0;
+      font-size: 0.76rem;
+      color: rgba(47, 33, 28, 0.38);
+    }
+
+    .footer-link {
+      color: rgba(61, 34, 73, 0.65);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+      text-decoration-color: rgba(61, 34, 73, 0.22);
+      transition: color 0.18s ease;
+    }
+
+    .footer-link:hover {
+      color: var(--plum);
+    }
+
+    .footer-link:focus-visible {
+      outline: 2px solid rgba(61, 34, 73, 0.55);
+      outline-offset: 3px;
+      border-radius: 3px;
     }
 
     .floating-wa {

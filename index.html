@@ -171,7 +171,14 @@
 
     <footer class="footer">
       <p class="ig-closing"><span data-content-key="instagram_sentence_text">לעוד רגעים מתוקים, טעמים חדשים והצצות מהמטבח - מוזמנים להמשיך איתנו</span> <a class="instagram-btn instagram-closing-link" href="https://www.instagram.com/_liornahum_/" target="_blank" rel="noopener noreferrer"><img src="assets/icons/instagram.svg" alt="" class="instagram-inline-icon"><span data-content-key="instagram_link_text">באינסטגרם</span></a>.</p>
-      © Lior’s Pâtisserie
+      <p class="footer-legal">
+        <a href="accessibility.html" class="footer-link">הצהרת נגישות</a>
+        <span aria-hidden="true"> · </span>
+        <a href="privacy.html" class="footer-link">מדיניות פרטיות ועוגיות</a>
+        <span aria-hidden="true"> · </span>
+        <a href="terms.html" class="footer-link">תנאי שימוש ומדיניות הזמנות</a>
+      </p>
+      <p class="footer-copy">© Lior’s Pâtisserie</p>
     </footer>
 
 
@@ -220,7 +227,7 @@
           <textarea id="orderNotes" name="orderNotes" placeholder="בקשות מיוחדות, כמות טעמים, איסוף או שאלה לליאור"></textarea>
         </div>
 
-        <div class="order-error" id="orderError">
+        <div class="order-error" id="orderError" role="alert" aria-live="assertive">
           יש למלא שם, טלפון והזמנה כדי לשלוח הזמנה.
         </div>
 
