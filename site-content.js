@@ -1,19 +1,54 @@
 (function () {
   const LOCAL_PRODUCT_DIR = "prdimages/";
-  const IMAGE_SETTINGS = ["hero_image", "instagram_image"];
+  const IMAGE_SETTINGS = [
+    "hero_image",
+    "hero_logo_image"
+  ];
   const TEXT_SETTINGS = [
+    "hero_scroll_button_text",
+    "flavors_title",
+    "flavors_intro_primary",
+    "flavors_intro_secondary",
+    "flavors_badge_text",
+    "flavors_order_button_text",
+    "handmade_label",
+    "handmade_title",
+    "handmade_text",
+    "contact_label",
+    "contact_title",
+    "contact_text",
+    "contact_email",
+    "contact_signature_text",
+    "whatsapp_number",
+    "instagram_url",
+    "instagram_sentence_text",
+    "instagram_link_text",
+    "order_button_text",
     "hero_title",
     "hero_subtitle",
     "hero_primary_button_text",
-    "hero_secondary_button_text",
-    "whatsapp_number",
-    "instagram_url",
-    "order_button_text",
     "pickup_delivery_text"
   ];
 
   function hasText(value) {
     return typeof value === "string" && value.trim().length > 0;
+  }
+
+  const LEGACY_TEXT_KEY_ALIASES = {
+    hero_title: "flavors_title",
+    hero_subtitle: "flavors_intro_primary",
+    hero_primary_button_text: "flavors_order_button_text",
+    pickup_delivery_text: "contact_text"
+  };
+
+  function normalizeSettings(settings) {
+    const normalized = { ...settings };
+    Object.entries(LEGACY_TEXT_KEY_ALIASES).forEach(([legacyKey, currentKey]) => {
+      if (!hasText(normalized[currentKey]) && hasText(normalized[legacyKey])) {
+        normalized[currentKey] = normalized[legacyKey];
+      }
+    });
+    return normalized;
   }
 
   function fallbackProducts() {
@@ -104,6 +139,18 @@
           link.target = "_blank";
           link.rel = "noopener noreferrer";
         }
+      });
+    }
+
+    if (typeof window.setLiorContactSettings === "function") {
+      window.setLiorContactSettings({ whatsappNumber: phone });
+    }
+
+    if (hasText(settings.contact_email)) {
+      const email = settings.contact_email.trim();
+      document.querySelectorAll("[data-email-link]").forEach((link) => {
+        link.href = `mailto:${email}`;
+        link.textContent = email;
       });
     }
 
@@ -320,7 +367,7 @@
       const client = window.getLiorSupabaseClient ? window.getLiorSupabaseClient() : null;
       if (!client) return;
 
-      const settings = await loadSettings();
+      const settings = normalizeSettings(await loadSettings());
       applyTextSettings(settings);
       applyContactSettings(settings);
       applyImageSettings(settings);
