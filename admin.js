@@ -8,6 +8,7 @@ const ADMIN_IDLE_TIMEOUT_MS = 15 * 60 * 1000;
 const ADMIN_LAST_ACTIVITY_KEY = "liorAdminLastActivity";
 const ADMIN_IDLE_LOCK_MESSAGE = "האדמין ננעל לאחר 15 דקות ללא פעילות. יש להתחבר מחדש.";
 const ADMIN_ACTIVITY_MOUSEMOVE_THROTTLE_MS = 1000;
+const ADMIN_ACTIVITY_SCROLL_THROTTLE_MS = 2000;
 
 const ADMIN_ACTIVITY_EVENT_OPTS = { capture: true, passive: true };
 
@@ -15,6 +16,7 @@ let adminIdleTimeoutId = null;
 let adminIdleListenersAttached = false;
 let adminIdleTracking = false;
 let adminIdleMouseThrottleAt = 0;
+let adminIdleScrollThrottleAt = 0;
 let adminIdleLocking = false;
 
 function onAdminWindowActivity(event) {
@@ -23,6 +25,11 @@ function onAdminWindowActivity(event) {
     const now = Date.now();
     if (now - adminIdleMouseThrottleAt < ADMIN_ACTIVITY_MOUSEMOVE_THROTTLE_MS) return;
     adminIdleMouseThrottleAt = now;
+  }
+  if (event && event.type === "scroll") {
+    const now = Date.now();
+    if (now - adminIdleScrollThrottleAt < ADMIN_ACTIVITY_SCROLL_THROTTLE_MS) return;
+    adminIdleScrollThrottleAt = now;
   }
   resetAdminIdleTimer();
 }
@@ -474,9 +481,9 @@ function hydrateProductGridCards(container) {
     }
     const raw = String(product.card_image_url || product.image_url || "").trim();
     const url = adminPreviewSrc(raw, { whenEmpty: "" });
-    img.onload = null;
-    img.onerror = null;
     if (!url) {
+      img.onload = null;
+      img.onerror = null;
       img.removeAttribute("src");
       img.classList.add("is-hidden");
       ph.hidden = false;
@@ -485,6 +492,12 @@ function hydrateProductGridCards(container) {
     ph.hidden = true;
     img.classList.remove("is-hidden");
     img.alt = String(product.name || "");
+    // Skip network request if the same image is already fully loaded
+    if (img.getAttribute("src") === url && img.complete && img.naturalWidth > 0) {
+      return;
+    }
+    img.onload = null;
+    img.onerror = null;
     img.onload = function () {
       if (img.naturalWidth > 0) ph.hidden = true;
     };
@@ -681,12 +694,100 @@ function rerenderProductGrid() {
   refreshProductDrawerFormIfOpen();
 }
 
+/**
+ * Update a single product card in the admin grid without rebuilding the whole DOM.
+ * Returns true if the card was found and updated in place, false if a full rebuild is needed.
+ */
+function tryUpdateProductCardInPlace(productId) {
+  const product = adminProductsCache.find((p) => String(p.id) === String(productId));
+  if (!product) return false;
+
+  const card = document.querySelector(`.product-grid-card[data-product-id="${CSS.escape(String(productId))}"]`);
+  if (!card) return false;
+
+  const isActive = product.is_active !== false;
+  const nameRaw = String(product.name || "").trim() || "ללא שם";
+
+  // Active state + aria-label
+  card.classList.toggle("product-grid-card--inactive", !isActive);
+  card.setAttribute("aria-label", `עריכה: ${escapeHtml(nameRaw)}`);
+
+  // Name
+  const nameEl = card.querySelector(".product-grid-card-name");
+  if (nameEl) nameEl.textContent = nameRaw;
+
+  // Price
+  const priceRaw = product.price != null ? String(product.price).trim() : "";
+  let priceEl = card.querySelector(".product-grid-card-price");
+  if (priceRaw) {
+    if (!priceEl) {
+      priceEl = document.createElement("span");
+      priceEl.className = "product-grid-card-price";
+      const meta = card.querySelector(".product-grid-card-meta");
+      if (meta) meta.insertBefore(priceEl, nameEl ? nameEl.nextSibling : null);
+    }
+    priceEl.textContent = priceRaw;
+  } else if (priceEl) {
+    priceEl.remove();
+  }
+
+  // Active badge
+  let badgeEl = card.querySelector(".product-grid-card-badge");
+  if (!isActive) {
+    if (!badgeEl) {
+      badgeEl = document.createElement("span");
+      badgeEl.className = "product-grid-card-badge";
+      badgeEl.textContent = "מוסתר";
+      const meta = card.querySelector(".product-grid-card-meta");
+      if (meta) meta.appendChild(badgeEl);
+    }
+  } else if (badgeEl) {
+    badgeEl.remove();
+  }
+
+  // Image
+  const img = card.querySelector(".product-grid-card-img");
+  const ph = card.querySelector(".product-grid-card-noimg");
+  if (img && ph) {
+    const raw = String(product.card_image_url || product.image_url || "").trim();
+    const url = adminPreviewSrc(raw, { whenEmpty: "" });
+    if (!url) {
+      img.onload = null;
+      img.onerror = null;
+      img.removeAttribute("src");
+      img.classList.add("is-hidden");
+      ph.hidden = false;
+    } else {
+      ph.hidden = true;
+      img.classList.remove("is-hidden");
+      img.alt = nameRaw;
+      if (img.getAttribute("src") !== url) {
+        img.onload = null;
+        img.onerror = null;
+        img.onload = function () { if (img.naturalWidth > 0) ph.hidden = true; };
+        img.onerror = function () {
+          img.removeAttribute("src");
+          img.classList.add("is-hidden");
+          ph.hidden = false;
+        };
+        img.src = url;
+      }
+    }
+  }
+
+  return true;
+}
+
 async function saveProduct(root) {
   const payload = rowPayload(root, "product");
   const { error } = await client().from("products").upsert(payload, { onConflict: "id" });
   if (error) throw error;
   updateProductInCache(payload);
-  rerenderProductGrid();
+  // Update only the changed card without rebuilding the entire grid; fall back
+  // to a full rebuild only when the product is new (not yet in the DOM)
+  if (!tryUpdateProductCardInPlace(payload.id)) {
+    rerenderProductGrid();
+  }
   showNotice("products", "המוצר נשמר בהצלחה");
 }
 
@@ -709,7 +810,9 @@ async function toggleProductActive(root) {
   btn.className = `admin-button ${newActive ? "muted" : "secondary"}`;
   if (select) select.value = String(newActive);
   updateProductInCache({ id, is_active: newActive, updated_at: now });
-  rerenderProductGrid();
+  if (!tryUpdateProductCardInPlace(id)) {
+    rerenderProductGrid();
+  }
   showNotice("products", newActive ? "המוצר מוצג באתר" : "המוצר הוסתר מהאתר");
 }
 

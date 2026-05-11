@@ -353,19 +353,46 @@
 
   function hydrateGridImages(grid) {
     grid.querySelectorAll(".product-image img").forEach((img) => {
-      const dataCard = (img.getAttribute("data-product-image") || "").trim();
       const srcAttr = (img.getAttribute("src") || "").trim();
-      const primary = dataCard || (/^https?:\/\//i.test(srcAttr) || srcAttr.startsWith("//") ? srcAttr : "");
-      const fullFb = (img.dataset.fullImage || "").trim();
-      const seed = primary || fullFb;
-      if (typeof window.setImageWithFallback === "function" && seed) {
-        window.setImageWithFallback(img, seed);
-      } else if (window.LIOR_IMAGE_PLACEHOLDER) {
-        img.src = window.LIOR_IMAGE_PLACEHOLDER;
-        img.classList.add("is-loaded");
+      const isRemoteSrc = /^https?:\/\//i.test(srcAttr) || srcAttr.startsWith("//");
+
+      if (isRemoteSrc) {
+        // Remote src set directly in HTML - browser already started fetching; just wire handlers
+        if (img.complete && img.naturalWidth > 0) {
+          img.dataset.imageReady = "true";
+          img.classList.add("is-loaded");
+        } else if (!img.onload) {
+          img.onload = function () {
+            img.dataset.imageReady = "true";
+            img.classList.add("is-loaded");
+          };
+        }
+        img.dataset.imageQueued = "loaded";
+        img.dataset.imageObserved = "true";
+        return;
       }
-      img.dataset.imageQueued = "loaded";
-      img.dataset.imageObserved = "true";
+
+      // Local image with data-product-image / data-full-image attributes
+      const dataCard = (img.getAttribute("data-product-image") || "").trim();
+      const fullFb = (img.dataset.fullImage || "").trim();
+      const seed = dataCard || fullFb;
+      if (!seed) return;
+
+      const isEager =
+        img.getAttribute("loading") === "eager" ||
+        img.getAttribute("fetchpriority") === "high" ||
+        img.fetchPriority === "high";
+
+      if (isEager) {
+        // Eagerly load images near the top of the grid
+        if (typeof window.setImageWithFallback === "function") {
+          window.setImageWithFallback(img, seed);
+        }
+        img.dataset.imageQueued = "loaded";
+        img.dataset.imageObserved = "true";
+      }
+      // Lazy local images: leave imageQueued/imageObserved unset so setupImages
+      // can observe them via IntersectionObserver and load on scroll
     });
   }
 
@@ -374,12 +401,22 @@
     if (!grid) return;
     const section = grid.closest(".category-section");
     if (!products.length) {
-      grid.innerHTML = "";
+      clearManagedProducts(grid);
       if (section) section.hidden = true;
       return;
     }
     if (section) section.hidden = false;
+
+    // Only rebuild DOM when the data has actually changed - avoids re-creating img elements
+    // (which strips is-loaded and forces re-fetch) on every Supabase poll / page event
+    const sig = productsSignature(products);
+    if (grid.dataset.productsSignature === sig) {
+      hydrateGridImages(grid);
+      return;
+    }
+
     grid.innerHTML = products.map((product, i) => buildProductCardHtml(product, startIndex + i)).join("");
+    grid.dataset.productsSignature = sig;
     hydrateGridImages(grid);
   }
 
