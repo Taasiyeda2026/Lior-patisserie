@@ -54,7 +54,6 @@
         <a href="#flavorsPanel">אזור הטעמים</a>
         <a href="#productsPanel">מוצרים וטעמים</a>
         <a href="#handmadePanel">עבודת יד</a>
-        <a href="#galleryPanel">גלריה</a>
         <a href="#contactPanel">פרטי קשר</a>
         <a href="#instagramPanel">אינסטגרם</a>
       </nav>
@@ -140,8 +139,27 @@
           <button id="addProduct" class="admin-button" type="button">הוספת מוצר חדש</button>
           <div class="notice" data-notice="products"></div>
         </div>
-        <div id="productsAdmin" class="stack-list"></div>
+        <div id="productsAdmin" class="products-admin-grid"></div>
       </section>
+
+      <div id="productDrawerBackdrop" class="product-drawer-backdrop" hidden aria-hidden="true"></div>
+      <aside
+        id="productDrawer"
+        class="product-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="productDrawerTitle"
+        aria-hidden="true"
+        hidden
+      >
+        <div class="product-drawer-inner">
+          <header class="product-drawer-header">
+            <h3 id="productDrawerTitle" class="product-drawer-title">עריכת מוצר</h3>
+            <button type="button" class="product-drawer-close" id="productDrawerClose" aria-label="סגירת עריכת מוצר">×</button>
+          </header>
+          <div id="productDrawerBody" class="product-drawer-body"></div>
+        </div>
+      </aside>
 
       <section class="editor-card" id="handmadePanel">
         <div class="section-heading">
@@ -178,24 +196,9 @@
         <div class="notice" data-notice="features"></div>
       </section>
 
-      <section class="editor-card" id="galleryPanel">
-        <div class="section-heading">
-          <span class="section-number">05</span>
-          <div>
-            <h2>גלריה</h2>
-            <p>תמונות שמוצגות באתר בקטע גלריה קומפקטי. העלאה ל־bucket בשם site-images (כמו שאר האתר).</p>
-          </div>
-        </div>
-        <div class="actions-row top-action">
-          <button id="addGalleryImage" class="admin-button" type="button">הוספת תמונה לגלריה</button>
-          <div class="notice" data-notice="gallery"></div>
-        </div>
-        <div id="galleryAdmin" class="stack-list"></div>
-      </section>
-
       <section class="editor-card" id="contactPanel">
         <div class="section-heading">
-          <span class="section-number">06</span>
+          <span class="section-number">05</span>
           <div>
             <h2>פרטי קשר</h2>
             <p>פרטי הקשר והטקסטים שמופיעים באזור הסיום באתר.</p>
@@ -232,7 +235,7 @@
 
       <section class="editor-card" id="instagramPanel">
         <div class="section-heading">
-          <span class="section-number">07</span>
+          <span class="section-number">06</span>
           <div>
             <h2>אינסטגרם</h2>
             <p>משפט הסיום בפוטר וקישור לאינסטגרם.</p>

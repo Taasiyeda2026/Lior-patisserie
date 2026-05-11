@@ -26,7 +26,7 @@ window.normalizeImagePath = function normalizeImagePath(value) {
   return `prdimages/${path}`;
 };
 
-/** Shown when a product/gallery image has no working URL (data URI SVG). */
+/** Shown when a product image has no working URL (data URI SVG). */
 window.LIOR_IMAGE_PLACEHOLDER =
   "data:image/svg+xml," +
   encodeURIComponent(

@@ -934,14 +934,6 @@ ${productLine}
             const fullName = productImg.dataset.fullImage;
             const src = fullName ? imagePath(fullName) : (productImg.currentSrc || productImg.src);
             openImageLightbox(src, productImg.alt || "");
-            return;
-          }
-          const galleryThumb = event.target.closest(".gallery-thumb[data-lightbox-src]");
-          if (galleryThumb) {
-            const src = galleryThumb.dataset.lightboxSrc || "";
-            if (!src) return;
-            const img = galleryThumb.querySelector("img");
-            openImageLightbox(src, (img && img.alt) || galleryThumb.getAttribute("aria-label") || "");
           }
         });
       }

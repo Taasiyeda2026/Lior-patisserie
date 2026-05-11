@@ -441,79 +441,6 @@
     return data;
   }
 
-  function setGallerySectionVisible(hasImages) {
-    const section = document.getElementById("gallerySection");
-    const navDot = document.getElementById("galleryNavDot");
-    if (section) section.hidden = !hasImages;
-    if (navDot) navDot.hidden = !hasImages;
-  }
-
-  function renderGallery(rows) {
-    const grid = document.getElementById("galleryGrid");
-    if (!grid || !Array.isArray(rows)) return;
-
-    const activeItems = rows
-      .filter((item) => item && item.is_active === true && hasText(item.image_url))
-      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
-
-    if (!activeItems.length) {
-      grid.innerHTML = "";
-      setGallerySectionVisible(false);
-      if (typeof window.__liorRefreshSectionNav === "function") {
-        window.__liorRefreshSectionNav();
-      }
-      return;
-    }
-
-    const labelFor = (item) => {
-      const t = hasText(item.title) ? item.title.trim() : "";
-      const a = hasText(item.alt_text) ? item.alt_text.trim() : "";
-      return t || a || "הגדלת תמונה";
-    };
-
-    grid.innerHTML = activeItems.map((item) => {
-      const rawPath = item.image_url.trim();
-      const url = normalizeProductMediaPath(rawPath);
-      const altRaw = hasText(item.alt_text)
-        ? item.alt_text.trim()
-        : (hasText(item.title) ? item.title.trim() : "");
-      const imgAlt = hasText(altRaw) ? altRaw : "תמונה מהגלריה של Lior's Pâtisserie";
-      return `
-        <button type="button" class="gallery-thumb reveal is-visible" data-reveal-ready="true" role="listitem" data-lightbox-src="${escapeHtml(url)}" aria-label="${escapeHtml(labelFor(item))}">
-          <img src="${escapeHtml(url)}" data-img="${escapeHtml(rawPath)}" alt="${escapeHtml(imgAlt)}" width="480" height="360" loading="lazy" decoding="async">
-        </button>
-      `;
-    }).join("");
-
-    setGallerySectionVisible(true);
-    refreshDynamicBehaviors();
-    if (typeof window.__liorRefreshSectionNav === "function") {
-      window.__liorRefreshSectionNav();
-    }
-  }
-
-  async function loadGallery() {
-    const client = window.getLiorSupabaseClient ? window.getLiorSupabaseClient() : null;
-    if (!client) return [];
-
-    const { data, error } = await client
-      .from("gallery_images")
-      .select("id,title,image_url,alt_text,is_active,display_order")
-      .order("display_order", { ascending: true });
-
-    if (error || !Array.isArray(data)) {
-      const grid = document.getElementById("galleryGrid");
-      if (grid) grid.innerHTML = "";
-      setGallerySectionVisible(false);
-      if (typeof window.__liorRefreshSectionNav === "function") {
-        window.__liorRefreshSectionNav();
-      }
-      return [];
-    }
-    renderGallery(data);
-    return data;
-  }
-
   function refreshDynamicBehaviors() {
     if (typeof window.setupImages === "function") window.setupImages();
     if (typeof window.setupRevealAnimations === "function") window.setupRevealAnimations();
@@ -538,7 +465,7 @@
       applyTextSettings(settings);
       applyContactSettings(settings);
       applyImageSettings(settings);
-      await Promise.all([loadProducts(), loadFeatures(), loadGallery()]);
+      await Promise.all([loadProducts(), loadFeatures()]);
     } catch (error) {
       console.warn("Supabase content could not be loaded. Local fallback content remains active.", error);
     }
