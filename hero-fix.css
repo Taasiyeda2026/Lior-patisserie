@@ -1,6 +1,6 @@
 /* Final hero positioning tuned for the boutique redesign. */
 .hero-brand-logo {
-  top: 22% !important;
+  top: 30% !important;
   width: clamp(210px, 24vw, 290px) !important;
   background: transparent !important;
   border: 0 !important;
