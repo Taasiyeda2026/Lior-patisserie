@@ -75,16 +75,19 @@ ${productLine}
       return typeof window.normalizeImagePath === "function"
         ? window.normalizeImagePath(name)
         : (function fallbackNormalize(v) {
-          const path = String(v || "").trim();
+          const path = String(v || "").trim().replace(/\\/g, "/");
           if (!path) return "";
-          if (/^https?:\/\//i.test(path) || path.startsWith("/")) return path;
-          if (path.startsWith("prdimages/")) return path;
+          if (/^https?:\/\//i.test(path) || path.startsWith("//") || path.startsWith("/")) return path;
+          if (/^prdimages\//i.test(path)) return path.replace(/^prdimages\//i, "prdimages/");
           return `prdimages/${path}`;
         })(name);
     }
 
     function setImageWithFallback(img, name) {
-      const base = imagePath(name);
+      const raw = String(name || "").trim();
+      const base = typeof window.normalizeImagePath === "function"
+        ? window.normalizeImagePath(raw)
+        : imagePath(raw);
       const hasExtension = /\.[a-zA-Z0-9]+$/.test(base);
       const fullImageName = img.dataset.fullImage || "";
 
