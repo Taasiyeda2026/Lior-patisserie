@@ -250,6 +250,13 @@
     return productImageValue(product);
   }
 
+  /** True when a dedicated card file exists (not only falling back to full image_url). */
+  function hasExplicitCardSource(product) {
+    if (hasText(product.card_image_url)) return true;
+    const match = fallbackProducts().find((item) => item.name === product.name);
+    return !!(match && hasText(match.cardImage));
+  }
+
   function isRemoteImageValue(value) {
     const s = String(value || "").trim();
     return /^https?:\/\//i.test(s) || s.startsWith("//") || s.startsWith("/");
@@ -322,10 +329,24 @@
       const fullImageValue = productImageValue(product);
       const cardImageValue = productCardImageValue(product);
       const fullForLightbox = hasText(fullImageValue) ? fullImageValue : cardImageValue;
-      const isRemoteCard = isRemoteImageValue(cardImageValue);
-      const srcAttr = isRemoteCard && hasText(cardImageValue) ? `src="${escapeHtml(cardImageValue)}"` : "";
-      const dataAttr = !isRemoteCard && hasText(cardImageValue) ? `data-product-image="${escapeHtml(cardImageValue)}"` : "";
+      const explicitCard = hasExplicitCardSource(product);
+      const isRemoteGrid = isRemoteImageValue(cardImageValue);
+
+      let srcAttr = "";
+      let dataAttr = "";
+      if (hasText(cardImageValue)) {
+        if (explicitCard && isRemoteGrid) {
+          srcAttr = `src="${escapeHtml(cardImageValue)}"`;
+        } else {
+          dataAttr = `data-product-image="${escapeHtml(cardImageValue)}"`;
+        }
+      }
+
       const fullAttr = hasText(fullForLightbox) ? `data-full-image="${escapeHtml(fullForLightbox)}"` : "";
+
+      const eagerFirst = explicitCard && isRemoteGrid && index < 4;
+      const loadingAttr = eagerFirst ? "eager" : "lazy";
+      const fetchPri = eagerFirst ? "high" : "low";
 
       const priceLabel = hasDisplayablePrice(product) ? formatProductPriceLabel(product) : "";
       const priceBlock = priceLabel
@@ -335,7 +356,7 @@
       return `
         <article class="product-card reveal is-visible" data-reveal-ready="true">
           <div class="product-image">
-            <img ${srcAttr} ${dataAttr} ${fullAttr} alt="${escapeHtml(product.name || "")}" width="800" height="688" loading="${index < 4 ? "eager" : "lazy"}" fetchpriority="${index < 4 ? "high" : "auto"}" decoding="async">
+            <img ${srcAttr} ${dataAttr} ${fullAttr} alt="${escapeHtml(product.name || "")}" width="800" height="688" loading="${loadingAttr}" fetchpriority="${fetchPri}" decoding="async">
           </div>
           <div class="product-body">
             <h3>${escapeHtml(product.name || "")}</h3>
@@ -443,7 +464,9 @@
   function refreshDynamicBehaviors() {
     if (typeof window.setupImages === "function") window.setupImages();
     if (typeof window.setupRevealAnimations === "function") window.setupRevealAnimations();
-    if (typeof window.setupImageLightbox === "function") window.setupImageLightbox();
+    if (typeof window.setupImageLightbox === "function" && !window.__liorImageLightboxInitialized) {
+      window.setupImageLightbox();
+    }
   }
 
   function escapeHtml(value) {

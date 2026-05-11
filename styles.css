@@ -3148,18 +3148,25 @@
       position: fixed;
       inset: 0;
       z-index: 120;
-      display: none;
+      display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       padding: clamp(14px, 3vw, 28px);
-      background:
-        radial-gradient(circle at center, rgba(247, 240, 230, 0.08), transparent 42%),
-        rgba(38, 24, 20, 0.50);
-      backdrop-filter: blur(5px);
+      box-sizing: border-box;
+      background: rgba(20, 10, 25, 0.72);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.16s ease, visibility 0.16s ease;
     }
 
     .image-lightbox.is-open {
-      display: flex;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
     }
 
     .image-lightbox img {
@@ -3168,12 +3175,34 @@
       width: auto;
       height: auto;
       object-fit: contain;
-      border-radius: 20px;
+      border-radius: 16px;
       box-shadow:
-        0 30px 90px rgba(0, 0, 0, 0.34),
-        0 8px 24px rgba(47, 33, 28, 0.22);
+        0 12px 40px rgba(0, 0, 0, 0.22),
+        0 4px 12px rgba(47, 33, 28, 0.14);
       cursor: default;
-      animation: lightboxIn 0.12s ease both;
+      transition: opacity 0.16s ease;
+      opacity: 1;
+    }
+
+    .image-lightbox.is-loading img {
+      opacity: 0.35;
+    }
+
+    .image-lightbox.is-error img {
+      display: none;
+    }
+
+    .image-lightbox-status {
+      margin: 10px auto 0;
+      max-width: min(480px, 90vw);
+      font-size: 0.88rem;
+      line-height: 1.45;
+      text-align: center;
+      color: rgba(255, 249, 242, 0.92);
+    }
+
+    .image-lightbox-status[hidden] {
+      display: none !important;
     }
 
     .image-lightbox-close {
@@ -3183,30 +3212,20 @@
       width: 40px;
       height: 40px;
       border-radius: 999px;
-      border: 1px solid rgba(255, 250, 243, 0.38);
-      background: rgba(255, 250, 243, 0.18);
+      border: 1px solid rgba(255, 250, 243, 0.35);
+      background: rgba(40, 28, 36, 0.55);
       color: #fffaf3;
       font-size: 1.35rem;
       cursor: pointer;
       line-height: 1;
-      backdrop-filter: blur(8px);
-      box-shadow: 0 10px 26px rgba(47, 33, 28, 0.20);
+      backdrop-filter: none;
+      -webkit-backdrop-filter: none;
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
     }
 
     .image-lightbox-close:focus-visible {
       outline: 2px solid rgba(255, 249, 242, 0.95);
       outline-offset: 3px;
-    }
-
-    @keyframes lightboxIn {
-      from {
-        opacity: 0;
-        transform: scale(0.94);
-      }
-      to {
-        opacity: 1;
-        transform: scale(1);
-      }
     }
 
     body.has-lightbox {
@@ -3221,7 +3240,7 @@
       .image-lightbox img {
         max-width: 94vw;
         max-height: 82svh;
-        border-radius: 18px;
+        border-radius: 14px;
       }
 
       .image-lightbox-close {

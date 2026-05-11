@@ -1,4 +1,5 @@
-const WEBP_QUALITY = 0.82;
+const WEBP_QUALITY = 0.8;
+const PRODUCT_CARD_RESIZE_MAX = 768;
 const BUCKET = (window.LIOR_SUPABASE_CONFIG && window.LIOR_SUPABASE_CONFIG.STORAGE_BUCKET) || "site-images";
 
 let adminProductsCache = [];
@@ -271,26 +272,86 @@ function canvasToBlob(canvas, type, quality) {
   return new Promise((resolve) => canvas.toBlob(resolve, type, quality));
 }
 
-async function convertImageToWebP(file, maxWidth) {
-  const image = await readImage(file);
-  const width = Math.min(image.width, Number(maxWidth) || image.width);
-  const height = Math.round(image.height * (width / image.width));
+async function imageToWebPBlob(image, maxWidth) {
+  const naturalW = image.naturalWidth || image.width;
+  const naturalH = image.naturalHeight || image.height;
+  if (!naturalW) return null;
+  const w = Math.min(naturalW, Number(maxWidth) || naturalW);
+  const h = Math.round(naturalH * (w / naturalW));
   const canvas = document.createElement("canvas");
-  canvas.width = width;
-  canvas.height = height;
+  canvas.width = w;
+  canvas.height = h;
   const ctx = canvas.getContext("2d");
-  ctx.clearRect(0, 0, width, height);
-  ctx.drawImage(image, 0, 0, width, height);
+  ctx.clearRect(0, 0, w, h);
+  ctx.drawImage(image, 0, 0, w, h);
 
   const webpBlob = await canvasToBlob(canvas, "image/webp", WEBP_QUALITY);
+  if (!webpBlob || webpBlob.type !== "image/webp") return null;
+  return webpBlob;
+}
+
+async function convertImageToWebP(file, maxWidth) {
+  const image = await readImage(file);
+  const webpBlob = await imageToWebPBlob(image, maxWidth);
   URL.revokeObjectURL(image.src);
 
-  if (!webpBlob || webpBlob.type !== "image/webp") {
+  if (!webpBlob) {
     showUploadMessage("הדפדפן לא תומך בהמרה ל־WebP. הקובץ המקורי יועלה כגיבוי בלבד.", false);
     return { blob: file, extension: file.name.split(".").pop() || "image", contentType: file.type || "application/octet-stream" };
   }
 
   return { blob: webpBlob, extension: "webp", contentType: "image/webp" };
+}
+
+async function uploadBlobToBucket(path, blob, contentType) {
+  const { error } = await client().storage.from(BUCKET).upload(path, blob, {
+    contentType,
+    upsert: false
+  });
+  if (error) throw error;
+  const { data } = client().storage.from(BUCKET).getPublicUrl(path);
+  return data.publicUrl;
+}
+
+/** Full-size product image plus a lighter card WebP when the card field is still empty. */
+async function uploadProductFullImageWithOptionalCard(file, folder, fullMaxWidth) {
+  if (!file) return { fullUrl: "", cardUrl: "" };
+  if (!/^image\/(png|jpe?g|webp)$/i.test(file.type || "")) {
+    throw new Error("ניתן להעלות רק PNG, JPG, JPEG או WEBP");
+  }
+
+  const image = await readImage(file);
+  const maxFull = Number(fullMaxWidth) || 1280;
+  const fullBlob = await imageToWebPBlob(image, maxFull);
+
+  if (!fullBlob) {
+    URL.revokeObjectURL(image.src);
+    const converted = await convertImageToWebP(file, maxFull);
+    const finalName = converted.extension === "webp" ? cleanFileName(file.name) : `${cleanFileName(file.name).replace(/\.webp$/, "")}.${converted.extension}`;
+    const path = `${folder || "uploads"}/${finalName}`;
+    const { error } = await client().storage.from(BUCKET).upload(path, converted.blob, {
+      contentType: converted.contentType,
+      upsert: false
+    });
+    if (error) throw error;
+    const { data } = client().storage.from(BUCKET).getPublicUrl(path);
+    return { fullUrl: data.publicUrl, cardUrl: "" };
+  }
+
+  const cardBlob = await imageToWebPBlob(image, PRODUCT_CARD_RESIZE_MAX);
+  URL.revokeObjectURL(image.src);
+
+  const base = cleanFileName(file.name).replace(/\.[^.]+$/i, "").replace(/\.webp$/i, "") || "product";
+  const stamp = Date.now();
+  const fullPath = `${folder || "products"}/${base}-${stamp}.webp`;
+  const cardPath = `${folder || "products"}/${base}-${stamp}-card.webp`;
+
+  const fullUrl = await uploadBlobToBucket(fullPath, fullBlob, "image/webp");
+  let cardUrl = "";
+  if (cardBlob) {
+    cardUrl = await uploadBlobToBucket(cardPath, cardBlob, "image/webp");
+  }
+  return { fullUrl, cardUrl };
 }
 
 async function uploadImageAsWebP(file, folder, maxWidth) {
@@ -489,7 +550,7 @@ function productDrawerFormTemplate(product = {}) {
           </div>
           <div>
             <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה מלאה או העלאה">
-            <input data-product-upload data-folder="products" data-max-width="900" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+            <input data-product-upload data-folder="products" data-max-width="1280" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </div>
         </div>
       </label>
@@ -501,7 +562,7 @@ function productDrawerFormTemplate(product = {}) {
           </div>
           <div>
             <input data-field="card_image_url" value="${escapeHtml(product.card_image_url || "")}" placeholder="כתובת תמונה או העלאה">
-            <input data-product-card-upload data-folder="products" data-max-width="900" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+            <input data-product-card-upload data-folder="products" data-max-width="768" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </div>
         </div>
       </label>
@@ -841,16 +902,38 @@ function setupEvents() {
     }
 
     try {
-      const url = await uploadImageAsWebP(file, fileInput.dataset.folder, fileInput.dataset.maxWidth);
+      let url = "";
+      let cardUrlExtra = "";
+      if (fileInput.matches("[data-product-upload]")) {
+        const pair = await uploadProductFullImageWithOptionalCard(file, fileInput.dataset.folder, fileInput.dataset.maxWidth);
+        url = pair.fullUrl || "";
+        cardUrlExtra = pair.cardUrl || "";
+      } else {
+        url = await uploadImageAsWebP(file, fileInput.dataset.folder, fileInput.dataset.maxWidth);
+      }
+
       let targetInput = null;
       if (fileInput.dataset.upload) {
         targetInput = document.querySelector(`[data-setting="${fileInput.dataset.upload}"]`);
       } else if (fileInput.matches("[data-product-card-upload]")) {
         targetInput = fileInput.closest(".image-tools")?.querySelector('[data-field="card_image_url"]');
+      } else if (fileInput.matches("[data-product-upload]")) {
+        targetInput = fileInput.closest(".image-tools")?.querySelector('[data-field="image_url"]');
       } else {
         targetInput = fileInput.parentElement.querySelector('[data-field="image_url"]');
       }
       if (targetInput) targetInput.value = String(url || "").trim();
+
+      if (fileInput.matches("[data-product-upload]") && cardUrlExtra) {
+        const form = fileInput.closest("#productDrawerForm");
+        const cardField = form?.querySelector('[data-field="card_image_url"]');
+        const cardShell = form?.querySelector('.admin-preview-shell[data-preview-field="card_image_url"]');
+        if (cardField && !String(cardField.value || "").trim()) {
+          cardField.value = String(cardUrlExtra).trim();
+          if (cardShell) syncAdminPreviewShell(cardShell);
+        }
+      }
+
       if (shellFromRow) syncAdminPreviewShell(shellFromRow);
       else if (settingShell) syncAdminPreviewShell(settingShell);
       else if (settingImg && url) {
