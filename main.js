@@ -325,6 +325,19 @@ ${productLine}
       });
     }
 
+    function setupContactWhatsappClicks() {
+      if (window.__liorContactWhatsappClickBound) return;
+      window.__liorContactWhatsappClickBound = true;
+      document.addEventListener("click", (event) => {
+        const link = event.target.closest("a[data-contact-whatsapp]");
+        if (!link) return;
+        event.preventDefault();
+        const url = buildGeneralWhatsAppUrl();
+        if (!url) return;
+        window.open(url, "_blank", "noopener,noreferrer");
+      });
+    }
+
     async function setupInstagramLinks() {
       let url = INSTAGRAM_URL;
       try {
@@ -1047,6 +1060,7 @@ ${productLine}
       }
       setupImages();
       setupWhatsappLinks();
+      setupContactWhatsappClicks();
       setupSectionUnlockAnimations();
       setupRevealAnimations();
       setupAddToCartButtons();
