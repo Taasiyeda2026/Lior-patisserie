@@ -1,5 +1,8 @@
 -- Lior's Pâtisserie Supabase schema
 -- Run in Supabase SQL Editor.
+--
+-- Existing databases that still have public.gallery_images: run drop-gallery-images.sql
+-- once before or after applying this schema refresh, then re-run policies section if needed.
 
 create extension if not exists "pgcrypto";
 
@@ -34,16 +37,6 @@ create table if not exists public.site_features (
   updated_at timestamp with time zone default now()
 );
 
-create table if not exists public.gallery_images (
-  id uuid primary key default gen_random_uuid(),
-  title text,
-  image_url text,
-  alt_text text,
-  is_active boolean default true,
-  display_order int default 0,
-  updated_at timestamp with time zone default now()
-);
-
 create or replace function public.set_updated_at()
 returns trigger
 language plpgsql
@@ -69,15 +62,9 @@ create trigger site_features_set_updated_at
 before update on public.site_features
 for each row execute function public.set_updated_at();
 
-drop trigger if exists gallery_images_set_updated_at on public.gallery_images;
-create trigger gallery_images_set_updated_at
-before update on public.gallery_images
-for each row execute function public.set_updated_at();
-
 alter table public.site_settings enable row level security;
 alter table public.products enable row level security;
 alter table public.site_features enable row level security;
-alter table public.gallery_images enable row level security;
 
 -- ── Public read (the static site on GitHub Pages) ──────────────────────────
 
@@ -99,19 +86,11 @@ on public.site_features for select
 to anon, authenticated
 using (true);
 
-drop policy if exists "Public read active gallery_images" on public.gallery_images;
-create policy "Public read active gallery_images"
-on public.gallery_images for select
-to anon, authenticated
-using (true);
-
 -- ── Remove old temporary anon write policies ───────────────────────────────
 
 drop policy if exists "Temporary anon write site_settings"  on public.site_settings;
 drop policy if exists "Temporary anon write products"       on public.products;
 drop policy if exists "Temporary anon write site_features"  on public.site_features;
-drop policy if exists "Temporary anon write gallery_images" on public.gallery_images;
-
 -- ── Authenticated write policies (admin only) ──────────────────────────────
 
 drop policy if exists "Authenticated write site_settings" on public.site_settings;
@@ -131,13 +110,6 @@ with check (true);
 drop policy if exists "Authenticated write site_features" on public.site_features;
 create policy "Authenticated write site_features"
 on public.site_features for all
-to authenticated
-using (true)
-with check (true);
-
-drop policy if exists "Authenticated write gallery_images" on public.gallery_images;
-create policy "Authenticated write gallery_images"
-on public.gallery_images for all
 to authenticated
 using (true)
 with check (true);

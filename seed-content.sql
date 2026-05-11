@@ -5,9 +5,6 @@
 --   * products, site_features: each row is inserted only if no row exists with the
 --     same natural key (name / title). No DELETE.
 --
---   * public.gallery_images: table may still exist in the schema but is not used by
---     the site or admin; this seed file does not insert gallery rows.
---
 -- Optional (not applied here): add UNIQUE constraints for stricter idempotent upserts, e.g.
 --   ALTER TABLE public.products ADD CONSTRAINT products_name_unique UNIQUE (name);
 -- Only add such constraints if you are sure there will never be duplicate display names.
