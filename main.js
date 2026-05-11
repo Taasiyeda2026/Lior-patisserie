@@ -1146,6 +1146,7 @@ ${productLine}
       setupFooterLegalMenu();
       setupInstagramLinks();   // async - runs in background, updates links when ready
       setupHiddenAdminEntry();
+      setupHeaderColorSwitch();
       setupOrderActionsVisibility();
     });
 
@@ -1224,6 +1225,35 @@ ${productLine}
         },
         true
       );
+    }
+
+    function setupHeaderColorSwitch() {
+      const header = document.querySelector(".site-header");
+      if (!header || !("IntersectionObserver" in window)) return;
+
+      const lightSections = document.querySelectorAll(".editorial, .contact-section, .final");
+      if (!lightSections.length) return;
+
+      const observer = new IntersectionObserver(
+        () => {
+          const isOnLight = Array.from(lightSections).some((section) => {
+            const rect = section.getBoundingClientRect();
+            return rect.top <= 46 && rect.bottom > 0;
+          });
+          header.classList.toggle("header--on-light", isOnLight);
+        },
+        { threshold: [0, 0.01, 0.1], rootMargin: "0px 0px -94% 0px" }
+      );
+
+      lightSections.forEach((section) => observer.observe(section));
+
+      window.addEventListener("scroll", () => {
+        const isOnLight = Array.from(lightSections).some((section) => {
+          const rect = section.getBoundingClientRect();
+          return rect.top <= 46 && rect.bottom > 0;
+        });
+        header.classList.toggle("header--on-light", isOnLight);
+      }, { passive: true });
     }
 
     function setupHiddenAdminEntry() {
