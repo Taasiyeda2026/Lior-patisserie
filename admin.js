@@ -609,6 +609,31 @@ async function loadProducts() {
   refreshProductDrawerFormIfOpen();
 }
 
+function updateProductInCache(payload) {
+  const idx = adminProductsCache.findIndex((p) => String(p.id) === String(payload.id));
+  if (idx >= 0) {
+    adminProductsCache[idx] = { ...adminProductsCache[idx], ...payload };
+  } else {
+    adminProductsCache.push(payload);
+  }
+}
+
+function rerenderProductGrid() {
+  const container = document.getElementById("productsAdmin");
+  if (!container) return;
+  if (!adminProductsCache.length) {
+    container.innerHTML =
+      '<p class="hint admin-empty-hint">אין מוצרים במסד הנתונים. אפשר להוסיף מוצרים כאן או להריץ את קובץ seed-content.sql בפרויקט Supabase לנתוני פתיחה בלבד.</p>';
+    return;
+  }
+  const sorted = [...adminProductsCache].sort(
+    (a, b) => (Number(a.display_order) || 0) - (Number(b.display_order) || 0)
+  );
+  container.innerHTML = sorted.map(productGridCardTemplate).join("");
+  hydrateProductGridCards(container);
+  refreshProductDrawerFormIfOpen();
+}
+
 async function saveProduct(root) {
   const payload = rowPayload(root, "product");
   const { error } = await client().from("products").upsert(payload, { onConflict: "id" });
@@ -619,7 +644,8 @@ async function saveProduct(root) {
     toggleBtn.textContent = payload.is_active ? "הסתר מהאתר" : "הצג באתר";
     toggleBtn.className = `admin-button ${payload.is_active ? "muted" : "secondary"}`;
   }
-  await loadProducts();
+  updateProductInCache(payload);
+  rerenderProductGrid();
   showNotice("products", "המוצר נשמר בהצלחה");
 }
 
@@ -629,10 +655,11 @@ async function toggleProductActive(root) {
   const select = root.querySelector('[data-field="is_active"]');
   const currentActive = btn.dataset.active === "true";
   const newActive = !currentActive;
+  const now = new Date().toISOString();
 
   const { error } = await client()
     .from("products")
-    .update({ is_active: newActive, updated_at: new Date().toISOString() })
+    .update({ is_active: newActive, updated_at: now })
     .eq("id", id);
   if (error) throw error;
 
@@ -640,7 +667,8 @@ async function toggleProductActive(root) {
   btn.textContent = newActive ? "הסתר מהאתר" : "הצג באתר";
   btn.className = `admin-button ${newActive ? "muted" : "secondary"}`;
   if (select) select.value = String(newActive);
-  await loadProducts();
+  updateProductInCache({ id, is_active: newActive, updated_at: now });
+  rerenderProductGrid();
   showNotice("products", newActive ? "המוצר מוצג באתר" : "המוצר הוסתר מהאתר");
 }
 
