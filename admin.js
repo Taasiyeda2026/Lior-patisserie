@@ -647,6 +647,7 @@ async function toggleProductActive(root) {
 function featureTemplate(feature = {}) {
   const id = feature.id || crypto.randomUUID();
   const isActive = feature.is_active !== false;
+  const hasImg = Boolean(String(feature.image_url || "").trim());
   return `<article class="feature-row${isActive ? "" : " product-inactive"}" data-feature-id="${id}" data-display-order="${Number(feature.display_order) || 0}">
     <div class="grid">
       <label class="field-label">כותרת <input data-field="title" value="${escapeHtml(feature.title || "")}"></label>
@@ -654,9 +655,9 @@ function featureTemplate(feature = {}) {
       <label class="field-label">טקסט <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
       <label class="field-label wide">תמונה (אופציונלי)
         <div class="image-tools">
-          <div class="admin-preview-shell" data-preview-field="image_url">
+          <div class="admin-preview-shell${hasImg ? " has-image" : ""}" data-preview-field="image_url">
             <img class="preview" alt="">
-            <span class="admin-preview-placeholder">אין תמונה זמינה</span>
+            <span class="admin-preview-placeholder"${hasImg ? " hidden" : ""}>אין תמונה זמינה</span>
           </div>
           <div>
             <input data-field="image_url" value="${escapeHtml(feature.image_url || "")}" placeholder="כתובת תמונה">
