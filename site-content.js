@@ -5,12 +5,9 @@
     "hero_logo_image"
   ];
   const TEXT_SETTINGS = [
-    "hero_scroll_button_text",
     "flavors_title",
     "flavors_intro_primary",
     "flavors_intro_secondary",
-    "flavors_badge_text",
-    "flavors_order_button_text",
     "handmade_label",
     "handmade_title",
     "handmade_text",
@@ -23,10 +20,8 @@
     "instagram_url",
     "instagram_sentence_text",
     "instagram_link_text",
-    "order_button_text",
     "hero_title",
     "hero_subtitle",
-    "hero_primary_button_text",
     "pickup_delivery_text"
   ];
 
@@ -39,7 +34,6 @@
   const LEGACY_TEXT_KEY_ALIASES = {
     hero_title: "flavors_title",
     hero_subtitle: "flavors_intro_primary",
-    hero_primary_button_text: "flavors_order_button_text",
     pickup_delivery_text: "contact_text"
   };
 
@@ -50,6 +44,14 @@
         normalized[currentKey] = normalized[legacyKey];
       }
     });
+
+    if (hasText(normalized.flavors_intro_secondary)) {
+      normalized.flavors_intro_primary = [normalized.flavors_intro_primary, normalized.flavors_intro_secondary]
+        .filter(hasText)
+        .map((value) => value.trim())
+        .join("\n\n");
+    }
+
     return normalized;
   }
 
