@@ -15,10 +15,14 @@ create table if not exists public.products (
   description text,
   price text,
   image_url text,
+  card_image_url text,
   is_active boolean default true,
   display_order int default 0,
   updated_at timestamp with time zone default now()
 );
+
+alter table public.products
+add column if not exists card_image_url text;
 
 create table if not exists public.site_features (
   id uuid primary key default gen_random_uuid(),
