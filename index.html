@@ -183,17 +183,32 @@
           <span data-content-key="instagram_sentence_text">לעוד רגעים מתוקים, טעמים חדשים והצצות מהמטבח - מוזמנים להמשיך איתנו</span>
           <a class="instagram-btn instagram-closing-link" href="https://www.instagram.com/_liornahum_/" target="_blank" rel="noopener noreferrer"><img src="assets/icons/instagram.svg" alt="" class="instagram-inline-icon" width="16" height="16" aria-hidden="true"><span data-content-key="instagram_link_text">באינסטגרם</span></a>.
         </p>
-        <details class="footer-legal-menu">
-          <summary class="footer-legal-summary" aria-controls="footerLegalDocsNav">
-            <span class="footer-legal-summary-icon" aria-hidden="true">ⓘ</span>
-            מידע נוסף
-          </summary>
-          <nav class="footer-legal-nav" id="footerLegalDocsNav" aria-label="מסמכי אתר">
-            <a href="accessibility.html" class="footer-legal-doc-link">הצהרת נגישות</a>
-            <a href="privacy.html" class="footer-legal-doc-link">מדיניות פרטיות ועוגיות</a>
-            <a href="terms.html" class="footer-legal-doc-link">תנאי שימוש ומדיניות הזמנות</a>
-          </nav>
-        </details>
+        <div class="footer-legal-wrap">
+          <div
+            id="footerLegalPanel"
+            class="footer-legal-popover"
+            role="region"
+            aria-label="מסמכי אתר"
+            aria-hidden="true"
+            inert
+          >
+            <nav class="footer-legal-popnav" aria-label="מסמכי אתר">
+              <a href="accessibility.html" class="footer-legal-doc-link">הצהרת נגישות</a>
+              <a href="privacy.html" class="footer-legal-doc-link">מדיניות פרטיות ועוגיות</a>
+              <a href="terms.html" class="footer-legal-doc-link">תנאי שימוש ומדיניות הזמנות</a>
+            </nav>
+          </div>
+          <button
+            type="button"
+            class="footer-legal-toggle"
+            id="footerLegalToggle"
+            aria-expanded="false"
+            aria-controls="footerLegalPanel"
+          >
+            <span class="footer-legal-toggle-icon" aria-hidden="true">ⓘ</span>
+            <span class="footer-legal-toggle-label">מידע נוסף</span>
+          </button>
+        </div>
         <p class="footer-copy">© Lior’s Pâtisserie</p>
       </div>
     </footer>
