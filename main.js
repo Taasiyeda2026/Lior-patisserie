@@ -71,17 +71,20 @@ ${productLine}
       return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
     }
 
+    function isExternalImagePath(name) {
+      return /^https?:\/\//i.test(name) || String(name || "").startsWith("/");
+    }
+
     function imagePath(name) {
-      return `prdimages/${name}`;
+      return isExternalImagePath(name) ? name : `prdimages/${name}`;
     }
 
     function setImageWithFallback(img, name) {
       const hasExtension = /\.[a-zA-Z0-9]+$/.test(name);
+      const fullImageName = img.dataset.fullImage || "";
 
       const options = hasExtension
-        ? [
-            imagePath(name)
-          ]
+        ? [imagePath(name)]
         : [
             `${imagePath(name)}.webp`,
             `${imagePath(name)}.jpg`,
@@ -93,14 +96,20 @@ ${productLine}
             `${imagePath(name)}.WEBP`
           ];
 
+      if (fullImageName && fullImageName !== name) {
+        options.push(imagePath(fullImageName));
+      }
+
       let index = 0;
 
       img.onload = function () {
+        img.dataset.imageReady = "true";
         img.classList.add("is-loaded");
       };
 
       if (img.getAttribute("src") === options[index]) {
         if (img.complete && img.naturalWidth) {
+          img.dataset.imageReady = "true";
           img.classList.add("is-loaded");
         }
         return;
@@ -113,6 +122,7 @@ ${productLine}
         }
       };
 
+      img.dataset.imageReady = "false";
       img.classList.remove("is-loaded");
       img.src = options[index];
     }
@@ -133,7 +143,8 @@ ${productLine}
           <div class="signature-body">
             <h3>${product.name}</h3>
             <p>${product.description}</p>
-            <a class="product-link" href="#" data-order data-product="${product.name}">🛒</a>
+            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${product.name}" aria-label="הוספה לסל: ${product.name}">🛒</button>
+            <div class="cart-feedback" aria-live="polite"></div>
           </div>
         </article>
       `).join("");
@@ -159,7 +170,8 @@ ${productLine}
           <div class="product-body">
             <h3>${product.name}</h3>
             <p>${product.description}</p>
-            <a class="product-link" href="#" data-order data-product="${product.name}">🛒</a>
+            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${product.name}" aria-label="הוספה לסל: ${product.name}">🛒</button>
+            <div class="cart-feedback" aria-live="polite"></div>
           </div>
         </article>
       `).join("");
@@ -198,7 +210,6 @@ ${productLine}
         }
 
         img.dataset.imageQueued = "loaded";
-        img.dataset.imageReady = "true";
         setImageWithFallback(img, name);
       };
 
@@ -312,11 +323,12 @@ ${productLine}
       if (existingItem) {
         existingItem.quantity += 1;
         saveOrderCart();
-        return;
+        return "updated";
       }
 
       orderCart.push({ name: productName, quantity: 1 });
       saveOrderCart();
+      return "added";
     }
 
     function updateCartItem(productName, change) {
@@ -365,24 +377,37 @@ ${productLine}
       const clearCartButton = document.getElementById("clearCartButton");
       const manualField = document.getElementById("manualOrderField");
       const manualInput = document.getElementById("orderProduct");
+      const emptyState = document.getElementById("orderEmptyState");
+      const continueButton = document.getElementById("orderContinueButton");
       const hasItems = orderCart.length > 0;
 
       if (cartWrap) {
         cartWrap.hidden = !hasItems;
       }
 
+      if (emptyState) {
+        emptyState.hidden = hasItems;
+      }
+
       if (clearCartButton) {
         clearCartButton.hidden = !hasItems;
       }
 
+      if (continueButton) {
+        continueButton.hidden = !hasItems;
+        continueButton.disabled = !hasItems;
+      }
+
       if (manualField) {
-        manualField.hidden = hasItems;
+        manualField.hidden = true;
       }
 
       if (manualInput) {
-        manualInput.required = !hasItems;
-        if (hasItems) manualInput.value = "";
+        manualInput.required = false;
+        manualInput.value = "";
       }
+
+      updateFloatingCartCount();
 
       if (!cartList) return;
 
@@ -397,7 +422,69 @@ ${productLine}
           </div>
         </div>
       `).join("");
-      updateFloatingCartCount();
+    }
+
+    function showOrderStep(step) {
+      const cartStep = document.getElementById("orderCartStep");
+      const detailsStep = document.getElementById("orderForm");
+      const title = document.getElementById("orderModalTitle");
+      const subtitle = document.getElementById("orderModalSubtitle");
+      const showDetails = step === "details";
+
+      if (cartStep) cartStep.hidden = showDetails;
+      if (detailsStep) detailsStep.hidden = !showDetails;
+
+      if (title) {
+        title.textContent = showDetails ? "פרטי ההזמנה" : "סל ההזמנה שלך";
+      }
+
+      if (subtitle) {
+        subtitle.textContent = showDetails
+          ? "מלאו כמה פרטים קצרים וההזמנה תישלח לליאור ב־WhatsApp."
+          : "בדקו את הטעמים שבחרתם, ואז המשיכו לפרטי ההזמנה.";
+      }
+    }
+
+    function showAddToCartFeedback(button, productName, action = "added") {
+      const card = button.closest(".product-card, .signature-card");
+      const feedback = card ? card.querySelector(".cart-feedback") : null;
+
+      button.classList.remove("is-clicked");
+      void button.offsetWidth;
+      button.classList.add("is-clicked");
+
+      if (feedback) {
+        feedback.textContent = action === "updated"
+          ? `עודכן בסל: ${productName}`
+          : `נוסף לסל: ${productName}`;
+        feedback.classList.add("is-visible");
+
+        clearTimeout(feedback._hideTimer);
+        feedback._hideTimer = setTimeout(() => {
+          feedback.classList.remove("is-visible");
+          feedback.textContent = "";
+        }, 1800);
+      }
+
+      setTimeout(() => {
+        button.classList.remove("is-clicked");
+      }, 420);
+    }
+
+    function setupAddToCartButtons() {
+      document.addEventListener("click", (event) => {
+        const addButton = event.target.closest("[data-add-to-cart]");
+        if (!addButton) return;
+
+        event.preventDefault();
+
+        const productName = addButton.getAttribute("data-product") || "";
+        if (!productName) return;
+
+        const action = addProductToCart(productName);
+        renderOrderCart();
+        showAddToCartFeedback(addButton, productName, action);
+      });
     }
 
     let modalOpener = null;
@@ -420,7 +507,7 @@ ${productLine}
       }
     }
 
-    function openOrderModal(productName = "") {
+    function openOrderModal() {
       const modal = document.getElementById("orderModal");
       const error = document.getElementById("orderError");
 
@@ -428,11 +515,8 @@ ${productLine}
 
       modalOpener = document.activeElement || null;
 
-      if (productName) {
-        addProductToCart(productName);
-      }
-
       renderOrderCart();
+      showOrderStep("cart");
 
       if (error) {
         error.classList.remove("is-visible");
@@ -443,8 +527,10 @@ ${productLine}
       document.body.classList.add("has-modal");
 
       setTimeout(() => {
-        const firstInput = document.getElementById("customerName");
-        if (firstInput) firstInput.focus();
+        const firstAction = orderCart.length
+          ? document.getElementById("orderContinueButton")
+          : document.getElementById("backToProductsButton");
+        if (firstAction) firstAction.focus();
       }, 80);
     }
 
@@ -502,28 +588,46 @@ ${productLine}
       const error = document.getElementById("orderError");
       const cartList = document.getElementById("orderCartList");
       const clearCartButton = document.getElementById("clearCartButton");
+      const continueButton = document.getElementById("orderContinueButton");
+      const backToProductsButton = document.getElementById("backToProductsButton");
 
       loadOrderCart();
       renderOrderCart();
-
-      const floatingCartBtn = document.getElementById("floatingCart");
-      if (floatingCartBtn) {
-        floatingCartBtn.addEventListener("click", () => {
-          openOrderModal("");
-        });
-      }
 
       document.addEventListener("click", (event) => {
         const button = event.target.closest("[data-order]");
         if (!button) return;
         event.preventDefault();
-        const productName = button.getAttribute("data-product") || "";
-        openOrderModal(productName);
+        openOrderModal();
       });
       window.openOrderModal = openOrderModal;
 
       if (clearCartButton) {
-        clearCartButton.addEventListener("click", clearOrderCart);
+        clearCartButton.addEventListener("click", () => {
+          clearOrderCart();
+          showOrderStep("cart");
+        });
+      }
+
+      if (continueButton) {
+        continueButton.addEventListener("click", () => {
+          if (!orderCart.length) return;
+          showOrderStep("details");
+          setTimeout(() => {
+            const firstInput = document.getElementById("customerName");
+            if (firstInput) firstInput.focus();
+          }, 40);
+        });
+      }
+
+      if (backToProductsButton) {
+        backToProductsButton.addEventListener("click", () => {
+          closeOrderModal();
+          const productsSection = document.getElementById("products");
+          if (productsSection) {
+            productsSection.scrollIntoView({ behavior: "smooth", block: "start" });
+          }
+        });
       }
 
       if (cartList) {
@@ -538,6 +642,10 @@ ${productLine}
             updateCartItem(decreaseButton.getAttribute("data-cart-decrease"), -1);
           } else if (removeButton) {
             removeCartItem(removeButton.getAttribute("data-cart-remove"));
+          }
+
+          if (!orderCart.length) {
+            showOrderStep("cart");
           }
         });
       }
@@ -567,7 +675,8 @@ ${productLine}
         form.addEventListener("submit", (event) => {
           event.preventDefault();
 
-          const manualProduct = document.getElementById("orderProduct").value.trim();
+          const manualInput = document.getElementById("orderProduct");
+          const manualProduct = manualInput ? manualInput.value.trim() : "";
           const data = {
             name: document.getElementById("customerName").value.trim(),
             phone: document.getElementById("customerPhone").value.trim(),
@@ -588,6 +697,7 @@ ${productLine}
           const url = buildOrderWhatsAppUrl(data);
           window.open(url, "_blank", "noopener,noreferrer");
           clearOrderCart();
+          closeOrderModal();
         });
       }
     }
@@ -752,38 +862,6 @@ ${productLine}
     }
 
 
-    function preloadAllImages() {
-      const allImages = products.slice(4).map((p) => p.cardImage || p.image);
-
-      const load = (index) => {
-        if (index >= allImages.length) return;
-        const name = allImages[index];
-        const extensions = name.includes('.') ? [name] : [
-          name + '.webp', name + '.jpg', name + '.jpeg', name + '.png'
-        ];
-        const img = new Image();
-        img.src = 'prdimages/' + extensions[0];
-        img.onerror = () => {
-          let i = 1;
-          const tryNext = () => {
-            if (i >= extensions.length) return;
-            const next = new Image();
-            next.src = 'prdimages/' + extensions[i];
-            next.onerror = tryNext;
-            i++;
-          };
-          tryNext();
-        };
-        if ('requestIdleCallback' in window) {
-          requestIdleCallback(() => load(index + 1), { timeout: 3000 });
-        } else {
-          setTimeout(() => load(index + 1), 80);
-        }
-      };
-
-      setTimeout(() => load(0), 200);
-    }
-
     function setLiorContactSettings(settings = {}) {
       if (settings.whatsappNumber) {
         WHATSAPP_PHONE = String(settings.whatsappNumber).replace(/[^0-9]/g, "") || WHATSAPP_PHONE;
@@ -851,11 +929,11 @@ ${productLine}
       setupWhatsappLinks();
       setupSectionUnlockAnimations();
       setupRevealAnimations();
+      setupAddToCartButtons();
       setupOrderModal();
       setupImageLightbox();
       setupNavDots();
       setupInstagramLinks();   // async - runs in background, updates links when ready
-      preloadAllImages();
       setupHiddenAdminEntry();
       setupOrderActionsVisibility();
     });

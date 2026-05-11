@@ -89,6 +89,12 @@
     return match ? match.image : "";
   }
 
+  function getLocalProductCardImage(productName) {
+    const match = fallbackProducts().find((item) => item.name === productName);
+    if (!match) return "";
+    return match.cardImage || match.image || "";
+  }
+
   function setRemoteImageWithFallback(img, imageUrl) {
     if (!img || !hasText(imageUrl)) return;
 
@@ -195,10 +201,21 @@
   }
 
   function productImageValue(product) {
+    const localImage = getLocalProductImage(product.name || "");
+    if (hasText(localImage)) return localImage;
     if (hasText(product.image_url)) return product.image_url.trim();
-    return getLocalProductImage(product.name || "");
+    return "";
   }
 
+  function productCardImageValue(product) {
+    const localCardImage = getLocalProductCardImage(product.name || "");
+    if (hasText(localCardImage)) return localCardImage;
+    return productImageValue(product);
+  }
+
+  function isRemoteImageValue(value) {
+    return /^https?:\/\//i.test(value) || String(value || "").startsWith("/");
+  }
 
   function productSignatureValue(product) {
     return {
@@ -245,22 +262,24 @@
       return;
     }
 
-    const nextHtml = activeProducts.map((product) => {
-      const imageValue = productImageValue(product);
-      const localFallback = getLocalProductImage(product.name || "");
-      const localName = hasText(product.image_url) ? "" : imageValue;
-      const srcAttr = hasText(product.image_url) ? `src="${escapeHtml(product.image_url)}" data-fallback-image="${escapeHtml(localFallback)}"` : "";
-      const dataAttr = localName ? `data-product-image="${escapeHtml(localName)}"` : "";
+    const nextHtml = activeProducts.map((product, index) => {
+      const fullImageValue = productImageValue(product);
+      const cardImageValue = productCardImageValue(product);
+      const isRemoteCard = isRemoteImageValue(cardImageValue);
+      const srcAttr = isRemoteCard ? `src="${escapeHtml(cardImageValue)}" data-fallback-image="${escapeHtml(fullImageValue)}"` : "";
+      const dataAttr = !isRemoteCard && hasText(cardImageValue) ? `data-product-image="${escapeHtml(cardImageValue)}"` : "";
+      const fullAttr = hasText(fullImageValue) ? `data-full-image="${escapeHtml(fullImageValue)}"` : "";
 
       return `
         <article class="product-card reveal is-visible" data-reveal-ready="true">
           <div class="product-image">
-            <img ${srcAttr} ${dataAttr} alt="${escapeHtml(product.name || "")}" width="1200" height="1032" loading="lazy" decoding="async">
+            <img ${srcAttr} ${dataAttr} ${fullAttr} alt="${escapeHtml(product.name || "")}" width="800" height="688" loading="${index < 4 ? "eager" : "lazy"}" fetchpriority="${index < 4 ? "high" : "auto"}" decoding="async">
           </div>
           <div class="product-body">
             <h3>${escapeHtml(product.name || "")}</h3>
             <p>${escapeHtml(product.description || "")}</p>
-            <a class="product-link" href="#" data-order data-product="${escapeHtml(product.name || "")}">🛒</a>
+            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${escapeHtml(product.name || "")}" aria-label="הוספה לסל: ${escapeHtml(product.name || "")}">🛒</button>
+            <div class="cart-feedback" aria-live="polite"></div>
           </div>
         </article>
       `;
@@ -278,9 +297,16 @@
 
     grid.querySelectorAll("img[data-fallback-image]").forEach((img) => {
       const fallback = img.dataset.fallbackImage;
+      img.onload = function () {
+        img.classList.add("is-loaded");
+      };
       if (!fallback) return;
       img.onerror = function () {
         img.onerror = null;
+        if (/^https?:\/\//i.test(fallback) || fallback.startsWith("/")) {
+          img.src = fallback;
+          return;
+        }
         if (typeof window.setImageWithFallback === "function") {
           window.setImageWithFallback(img, fallback);
         }
