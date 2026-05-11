@@ -15,6 +15,9 @@
   <meta name="apple-mobile-web-app-title" content="Lior's">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
   <link rel="preload" href="assets/fonts/IBMPlexSansHebrew-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <script>
     if (!sessionStorage.getItem("liorHeroUnlocked")) {
@@ -31,6 +34,21 @@
 
 <body>
   <div class="page">
+
+    <header class="site-header" aria-label="ניווט ראשי">
+      <nav class="site-nav container" aria-label="ניווט באתר">
+        <a class="nav-brand hero-scroll-link" href="#home" aria-label="Lior's Pâtisserie">
+          <span>Lior's</span>
+          <span>Pâtisserie</span>
+        </a>
+        <div class="nav-links">
+          <a class="hero-scroll-link" href="#products">הטעמים</a>
+          <a class="hero-scroll-link" href="#about">אודות</a>
+          <a class="hero-scroll-link" href="#contact">הזמנה</a>
+        </div>
+        <a class="nav-cta" href="#" data-order>הזמינו עכשיו</a>
+      </nav>
+    </header>
 
     <main>
       <section class="home-products" id="home">
@@ -52,14 +70,27 @@
             <img class="hero-logo" src="assets/logo.png" data-cms-image="hero_logo_image" alt="" width="180" height="180" aria-hidden="true">
           </a>
 
+          <div class="hero-copy" aria-label="פתיח האתר">
+            <div class="hero-eyebrow"><span>ARTISAN COOKIES · עוגיות בוטיק</span></div>
+            <p class="hero-title">מאפייה<br><em>בוטיק של ממש</em></p>
+            <p class="hero-subtitle">עוגיות Crumble בעבודת יד, במראה מוקפד ובטעמים עשירים שנאפים לרגעים קטנים של חגיגה.</p>
+            <div class="hero-actions">
+              <a class="btn hero-primary" href="#" data-order>להזמנה</a>
+              <a class="btn hero-secondary hero-scroll-link" href="#products">לצפייה בטעמים</a>
+            </div>
+          </div>
+
           <div class="home-hero-panel">
             <a class="hero-scroll-link" href="#products" aria-label="גלילה לאזור הטעמים">גללו מטה</a>
           </div>
         </div>
 
+        <div class="boutique-strip" aria-label="פרטי שירות">אפייה טרייה · FRESH BAKED ✦ משלוח לכל הארץ ✦ כשר למהדרין ✦ טעמים בלעדיים</div>
+
         <div class="home-opening" id="products">
           <div class="container home-opening-inner">
             <div class="reveal home-opening-copy">
+              <div class="section-label products-eyebrow">THE COLLECTION</div>
               <h1 class="home-flavors-heading" data-content-key="flavors_title">הטעמים שלנו</h1>
               <p class="products-intro-text" data-content-key="flavors_intro_primary">
                 אצל Lior’s Pâtisserie כל עוגיית Crumble נאפית בעבודת יד,<br class="intro-line-break">
@@ -77,7 +108,7 @@
         </div>
       </section>
 
-      <section class="editorial">
+      <section class="editorial" id="about">
         <div class="container">
           <div class="editorial-card reveal">
             <div class="editorial-img">
@@ -201,6 +232,7 @@
             <span class="footer-legal-toggle-label">מידע נוסף</span>
           </button>
         </div>
+        <p class="footer-tagline">ARTISAN · HANDCRAFTED · BAKED WITH LOVE · © 2025</p>
         <p class="footer-copy">© Lior’s Pâtisserie</p>
       </div>
     </footer>
