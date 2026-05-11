@@ -56,9 +56,18 @@ window.getLiorSupabaseClient = function getLiorSupabaseClient() {
   }
 
   if (!window.liorSupabaseClient) {
+    // Keep default session persistence (local storage). Admin idle lock is handled
+    // separately in admin.js — do not set persistSession: false for UI timeout.
     window.liorSupabaseClient = window.supabase.createClient(
       config.SUPABASE_URL,
-      config.SUPABASE_ANON_KEY
+      config.SUPABASE_ANON_KEY,
+      {
+        auth: {
+          persistSession: true,
+          autoRefreshToken: true,
+          detectSessionInUrl: true
+        }
+      }
     );
   }
 

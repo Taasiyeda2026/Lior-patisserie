@@ -1,6 +1,100 @@
 const WEBP_QUALITY = 0.82;
 const BUCKET = (window.LIOR_SUPABASE_CONFIG && window.LIOR_SUPABASE_CONFIG.STORAGE_BUCKET) || "site-images";
 
+const ADMIN_IDLE_TIMEOUT_MS = 15 * 60 * 1000;
+const ADMIN_LAST_ACTIVITY_KEY = "liorAdminLastActivity";
+const ADMIN_IDLE_LOCK_MESSAGE = "האדמין ננעל לאחר 15 דקות ללא פעילות. יש להתחבר מחדש.";
+const ADMIN_ACTIVITY_MOUSEMOVE_THROTTLE_MS = 1000;
+
+const ADMIN_ACTIVITY_EVENT_OPTS = { capture: true, passive: true };
+
+let adminIdleTimeoutId = null;
+let adminIdleListenersAttached = false;
+let adminIdleTracking = false;
+let adminIdleMouseThrottleAt = 0;
+let adminIdleLocking = false;
+
+function onAdminWindowActivity(event) {
+  if (!adminIdleTracking || adminIdleLocking) return;
+  if (event && event.type === "mousemove") {
+    const now = Date.now();
+    if (now - adminIdleMouseThrottleAt < ADMIN_ACTIVITY_MOUSEMOVE_THROTTLE_MS) return;
+    adminIdleMouseThrottleAt = now;
+  }
+  resetAdminIdleTimer();
+}
+
+function attachAdminIdleListeners() {
+  if (adminIdleListenersAttached) return;
+  const types = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "click"];
+  types.forEach((type) => {
+    window.addEventListener(type, onAdminWindowActivity, ADMIN_ACTIVITY_EVENT_OPTS);
+  });
+  adminIdleListenersAttached = true;
+}
+
+function detachAdminIdleListeners() {
+  if (!adminIdleListenersAttached) return;
+  const types = ["mousemove", "mousedown", "keydown", "touchstart", "scroll", "click"];
+  types.forEach((type) => {
+    window.removeEventListener(type, onAdminWindowActivity, ADMIN_ACTIVITY_EVENT_OPTS);
+  });
+  adminIdleListenersAttached = false;
+}
+
+function clearAdminPasswordField() {
+  const input = document.getElementById("adminPassword");
+  if (input) input.value = "";
+}
+
+function resetAdminIdleTimer() {
+  if (!adminIdleTracking || adminIdleLocking) return;
+  sessionStorage.setItem(ADMIN_LAST_ACTIVITY_KEY, String(Date.now()));
+  if (adminIdleTimeoutId !== null) {
+    clearTimeout(adminIdleTimeoutId);
+    adminIdleTimeoutId = null;
+  }
+  adminIdleTimeoutId = window.setTimeout(() => {
+    adminIdleTimeoutId = null;
+    lockAdminDueToInactivity();
+  }, ADMIN_IDLE_TIMEOUT_MS);
+}
+
+function startAdminIdleTimer() {
+  adminIdleTracking = true;
+  adminIdleLocking = false;
+  attachAdminIdleListeners();
+  resetAdminIdleTimer();
+}
+
+function stopAdminIdleTimer() {
+  adminIdleTracking = false;
+  if (adminIdleTimeoutId !== null) {
+    clearTimeout(adminIdleTimeoutId);
+    adminIdleTimeoutId = null;
+  }
+  detachAdminIdleListeners();
+}
+
+async function lockAdminDueToInactivity() {
+  if (adminIdleLocking) return;
+  adminIdleLocking = true;
+  stopAdminIdleTimer();
+
+  try {
+    await client().auth.signOut();
+  } catch {
+  }
+
+  sessionStorage.removeItem(ADMIN_LAST_ACTIVITY_KEY);
+  clearAdminPasswordField();
+  const logoutBtn = document.getElementById("logoutButton");
+  if (logoutBtn) logoutBtn.classList.add("hidden");
+  showLoginScreen();
+  showLoginError(ADMIN_IDLE_LOCK_MESSAGE);
+  adminIdleLocking = false;
+}
+
 function client() {
   const supabaseClient = window.getLiorSupabaseClient ? window.getLiorSupabaseClient() : null;
   if (!supabaseClient) throw new Error("חסרים SUPABASE_URL או SUPABASE_ANON_KEY בקובץ supabase-config.js");
@@ -52,6 +146,8 @@ function showAdminApp() {
 function showLoginScreen() {
   document.getElementById("adminApp").classList.add("hidden");
   document.getElementById("loginCard").classList.remove("hidden");
+  const logoutBtn = document.getElementById("logoutButton");
+  if (logoutBtn) logoutBtn.classList.add("hidden");
   const notice = document.getElementById("loginNotice");
   if (notice) notice.className = "notice error";
 }
@@ -444,9 +540,11 @@ function setupEvents() {
     try {
       const { error } = await client().auth.signInWithPassword({ email, password });
       if (error) throw error;
+      sessionStorage.setItem(ADMIN_LAST_ACTIVITY_KEY, String(Date.now()));
       document.getElementById("logoutButton").classList.remove("hidden");
       showAdminApp();
       await initAdmin();
+      startAdminIdleTimer();
     } catch {
       showLoginError("שם המשתמש או הסיסמה שגויים");
     } finally {
@@ -458,7 +556,18 @@ function setupEvents() {
   const logoutBtn = document.getElementById("logoutButton");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", async () => {
-      await client().auth.signOut();
+      stopAdminIdleTimer();
+      sessionStorage.removeItem(ADMIN_LAST_ACTIVITY_KEY);
+      clearAdminPasswordField();
+      try {
+        await client().auth.signOut();
+      } catch {
+      }
+      const notice = document.getElementById("loginNotice");
+      if (notice) {
+        notice.textContent = "";
+        notice.className = "notice";
+      }
       showLoginScreen();
     });
   }
@@ -539,12 +648,39 @@ function setupEvents() {
 async function checkExistingSession() {
   try {
     const { data } = await client().auth.getSession();
-    if (data && data.session) {
-      document.getElementById("logoutButton").classList.remove("hidden");
-      showAdminApp();
-      await initAdmin();
+    const session = data && data.session;
+    if (!session) {
+      showLoginScreen();
+      return;
     }
+
+    const raw = sessionStorage.getItem(ADMIN_LAST_ACTIVITY_KEY);
+    const last = raw ? parseInt(raw, 10) : NaN;
+    const now = Date.now();
+
+    if (!Number.isFinite(last)) {
+      try {
+        await client().auth.signOut();
+      } catch {
+      }
+      sessionStorage.removeItem(ADMIN_LAST_ACTIVITY_KEY);
+      clearAdminPasswordField();
+      showLoginScreen();
+      showLoginError("יש להתחבר מחדש.");
+      return;
+    }
+
+    if (now - last > ADMIN_IDLE_TIMEOUT_MS) {
+      await lockAdminDueToInactivity();
+      return;
+    }
+
+    document.getElementById("logoutButton").classList.remove("hidden");
+    showAdminApp();
+    await initAdmin();
+    startAdminIdleTimer();
   } catch {
+    showLoginScreen();
   }
 }
 
@@ -577,6 +713,10 @@ window.saveProduct = saveProduct;
 window.saveSettings = saveSettings;
 window.loadSettings = loadSettings;
 window.loadProducts = loadProducts;
+window.startAdminIdleTimer = startAdminIdleTimer;
+window.stopAdminIdleTimer = stopAdminIdleTimer;
+window.resetAdminIdleTimer = resetAdminIdleTimer;
+window.lockAdminDueToInactivity = lockAdminDueToInactivity;
 
 document.addEventListener("DOMContentLoaded", async () => {
   setupEvents();
