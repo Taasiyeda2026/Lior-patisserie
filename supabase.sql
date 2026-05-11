@@ -2,7 +2,7 @@
 -- Run in Supabase SQL Editor.
 --
 -- Existing databases that still have public.gallery_images: run drop-gallery-images.sql
--- once before or after applying this schema refresh, then re-run policies section if needed.
+-- once in the SQL Editor to drop the table and dependent objects (CASCADE).
 
 create extension if not exists "pgcrypto";
 
