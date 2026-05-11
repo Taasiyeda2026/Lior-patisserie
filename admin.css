@@ -1821,3 +1821,240 @@ textarea {
     grid-template-columns: 1fr !important;
   }
 }
+
+/* ── Admin focused compactness and speed pass ── */
+.admin-hero {
+  min-height: 64px;
+  padding: 10px 16px;
+  margin-bottom: 10px;
+  border-radius: 22px;
+  box-shadow: 0 10px 28px rgba(47, 33, 28, 0.10);
+}
+
+.brand-panel {
+  gap: 10px;
+}
+
+.admin-logo {
+  width: clamp(40px, 3.8vw, 52px);
+}
+
+.admin-hero h1 {
+  font-size: clamp(18px, 2.1vw, 24px);
+  line-height: 1.2;
+  margin: 0;
+}
+
+.admin-hero .eyebrow {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  margin-bottom: 2px;
+}
+
+.admin-hero .ghost-link,
+.admin-hero button.ghost-link {
+  min-height: 30px;
+  padding: 5px 12px;
+  font-size: 12px;
+}
+
+.editor-card,
+.login-card {
+  width: 100%;
+  max-width: 680px;
+  margin-inline: auto;
+  box-sizing: border-box;
+}
+
+#productsPanel {
+  width: 100%;
+  max-width: 680px;
+  margin-inline: auto;
+  padding-inline: clamp(9px, 1.2vw, 13px);
+  box-sizing: border-box;
+}
+
+#productsPanel > .section-heading,
+#productsPanel > .top-action,
+#productsPanel > .products-admin-grid {
+  width: 100%;
+  max-width: 100%;
+  margin-inline: auto;
+}
+
+.product-drawer-backdrop {
+  background: rgba(47, 33, 28, 0.26);
+  transition: opacity 160ms ease;
+}
+
+.product-drawer {
+  width: min(420px, 100%);
+  box-shadow: -8px 0 24px rgba(47, 33, 28, 0.12);
+  transition: transform 190ms ease, opacity 190ms ease;
+  will-change: transform, opacity;
+  opacity: 0.98;
+}
+
+.product-drawer.is-open {
+  opacity: 1;
+}
+
+.product-grid-card {
+  transition: transform 140ms ease, box-shadow 140ms ease, border-color 140ms ease;
+}
+
+.product-drawer-image-tools.admin-simple-image-tools {
+  grid-template-columns: 96px minmax(0, 1fr) !important;
+  gap: 8px;
+  padding: 7px;
+  border-radius: 10px;
+}
+
+.product-drawer .admin-simple-image-tools .admin-preview-shell,
+.product-drawer .admin-simple-image-tools .admin-preview-shell.has-image .preview,
+.product-drawer .admin-simple-image-tools .preview {
+  width: 96px !important;
+  max-width: 96px !important;
+  height: 70px !important;
+  min-height: 70px !important;
+  max-height: 70px !important;
+  border-radius: 8px;
+}
+
+.admin-image-actions {
+  gap: 5px;
+}
+
+.admin-file-button {
+  min-height: 24px;
+  padding: 3px 8px;
+  font-size: 11px;
+  border-radius: 12px;
+}
+
+.admin-image-advanced summary {
+  font-size: 11px;
+}
+
+.admin-image-advanced[open] {
+  gap: 5px;
+  margin-top: 4px;
+  padding-top: 5px;
+}
+
+.admin-image-advanced .field-label {
+  gap: 3px;
+  font-size: 11px;
+}
+
+.admin-image-advanced input[data-field],
+.admin-card input[name*="image"],
+.admin-card input[placeholder*="כתובת תמונה"] {
+  min-height: 28px;
+  height: 28px;
+  padding: 3px 7px;
+  font-size: 11px;
+  border-radius: 8px;
+}
+
+.product-drawer-actions {
+  justify-content: flex-start;
+  gap: 0;
+  margin-top: 10px;
+  padding-top: 10px;
+}
+
+.product-drawer-actions .admin-button {
+  min-width: 120px;
+}
+
+.login-card.admin-login-card {
+  max-width: 360px;
+  padding: 18px 20px;
+  border-radius: 18px;
+}
+
+.admin-login-heading {
+  margin-bottom: 10px;
+}
+
+.admin-login-eyebrow {
+  font-size: 11px;
+}
+
+.admin-login-title {
+  font-size: clamp(17px, 2vw, 20px);
+  line-height: 1.2;
+}
+
+.login-card.admin-login-card .admin-login-form {
+  max-width: 300px;
+  gap: 8px;
+}
+
+.login-card.admin-login-card input {
+  min-height: 36px;
+  height: 36px;
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.login-card.admin-login-card .admin-login-submit {
+  min-height: 36px;
+  padding: 6px 14px;
+  font-size: 13px;
+}
+
+.login-card.admin-login-card .admin-login-notice {
+  max-width: 300px;
+  min-height: 24px;
+  margin-top: 2px;
+  padding: 5px 8px;
+  font-size: 12px;
+  border-radius: 10px;
+}
+
+@media (max-width: 700px) {
+  .product-drawer-image-tools.admin-simple-image-tools {
+    grid-template-columns: 88px minmax(0, 1fr) !important;
+  }
+
+  .product-drawer .admin-simple-image-tools .admin-preview-shell,
+  .product-drawer .admin-simple-image-tools .admin-preview-shell.has-image .preview,
+  .product-drawer .admin-simple-image-tools .preview {
+    width: 88px !important;
+    max-width: 88px !important;
+    height: 64px !important;
+    min-height: 64px !important;
+    max-height: 64px !important;
+  }
+}
+
+.editor-card input[type="file"] {
+  max-width: 150px;
+  font-size: 11px;
+  line-height: 1.2;
+}
+
+.editor-card input[type="file"]::file-selector-button {
+  min-height: 24px;
+  margin-inline-end: 6px;
+  padding: 3px 8px;
+  border: 0;
+  border-radius: 12px;
+  font: inherit;
+  font-size: 11px;
+  color: var(--plum);
+  background: rgba(255, 249, 242, 0.86);
+  cursor: pointer;
+}
+
+.editor-card input[data-field="image_url"],
+.editor-card input[data-field="card_image_url"],
+.editor-card input[placeholder*="כתובת תמונה"] {
+  min-height: 28px;
+  height: 28px;
+  padding: 3px 7px;
+  font-size: 11px;
+  border-radius: 8px;
+}
