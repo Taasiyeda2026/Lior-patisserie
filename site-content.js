@@ -208,6 +208,7 @@
   }
 
   function productCardImageValue(product) {
+    if (hasText(product.card_image_url)) return product.card_image_url.trim();
     const localCardImage = getLocalProductCardImage(product.name || "");
     if (hasText(localCardImage)) return localCardImage;
     return productImageValue(product);
@@ -223,6 +224,7 @@
       name: String(product.name || "").trim(),
       description: String(product.description || "").trim(),
       image_url: String(product.image_url || "").trim(),
+      card_image_url: String(product.card_image_url || "").trim(),
       display_order: product.display_order || 0,
       is_active: product.is_active !== false
     };
@@ -322,7 +324,7 @@
 
     const { data, error } = await client
       .from("products")
-      .select("id,name,description,price,image_url,is_active,display_order")
+      .select("id,name,description,price,image_url,card_image_url,is_active,display_order")
       .order("display_order", { ascending: true });
 
     if (error || !Array.isArray(data)) return [];
