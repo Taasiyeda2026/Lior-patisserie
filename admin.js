@@ -306,6 +306,7 @@ async function convertImageToWebP(file, maxWidth) {
 async function uploadBlobToBucket(path, blob, contentType) {
   const { error } = await client().storage.from(BUCKET).upload(path, blob, {
     contentType,
+    cacheControl: "31536000",
     upsert: false
   });
   if (error) throw error;
@@ -331,6 +332,7 @@ async function uploadProductFullImageWithOptionalCard(file, folder, fullMaxWidth
     const path = `${folder || "uploads"}/${finalName}`;
     const { error } = await client().storage.from(BUCKET).upload(path, converted.blob, {
       contentType: converted.contentType,
+      cacheControl: "31536000",
       upsert: false
     });
     if (error) throw error;
@@ -365,6 +367,7 @@ async function uploadImageAsWebP(file, folder, maxWidth) {
   const path = `${folder || "uploads"}/${finalName}`;
   const { error } = await client().storage.from(BUCKET).upload(path, converted.blob, {
     contentType: converted.contentType,
+    cacheControl: "31536000",
     upsert: false
   });
   if (error) throw error;

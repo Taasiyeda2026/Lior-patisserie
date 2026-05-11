@@ -393,6 +393,8 @@
         img.src = window.LIOR_IMAGE_PLACEHOLDER;
         img.classList.add("is-loaded");
       }
+      img.dataset.imageQueued = "loaded";
+      img.dataset.imageObserved = "true";
     });
 
     refreshDynamicBehaviors();

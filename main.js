@@ -1092,25 +1092,36 @@ ${productLine}
         });
       });
 
-      function updateActive() {
-        const sections = Array.from(document.querySelectorAll("main > section:not([hidden])"));
-        const dots = Array.from(document.querySelectorAll(".nav-dot:not([hidden])"));
-        if (!sections.length || !dots.length) return;
+      let _sectionTops = [];
+      const _dots = Array.from(document.querySelectorAll(".nav-dot:not([hidden])"));
 
-        const mid = window.scrollY + window.innerHeight * 0.45;
-        let activeIndex = 0;
-        sections.forEach((section, i) => {
-          if (section.offsetTop <= mid) activeIndex = i;
-        });
-        dots.forEach((dot, i) => {
-          const active = i === activeIndex;
-          dot.classList.toggle("is-active", active);
-          if (active) dot.setAttribute("aria-current", "true");
-          else dot.removeAttribute("aria-current");
+      function cacheSectionTops() {
+        const sections = Array.from(document.querySelectorAll("main > section:not([hidden])"));
+        _sectionTops = sections.map((s) => s.offsetTop);
+      }
+      cacheSectionTops();
+      window.addEventListener("resize", cacheSectionTops, { passive: true });
+
+      let _navTicking = false;
+      function updateActive() {
+        if (_navTicking) return;
+        _navTicking = true;
+        requestAnimationFrame(() => {
+          if (!_sectionTops.length || !_dots.length) { _navTicking = false; return; }
+          const mid = window.scrollY + window.innerHeight * 0.45;
+          let activeIndex = 0;
+          _sectionTops.forEach((top, i) => { if (top <= mid) activeIndex = i; });
+          _dots.forEach((dot, i) => {
+            const active = i === activeIndex;
+            dot.classList.toggle("is-active", active);
+            if (active) dot.setAttribute("aria-current", "true");
+            else dot.removeAttribute("aria-current");
+          });
+          _navTicking = false;
         });
       }
 
-      window.__liorRefreshSectionNav = updateActive;
+      window.__liorRefreshSectionNav = () => { cacheSectionTops(); updateActive(); };
       window.addEventListener("scroll", updateActive, { passive: true });
       updateActive();
     }
@@ -1140,13 +1151,22 @@ ${productLine}
     });
 
     function setupOrderActionsVisibility() {
+      const hero = document.querySelector(".home-hero");
+      let threshold = hero ? hero.offsetTop + hero.offsetHeight - 120 : 420;
+
+      function recacheThreshold() {
+        threshold = hero ? hero.offsetTop + hero.offsetHeight - 120 : 420;
+      }
+      window.addEventListener("resize", recacheThreshold, { passive: true });
+
+      let _oaTicking = false;
       function update() {
-        const hero = document.querySelector(".home-hero");
-        const scrollY = window.scrollY || window.pageYOffset;
-        const threshold = hero
-          ? hero.offsetTop + hero.offsetHeight - 120
-          : 420;
-        document.body.classList.toggle("show-order-actions", scrollY > threshold);
+        if (_oaTicking) return;
+        _oaTicking = true;
+        requestAnimationFrame(() => {
+          document.body.classList.toggle("show-order-actions", (window.scrollY || window.pageYOffset) > threshold);
+          _oaTicking = false;
+        });
       }
 
       window.addEventListener("scroll", update, { passive: true });

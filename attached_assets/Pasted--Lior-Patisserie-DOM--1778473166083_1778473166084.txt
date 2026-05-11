@@ -1,0 +1,98 @@
+בצע חקירה ותיקון ביצועים באתר Lior Patisserie, עם דגש על טעינת תמונות, גלילה, DOM יציב ומניעת טעינה חוזרת.
+
+הבעיה:
+בגלילה למעלה ולמטה התמונות נראות כאילו הן נטענות מחדש, יש האטה בגלילה, והעמוד מרגיש כבד. יש חשד לרינדור כפול של גריד המוצרים, החלפת DOM באמצעות innerHTML, מנגנוני טעינת תמונות כפולים וחוסר אסטרטגיית cache מסודרת.
+
+יש לבדוק ולתקן:
+
+1. מניעת רינדור כפול של מוצרים
+- כרגע main.js מרנדר מוצרים מקומיים, ואז site-content.js טוען מוצרים מ-Supabase ומחליף את כל productsGrid.
+- יש למנוע מצב שבו הגריד נטען פעם אחת מקומית ואז נבנה מחדש מ-Supabase אם אין צורך.
+- אם Supabase זמין, להעדיף טעינה אחת בלבד ממקור הנתונים הסופי.
+- אם Supabase לא זמין, להשתמש בפולבק המקומי פעם אחת בלבד.
+- לא להרוס ולבנות מחדש את כל productsGrid אם התוכן לא השתנה.
+
+2. החלפת innerHTML מלאה
+- לצמצם שימוש ב-grid.innerHTML עבור productsGrid.
+- במידת האפשר לבצע render יציב לפי product.id או product.name.
+- לשמור על אותם אלמנטים של כרטיסים ותמונות כאשר המוצר לא השתנה.
+- לא ליצור מחדש <img> שכבר נטען.
+- אם כן משתמשים ב-innerHTML, לוודא שזה קורה רק פעם אחת בטעינה ולא בעקבות גלילה / refreshDynamicBehaviors / שינוי לא נחוץ.
+
+3. איחוד מנגנון טעינת התמונות
+- כרגע קיימים setupImages ב-main.js ו-setRemoteImageWithFallback / renderManagedProducts ב-site-content.js.
+- לאחד את הטיפול בתמונות למנגנון אחד בלבד.
+- כל תמונה צריכה לקבל src יציב פעם אחת.
+- לא להפעיל setImageWithFallback שוב על תמונה שכבר נטענה.
+- לא להסיר is-loaded מתמונה שכבר נטענה.
+- לא לאפס src אם ה-src הנוכחי זהה ל-src הבא.
+- להוסיף בדיקה קשיחה:
+  אם img.dataset.imageReady === "true" וה-src זהה — לא עושים כלום.
+
+4. Lazy loading ו-IntersectionObserver
+- לוודא שה-IntersectionObserver רק טוען תמונה פעם אחת.
+- לאחר טעינה יש לבצע unobserve.
+- לא להחזיר תמונה למצב unloaded כשהיא יוצאת מה-viewport.
+- לא למחוק data-imageReady / data-imageQueued.
+- לא ליצור observer חדש בכל קריאת refreshDynamicBehaviors.
+- לוודא ש-refreshDynamicBehaviors לא גורם לטעינה חוזרת של תמונות קיימות.
+
+5. Cache של תמונות
+- לבדוק את כותרות ה-cache של תמונות מקומיות ושל תמונות Supabase Storage.
+- עבור תמונות סטטיות / card images להגדיר cache ארוך:
+  Cache-Control: public, max-age=31536000, immutable
+- עבור תמונות שמוחלפות דרך אדמין:
+  להשתמש בשם קובץ ייחודי בכל העלאה, למשל timestamp או hash בשם הקובץ.
+  לא להחליף קובץ באותו שם אם רוצים cache ארוך.
+- לוודא ש-ETag / max-age תקינים.
+- לבדוק ב-Network אם בקשות התמונות חוזרות כ-200 במקום memory cache / disk cache / 304.
+- אם Supabase upload קיים באדמין, להוסיף cacheControl מתאים בזמן העלאה.
+
+6. יציבות DOM ו-CLS
+- לוודא שלכל תמונה יש width ו-height או aspect-ratio קבוע.
+- לוודא של-product-image יש aspect-ratio קבוע ב-CSS.
+- לא לאפשר קפיצות layout בזמן טעינת תמונות.
+- להוסיף placeholder יציב / background עדין שאינו משנה גובה.
+- לבדוק שאין display:none / יצירה מחדש של אזורים בזמן גלילה.
+- לוודא שאנימציות reveal משנות רק opacity/transform ולא height/margin/layout.
+
+7. Scroll performance
+- לבדוק אם קיימים event listeners של scroll שמעדכנים state / class / DOM בתדירות גבוהה.
+- אם יש scroll listener, להעביר ל-requestAnimationFrame או IntersectionObserver.
+- לא לבצע querySelectorAll כבד או חישובי layout בכל scroll.
+- לא לקרוא getBoundingClientRect בלולאות בזמן גלילה בלי throttle.
+- לוודא שאין re-render של גריד מוצרים בזמן scroll.
+
+8. Performance Profiling
+- לפתוח Chrome DevTools:
+  Network:
+  - לסמן Disable cache כבוי.
+  - לגלול למטה ולמעלה.
+  - לבדוק אם אותן תמונות נשלחות שוב.
+  - לזהות האם הסטטוס הוא memory cache / disk cache / 304 / 200.
+  Performance:
+  - להקליט גלילה.
+  - לבדוק long tasks, forced reflow, layout shift, scripting כבד.
+  - לזהות אם scroll מפעיל JS מיותר.
+  Rendering:
+  - לבדוק Layout Shift Regions ו-Paint flashing.
+
+9. תוצאה נדרשת
+- תמונות נטענות פעם אחת בלבד.
+- גלילה למעלה ולמטה לא יוצרת בקשות רשת חוזרות.
+- תמונות לא נבנות מחדש ב-DOM.
+- אין reset של src / class / dataset אחרי שהתמונה נטענה.
+- אין CLS.
+- הגלילה חלקה.
+- productsGrid נשאר יציב.
+- Supabase נטען פעם אחת ולא גורם לרינדור חוזר מיותר.
+- האתר מרגיש קל, מהיר וייצורתי ברמת production.
+
+בסוף החקירה להחזיר:
+1. רשימת root causes שנמצאו בפועל בקוד.
+2. קבצים ושורות שתוקנו.
+3. הסבר קצר מה השתנה.
+4. בדיקת Network לפני/אחרי:
+   האם התמונות חוזרות מהרשת או נשארות memory/disk cache.
+5. בדיקת Performance לפני/אחרי:
+   האם ירדו long tasks, reflows ו-layout shifts.
