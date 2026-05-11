@@ -39,6 +39,12 @@
     .site-nav { height: 46px !important; }
     .home-hero { margin: 0 !important; height: 100svh !important; min-height: 100svh !important; background: #2A1A2E !important; }
     html.hero-locked .home-products { height: 100svh !important; max-height: 100svh !important; }
+    /* Nav text — force light colors over dark transparent header */
+    .nav-brand, .nav-brand span:first-child { color: rgba(248,244,238,0.95) !important; direction: ltr !important; }
+    .nav-brand span:last-child { color: #C4A844 !important; }
+    .nav-links a, .nav-links .hero-scroll-link { color: rgba(248,244,238,0.92) !important; background: transparent !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; animation: none !important; backdrop-filter: none !important; text-shadow: 0 1px 6px rgba(0,0,0,0.5) !important; }
+    .nav-links .hero-scroll-link::after { content: none !important; }
+    .nav-cta { color: #C4A844 !important; border-color: #C4A844 !important; }
   </style>
 </head>
 
