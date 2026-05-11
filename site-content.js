@@ -363,7 +363,7 @@
             <h3>${escapeHtml(product.name || "")}</h3>
             ${priceBlock}
             <p>${escapeHtml(product.description || "")}</p>
-            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${escapeHtml(product.name || "")}" aria-label="הוספה לסל: ${escapeHtml(product.name || "")}">🛒</button>
+            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${escapeHtml(product.name || "")}" aria-label="הוספה לסל: ${escapeHtml(product.name || "")}">+</button>
             <div class="cart-feedback" aria-live="polite"></div>
           </div>
         </article>
