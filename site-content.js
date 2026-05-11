@@ -9,6 +9,12 @@
     "flavors_title",
     "flavors_intro_primary",
     "flavors_intro_secondary",
+    "category_1_title",
+    "category_1_subtitle",
+    "category_2_title",
+    "category_2_subtitle",
+    "category_3_title",
+    "category_3_subtitle",
     "handmade_label",
     "handmade_title",
     "handmade_text",
@@ -302,90 +308,54 @@
     grid.dataset.productsSignature = emptySignature;
   }
 
-  function renderManagedProducts(rows) {
-    const grid = document.getElementById("productsGrid");
-    if (!grid || !Array.isArray(rows)) return;
-    if (!rows.length) {
-      clearManagedProducts(grid);
-      return;
-    }
+  function buildProductCardHtml(product, globalIndex) {
+    const fullImageValue = productImageValue(product);
+    const cardImageValue = productCardImageValue(product);
+    const fullForLightbox = hasText(fullImageValue) ? fullImageValue : cardImageValue;
+    const explicitCard = hasExplicitCardSource(product);
+    const isRemoteGrid = isRemoteImageValue(cardImageValue);
 
-    const activeProducts = rows
-      .filter((product) => product && product.is_active === true && hasText(product.name))
-      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
-
-    if (!activeProducts.length) {
-      clearManagedProducts(grid);
-      return;
-    }
-
-    const nextSignature = productsSignature(activeProducts);
-    const previousSignature = grid.dataset.renderSignature || grid.dataset.productsSignature || "";
-    if (nextSignature && nextSignature === previousSignature) {
-      grid.dataset.renderSignature = nextSignature;
-      grid.dataset.productsSignature = nextSignature;
-      return;
-    }
-
-    const nextHtml = activeProducts.map((product, index) => {
-      const fullImageValue = productImageValue(product);
-      const cardImageValue = productCardImageValue(product);
-      const fullForLightbox = hasText(fullImageValue) ? fullImageValue : cardImageValue;
-      const explicitCard = hasExplicitCardSource(product);
-      const isRemoteGrid = isRemoteImageValue(cardImageValue);
-
-      let srcAttr = "";
-      let dataAttr = "";
-      if (hasText(cardImageValue)) {
-        if (explicitCard && isRemoteGrid) {
-          srcAttr = `src="${escapeHtml(cardImageValue)}"`;
-        } else {
-          dataAttr = `data-product-image="${escapeHtml(cardImageValue)}"`;
-        }
+    let srcAttr = "";
+    let dataAttr = "";
+    if (hasText(cardImageValue)) {
+      if (explicitCard && isRemoteGrid) {
+        srcAttr = `src="${escapeHtml(cardImageValue)}"`;
+      } else {
+        dataAttr = `data-product-image="${escapeHtml(cardImageValue)}"`;
       }
-
-      const fullAttr = hasText(fullForLightbox) ? `data-full-image="${escapeHtml(fullForLightbox)}"` : "";
-
-      const eagerFirst = explicitCard && isRemoteGrid && index < 4;
-      const loadingAttr = eagerFirst ? "eager" : "lazy";
-      const fetchPri = eagerFirst ? "high" : "low";
-
-      const priceLabel = hasDisplayablePrice(product) ? formatProductPriceLabel(product) : "";
-      const priceBlock = priceLabel
-        ? `<p class="product-price"><span class="product-price-inner">${escapeHtml(priceLabel)}</span></p>`
-        : "";
-
-      return `
-        <article class="product-card reveal is-visible" data-reveal-ready="true">
-          <div class="product-image">
-            <img ${srcAttr} ${dataAttr} ${fullAttr} alt="${escapeHtml(product.name || "")}" width="800" height="688" loading="${loadingAttr}" fetchpriority="${fetchPri}" decoding="async">
-          </div>
-          <div class="product-body">
-            <h3>${escapeHtml(product.name || "")}</h3>
-            ${priceBlock}
-            <p>${escapeHtml(product.description || "")}</p>
-            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${escapeHtml(product.name || "")}" aria-label="הוספה לסל: ${escapeHtml(product.name || "")}">+</button>
-            <div class="cart-feedback" aria-live="polite"></div>
-          </div>
-        </article>
-      `;
-    }).join("");
-
-    if (grid.innerHTML.trim() === nextHtml.trim()) {
-      grid.dataset.renderSignature = nextSignature;
-      grid.dataset.productsSignature = nextSignature;
-      return;
     }
 
-    grid.innerHTML = nextHtml;
-    grid.dataset.renderSignature = nextSignature;
-    grid.dataset.productsSignature = nextSignature;
+    const fullAttr = hasText(fullForLightbox) ? `data-full-image="${escapeHtml(fullForLightbox)}"` : "";
+    const eagerFirst = explicitCard && isRemoteGrid && globalIndex < 4;
+    const loadingAttr = eagerFirst ? "eager" : "lazy";
+    const fetchPri = eagerFirst ? "high" : "low";
 
+    const priceLabel = hasDisplayablePrice(product) ? formatProductPriceLabel(product) : "";
+    const priceBlock = priceLabel
+      ? `<p class="product-price"><span class="product-price-inner">${escapeHtml(priceLabel)}</span></p>`
+      : "";
+
+    return `
+      <article class="product-card reveal is-visible" data-reveal-ready="true">
+        <div class="product-image">
+          <img ${srcAttr} ${dataAttr} ${fullAttr} alt="${escapeHtml(product.name || "")}" width="800" height="688" loading="${loadingAttr}" fetchpriority="${fetchPri}" decoding="async">
+        </div>
+        <div class="product-body">
+          <h3>${escapeHtml(product.name || "")}</h3>
+          ${priceBlock}
+          <p>${escapeHtml(product.description || "")}</p>
+          <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${escapeHtml(product.name || "")}" aria-label="הוספה לסל: ${escapeHtml(product.name || "")}">+</button>
+          <div class="cart-feedback" aria-live="polite"></div>
+        </div>
+      </article>
+    `;
+  }
+
+  function hydrateGridImages(grid) {
     grid.querySelectorAll(".product-image img").forEach((img) => {
       const dataCard = (img.getAttribute("data-product-image") || "").trim();
       const srcAttr = (img.getAttribute("src") || "").trim();
-      const primary =
-        dataCard || (/^https?:\/\//i.test(srcAttr) || srcAttr.startsWith("//") ? srcAttr : "");
+      const primary = dataCard || (/^https?:\/\//i.test(srcAttr) || srcAttr.startsWith("//") ? srcAttr : "");
       const fullFb = (img.dataset.fullImage || "").trim();
       const seed = primary || fullFb;
       if (typeof window.setImageWithFallback === "function" && seed) {
@@ -397,7 +367,47 @@
       img.dataset.imageQueued = "loaded";
       img.dataset.imageObserved = "true";
     });
+  }
 
+  function renderCategoryGrid(gridId, products, startIndex) {
+    const grid = document.getElementById(gridId);
+    if (!grid) return;
+    const section = grid.closest(".category-section");
+    if (!products.length) {
+      grid.innerHTML = "";
+      if (section) section.hidden = true;
+      return;
+    }
+    if (section) section.hidden = false;
+    grid.innerHTML = products.map((product, i) => buildProductCardHtml(product, startIndex + i)).join("");
+    hydrateGridImages(grid);
+  }
+
+  function renderManagedProducts(rows) {
+    if (!Array.isArray(rows)) return;
+
+    const activeProducts = rows
+      .filter((product) => product && product.is_active === true && hasText(product.name))
+      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+
+    const hasNewLayout = !!document.getElementById("productsGrid1");
+
+    if (hasNewLayout) {
+      renderCategoryGrid("productsGrid1", activeProducts.slice(0, 6), 0);
+      renderCategoryGrid("productsGrid2", activeProducts.slice(6, 12), 6);
+      renderCategoryGrid("productsGrid3", activeProducts.slice(12, 18), 12);
+      refreshDynamicBehaviors();
+      return;
+    }
+
+    const grid = document.getElementById("productsGrid");
+    if (!grid) return;
+    if (!activeProducts.length) {
+      grid.innerHTML = "";
+      return;
+    }
+    grid.innerHTML = activeProducts.map((product, index) => buildProductCardHtml(product, index)).join("");
+    hydrateGridImages(grid);
     refreshDynamicBehaviors();
   }
 

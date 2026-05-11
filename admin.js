@@ -619,6 +619,26 @@ function productDrawerFormTemplate(product = {}) {
   </form>`;
 }
 
+function buildAdminCategoryHtml(sorted) {
+  const CATEGORY_LABELS = ["סדרה ראשונה", "סדרה שניה", "סדרה שלישית"];
+  const groups = [
+    sorted.slice(0, 6),
+    sorted.slice(6, 12),
+    sorted.slice(12)
+  ];
+  return groups.map((products, i) => `
+    <div class="admin-category-group" data-category-index="${i + 1}">
+      <div class="admin-category-group-head">
+        <span class="admin-category-group-label">${CATEGORY_LABELS[i]}</span>
+        <span class="admin-category-group-count">${products.length} מוצרים</span>
+      </div>
+      <div class="products-admin-grid admin-category-cards">
+        ${products.length ? products.map(productGridCardTemplate).join("") : '<p class="hint admin-empty-hint">אין מוצרים בסדרה זו.</p>'}
+      </div>
+    </div>
+  `).join("");
+}
+
 async function loadProducts() {
   const { data, error } = await client().from("products").select("*").order("display_order", { ascending: true });
   if (error) {
@@ -637,8 +657,8 @@ async function loadProducts() {
     return;
   }
 
-  container.innerHTML = supabaseProducts.map(productGridCardTemplate).join("");
-  hydrateProductGridCards(container);
+  container.innerHTML = buildAdminCategoryHtml(supabaseProducts);
+  container.querySelectorAll(".admin-category-cards").forEach(hydrateProductGridCards);
   refreshProductDrawerFormIfOpen();
 }
 
@@ -662,8 +682,8 @@ function rerenderProductGrid() {
   const sorted = [...adminProductsCache].sort(
     (a, b) => (Number(a.display_order) || 0) - (Number(b.display_order) || 0)
   );
-  container.innerHTML = sorted.map(productGridCardTemplate).join("");
-  hydrateProductGridCards(container);
+  container.innerHTML = buildAdminCategoryHtml(sorted);
+  container.querySelectorAll(".admin-category-cards").forEach(hydrateProductGridCards);
   refreshProductDrawerFormIfOpen();
 }
 

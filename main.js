@@ -210,30 +210,47 @@ ${productLine}
     }
 
     function renderProducts() {
-      const grid = document.getElementById("productsGrid");
+      const groups = [
+        { id: "productsGrid1", items: products.slice(0, 6) },
+        { id: "productsGrid2", items: products.slice(6, 12) },
+        { id: "productsGrid3", items: products.slice(12, 18) }
+      ];
 
-      grid.innerHTML = products.map((product, index) => `
-        <article class="product-card reveal">
-          <div class="product-image">
-            <img
-              data-product-image="${product.cardImage || product.image}"
-              data-full-image="${product.image}"
-              alt="${product.name}"
-              width="800"
-              height="688"
-              loading="${index < 4 ? "eager" : "lazy"}"
-              fetchpriority="${index < 4 ? "high" : "auto"}"
-              decoding="async">
-          </div>
-          <div class="product-body">
-            <h3>${product.name}</h3>
-            <p>${product.description}</p>
-            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${product.name}" aria-label="הוספה לסל: ${product.name}">+</button>
-            <div class="cart-feedback" aria-live="polite"></div>
-          </div>
-        </article>
-      `).join("");
-
+      groups.forEach(({ id, items }, groupIndex) => {
+        const grid = document.getElementById(id);
+        if (!grid) return;
+        const section = grid.closest(".category-section");
+        if (!items.length) {
+          grid.innerHTML = "";
+          if (section) section.hidden = true;
+          return;
+        }
+        if (section) section.hidden = false;
+        grid.innerHTML = items.map((product, i) => {
+          const globalIndex = groupIndex * 6 + i;
+          return `
+            <article class="product-card reveal">
+              <div class="product-image">
+                <img
+                  data-product-image="${product.cardImage || product.image}"
+                  data-full-image="${product.image}"
+                  alt="${product.name}"
+                  width="800"
+                  height="688"
+                  loading="${globalIndex < 4 ? "eager" : "lazy"}"
+                  fetchpriority="${globalIndex < 4 ? "high" : "auto"}"
+                  decoding="async">
+              </div>
+              <div class="product-body">
+                <h3>${product.name}</h3>
+                <p>${product.description}</p>
+                <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${product.name}" aria-label="הוספה לסל: ${product.name}">+</button>
+                <div class="cart-feedback" aria-live="polite"></div>
+              </div>
+            </article>
+          `;
+        }).join("");
+      });
     }
 
     function getManagedImageName(img) {

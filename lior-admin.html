@@ -52,7 +52,8 @@
       <nav class="admin-tabs" aria-label="ניווט אזורי ניהול">
         <a href="#heroPanel">תמונת פתיחה</a>
         <a href="#flavorsPanel">אזור הטעמים</a>
-        <a href="#productsPanel">מוצרים וטעמים</a>
+        <a href="#categoriesPanel">סדרות עוגות</a>
+        <a href="#productsPanel">מוצרים</a>
         <a href="#handmadePanel">עבודת יד</a>
         <a href="#contactPanel">פרטי קשר</a>
         <a href="#instagramPanel">אינסטגרם</a>
@@ -113,19 +114,68 @@
         </div>
       </section>
 
-      <section class="editor-card" id="productsPanel">
+      <section class="editor-card" id="categoriesPanel">
         <div class="section-heading">
           <span class="section-number">03</span>
           <div>
-            <h2>מוצרים וטעמים</h2>
-            <p>הטעמים שמופיעים באתר. ניתן לערוך שם, תיאור, מחיר ותמונה בצורה פשוטה ומהירה.</p>
+            <h2>סדרות עוגות</h2>
+            <p>כותרות וכותרות משנה לכל אחת מ-3 הסדרות המוצגות באתר.</p>
+          </div>
+        </div>
+        <div class="admin-categories-settings">
+          <div class="admin-category-settings-row">
+            <span class="admin-category-settings-label">סדרה ראשונה</span>
+            <div class="grid two-columns">
+              <label class="field-label">כותרת ראשית
+                <input data-setting="category_1_title" type="text" placeholder="סדרת עוגות ראשונה">
+              </label>
+              <label class="field-label">כותרת משנה
+                <input data-setting="category_1_subtitle" type="text" placeholder="מגוון עוגות סדרה ראשונה">
+              </label>
+            </div>
+          </div>
+          <div class="admin-category-settings-row">
+            <span class="admin-category-settings-label">סדרה שניה</span>
+            <div class="grid two-columns">
+              <label class="field-label">כותרת ראשית
+                <input data-setting="category_2_title" type="text" placeholder="סדרת עוגות שניה">
+              </label>
+              <label class="field-label">כותרת משנה
+                <input data-setting="category_2_subtitle" type="text" placeholder="מגוון עוגות סדרה שניה">
+              </label>
+            </div>
+          </div>
+          <div class="admin-category-settings-row">
+            <span class="admin-category-settings-label">סדרה שלישית</span>
+            <div class="grid two-columns">
+              <label class="field-label">כותרת ראשית
+                <input data-setting="category_3_title" type="text" placeholder="סדרת עוגות שלישית">
+              </label>
+              <label class="field-label">כותרת משנה
+                <input data-setting="category_3_subtitle" type="text" placeholder="מגוון עוגות סדרה שלישית">
+              </label>
+            </div>
+          </div>
+        </div>
+        <div class="actions-row">
+          <button class="admin-button" type="button" data-save-settings="categories-settings">שמירת כותרות הסדרות</button>
+          <div class="notice" data-notice="categories-settings"></div>
+        </div>
+      </section>
+
+      <section class="editor-card" id="productsPanel">
+        <div class="section-heading">
+          <span class="section-number">04</span>
+          <div>
+            <h2>מוצרים</h2>
+            <p>המוצרים מחולקים ל-3 סדרות (6 מוצרים בכל סדרה). לחץ על מוצר לעריכה, שינוי תמונה, מחיר, או הסתרה מהאתר.</p>
           </div>
         </div>
         <div class="actions-row top-action">
           <button id="addProduct" class="admin-button" type="button">הוספת מוצר חדש</button>
           <div class="notice" data-notice="products"></div>
         </div>
-        <div id="productsAdmin" class="products-admin-grid"></div>
+        <div id="productsAdmin"></div>
       </section>
 
       <div id="productDrawerBackdrop" class="product-drawer-backdrop" hidden aria-hidden="true"></div>
