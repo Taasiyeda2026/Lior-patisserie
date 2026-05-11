@@ -354,9 +354,12 @@ ${productLine}
         const link = event.target.closest("a[data-contact-whatsapp]");
         if (!link) return;
         event.preventDefault();
-        const url = buildGeneralWhatsAppUrl();
-        if (!url) return;
-        window.open(url, "_blank", "noopener,noreferrer");
+        if (typeof openOrderModal === "function") {
+          openOrderModal();
+        } else {
+          const url = buildGeneralWhatsAppUrl();
+          if (url) window.open(url, "_blank", "noopener,noreferrer");
+        }
       });
     }
 
