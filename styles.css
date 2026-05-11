@@ -122,7 +122,12 @@
       padding: var(--shell-gutter);
     }
 
-    html.hero-locked,
+    html.hero-locked {
+      height: 100svh;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
     body.hero-locked {
       height: 100%;
       overflow: hidden;
@@ -134,6 +139,20 @@
     html.hero-locked .section-nav,
     html.hero-locked .footer {
       display: none;
+    }
+
+    html.hero-locked .home-products {
+      height: calc(100svh - (var(--shell-gutter) * 2));
+      max-height: calc(100svh - (var(--shell-gutter) * 2));
+      overflow: hidden;
+    }
+
+    html.hero-locked .home-products::after {
+      display: none;
+    }
+
+    html.hero-locked main {
+      scroll-snap-type: none;
     }
 
     img {
