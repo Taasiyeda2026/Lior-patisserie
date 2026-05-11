@@ -387,7 +387,7 @@
 
     grid.innerHTML = activeFeatures.map((feature) => {
       const icon = hasText(feature.image_url)
-        ? `<img src="${escapeHtml(feature.image_url)}" alt="" loading="lazy" decoding="async">`
+        ? `<img src="${escapeHtml(feature.image_url)}" alt="${escapeHtml(feature.title || "")}" loading="lazy" decoding="async">`
         : FEATURE_ICON_FALLBACK;
 
       return `
@@ -448,10 +448,13 @@
 
     grid.innerHTML = activeItems.map((item) => {
       const url = item.image_url.trim();
-      const alt = hasText(item.alt_text) ? item.alt_text.trim() : (hasText(item.title) ? item.title.trim() : "");
+      const altRaw = hasText(item.alt_text)
+        ? item.alt_text.trim()
+        : (hasText(item.title) ? item.title.trim() : "");
+      const imgAlt = hasText(altRaw) ? altRaw : "תמונה מהגלריה של Lior's Pâtisserie";
       return `
         <button type="button" class="gallery-thumb reveal is-visible" data-reveal-ready="true" role="listitem" data-lightbox-src="${escapeHtml(url)}" aria-label="${escapeHtml(labelFor(item))}">
-          <img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" width="480" height="360" loading="lazy" decoding="async">
+          <img src="${escapeHtml(url)}" alt="${escapeHtml(imgAlt)}" width="480" height="360" loading="lazy" decoding="async">
         </button>
       `;
     }).join("");

@@ -423,13 +423,14 @@ ${productLine}
             <button class="order-cart-btn" type="button" data-cart-decrease="${escapeHtml(item.name)}" aria-label="הפחתת כמות ${escapeHtml(item.name)}">−</button>
             <span class="order-cart-qty" aria-label="כמות">${item.quantity}</span>
             <button class="order-cart-btn" type="button" data-cart-increase="${escapeHtml(item.name)}" aria-label="הגדלת כמות ${escapeHtml(item.name)}">+</button>
-            <button class="order-cart-remove" type="button" data-cart-remove="${escapeHtml(item.name)}">הסרה</button>
+            <button class="order-cart-remove" type="button" data-cart-remove="${escapeHtml(item.name)}" aria-label="הסרת ${escapeHtml(item.name)} מהסל">הסרה</button>
           </div>
         </div>
       `).join("");
     }
 
     function showOrderStep(step) {
+      setOrderErrorVisible(false);
       const cartStep = document.getElementById("orderCartStep");
       const detailsStep = document.getElementById("orderForm");
       const title = document.getElementById("orderModalTitle");
@@ -493,8 +494,11 @@ ${productLine}
     }
 
     let modalOpener = null;
+    let lightboxOpener = null;
 
     function trapModalFocus(event) {
+      const lightbox = document.getElementById("imageLightbox");
+      if (lightbox && lightbox.classList.contains("is-open")) return;
       const modal = document.getElementById("orderModal");
       if (!modal || modal.getAttribute("aria-hidden") === "true") return;
       const card = modal.querySelector(".order-modal-card");
@@ -512,24 +516,41 @@ ${productLine}
       }
     }
 
+    function setOrderErrorVisible(visible) {
+      const error = document.getElementById("orderError");
+      if (!error) return;
+      if (visible) {
+        error.classList.add("is-visible");
+        error.setAttribute("aria-hidden", "false");
+      } else {
+        error.classList.remove("is-visible");
+        error.setAttribute("aria-hidden", "true");
+      }
+    }
+
     function openOrderModal() {
       const modal = document.getElementById("orderModal");
       const error = document.getElementById("orderError");
 
       if (!modal) return;
 
-      modalOpener = document.activeElement || null;
+      if (!modalOpener) {
+        modalOpener = document.activeElement && document.activeElement !== document.body
+          ? document.activeElement
+          : null;
+      }
 
       renderOrderCart();
       showOrderStep("cart");
 
-      if (error) {
-        error.classList.remove("is-visible");
-      }
+      setOrderErrorVisible(false);
 
       modal.classList.add("is-open");
       modal.setAttribute("aria-hidden", "false");
       document.body.classList.add("has-modal");
+
+      const floatingCart = document.getElementById("floatingCart");
+      if (floatingCart) floatingCart.setAttribute("aria-expanded", "true");
 
       setTimeout(() => {
         const firstAction = orderCart.length
@@ -546,6 +567,11 @@ ${productLine}
       modal.classList.remove("is-open");
       modal.setAttribute("aria-hidden", "true");
       document.body.classList.remove("has-modal");
+
+      const floatingCart = document.getElementById("floatingCart");
+      if (floatingCart) floatingCart.setAttribute("aria-expanded", "false");
+
+      setOrderErrorVisible(false);
 
       if (modalOpener && typeof modalOpener.focus === "function") {
         modalOpener.focus();
@@ -590,7 +616,6 @@ ${productLine}
       const modal = document.getElementById("orderModal");
       const closeBtn = document.getElementById("orderModalClose");
       const form = document.getElementById("orderForm");
-      const error = document.getElementById("orderError");
       const cartList = document.getElementById("orderCartList");
       const clearCartButton = document.getElementById("clearCartButton");
       const continueButton = document.getElementById("orderContinueButton");
@@ -603,6 +628,7 @@ ${productLine}
         const button = event.target.closest("[data-order]");
         if (!button) return;
         event.preventDefault();
+        modalOpener = button;
         openOrderModal();
       });
       window.openOrderModal = openOrderModal;
@@ -669,7 +695,14 @@ ${productLine}
 
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
+          const lightbox = document.getElementById("imageLightbox");
+          if (lightbox && lightbox.classList.contains("is-open")) {
+            closeImageLightbox();
+            event.preventDefault();
+            return;
+          }
           closeOrderModal();
+          return;
         }
         if (event.key === "Tab") {
           trapModalFocus(event);
@@ -693,11 +726,11 @@ ${productLine}
           const isValid = data.name && data.phone && data.products;
 
           if (!isValid) {
-            if (error) error.classList.add("is-visible");
+            setOrderErrorVisible(true);
             return;
           }
 
-          if (error) error.classList.remove("is-visible");
+          setOrderErrorVisible(false);
 
           const url = buildOrderWhatsAppUrl(data);
           window.open(url, "_blank", "noopener,noreferrer");
@@ -811,14 +844,22 @@ ${productLine}
     function openImageLightbox(src, alt = "") {
       const lightbox = document.getElementById("imageLightbox");
       const image = document.getElementById("imageLightboxImg");
+      const closeBtn = document.getElementById("imageLightboxClose");
 
       if (!lightbox || !image) return;
+
+      lightboxOpener = document.activeElement && document.activeElement !== document.body
+        ? document.activeElement
+        : null;
 
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.classList.add("has-lightbox");
       image.src = src;
-      image.alt = alt;
+      image.alt = alt || "תמונה מהאתר";
+      requestAnimationFrame(() => {
+        if (closeBtn && typeof closeBtn.focus === "function") closeBtn.focus();
+      });
     }
 
     function closeImageLightbox() {
@@ -832,6 +873,10 @@ ${productLine}
       document.body.classList.remove("has-lightbox");
       image.src = "";
       image.alt = "";
+      if (lightboxOpener && typeof lightboxOpener.focus === "function") {
+        lightboxOpener.focus();
+      }
+      lightboxOpener = null;
     }
 
     function setupImageLightbox() {
@@ -872,14 +917,6 @@ ${productLine}
         });
       }
 
-      if (!window.__liorLightboxEscapeBound) {
-        window.__liorLightboxEscapeBound = true;
-        document.addEventListener("keydown", (event) => {
-          if (event.key === "Escape") {
-            closeImageLightbox();
-          }
-        });
-      }
     }
 
 
@@ -935,7 +972,10 @@ ${productLine}
           if (section.offsetTop <= mid) activeIndex = i;
         });
         dots.forEach((dot, i) => {
-          dot.classList.toggle("is-active", i === activeIndex);
+          const active = i === activeIndex;
+          dot.classList.toggle("is-active", active);
+          if (active) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
         });
       }
 

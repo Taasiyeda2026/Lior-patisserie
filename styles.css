@@ -667,7 +667,7 @@
       font-size: 0.72rem;
       font-weight: 500;
       line-height: 1.2;
-      color: rgba(109, 77, 49, 0.86);
+      color: #4a3428;
       background: rgba(255, 249, 242, 0.42);
       border: 1px solid rgba(200, 169, 106, 0.18);
       box-shadow: none;
@@ -2091,6 +2091,11 @@
       transform: translateY(-3px) scale(1.02);
     }
 
+    .floating-cart:focus-visible {
+      outline: 3px solid rgba(255, 249, 242, 0.95);
+      outline-offset: 3px;
+    }
+
     .floating-cart-count {
       position: absolute;
       top: -4px;
@@ -2158,6 +2163,14 @@
         opacity: 1;
         transform: none;
         filter: none;
+      }
+
+      .floating-cart:hover {
+        transform: none;
+      }
+
+      .image-lightbox img {
+        animation: none !important;
       }
     }
 
@@ -2654,6 +2667,11 @@
       transform: translateY(-1px);
     }
 
+    .order-modal-close:focus-visible {
+      outline: 2px solid rgba(61, 34, 73, 0.75);
+      outline-offset: 3px;
+    }
+
     .order-modal-card h2 {
       margin: 0 0 8px;
       padding-left: 44px;
@@ -2757,6 +2775,12 @@
       border-color: rgba(111, 74, 124, 0.62);
       box-shadow: 0 0 0 4px rgba(199, 178, 214, 0.18);
       background: #FFF9F2;
+    }
+
+    .order-field input:focus-visible,
+    .order-field textarea:focus-visible {
+      outline: 2px solid rgba(61, 34, 73, 0.72);
+      outline-offset: 2px;
     }
 
     #customerPhone,
@@ -3076,6 +3100,11 @@
       box-shadow: 0 10px 26px rgba(47, 33, 28, 0.20);
     }
 
+    .image-lightbox-close:focus-visible {
+      outline: 2px solid rgba(255, 249, 242, 0.95);
+      outline-offset: 3px;
+    }
+
     @keyframes lightboxIn {
       from {
         opacity: 0;
@@ -3144,6 +3173,11 @@
     .nav-dot:hover:not(.is-active) {
       background: rgba(255, 255, 255, 0.58);
       border-color: rgba(255, 255, 255, 0.7);
+    }
+
+    .nav-dot:focus-visible {
+      outline: 2px solid rgba(255, 249, 242, 0.95);
+      outline-offset: 4px;
     }
 
     .nav-dot::after {
