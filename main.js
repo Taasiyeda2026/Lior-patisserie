@@ -162,6 +162,7 @@ ${productLine}
       }
 
       const loadedCache = window.__liorLoadedImageUrls || (window.__liorLoadedImageUrls = new Set());
+      const preloadCache = window.__liorPreloadedImages || new Set();
       const currentSrc = img.getAttribute("src") || "";
 
       if (img.dataset.imageReady === "true" && img.dataset.loadedSrc) {
@@ -177,10 +178,17 @@ ${productLine}
         return;
       }
 
-      if (options[0] && loadedCache.has(options[0]) && currentSrc === options[0]) {
+      if (options[0] && (loadedCache.has(options[0]) || preloadCache.has(options[0])) && currentSrc === options[0]) {
         img.dataset.imageReady = "true";
         img.dataset.loadedSrc = currentSrc;
         img.classList.add("is-loaded");
+        return;
+      }
+
+      if (options[0] && preloadCache.has(options[0]) && !currentSrc) {
+        img.dataset.imageReady = "false";
+        img.classList.remove("is-loaded");
+        img.src = options[0];
         return;
       }
 

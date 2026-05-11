@@ -1,0 +1,122 @@
+יש להוסיף מנגנון טעינת רקע חכמה לתמונות המוצרים באתר.
+
+המטרה:
+כאשר המשתמש נכנס לאתר, התמונות של המוצרים יתחילו להיטען ברקע בהדרגה, כך שכאשר גוללים למטה הן כבר יהיו מוכנות ולא יופיעו טעינות / הבהובים.
+אבל חשוב לא להעמיס על האתר בבת אחת.
+
+הבעיה הנוכחית:
+בגלילה רואים שתמונות נטענות רק כשהמשתמש מגיע אליהן.
+זה עדיף מבחינת lazy loading, אבל בפועל באתר שלנו זה יוצר תחושת איטיות בגלילה.
+לכן צריך preload הדרגתי ברקע אחרי שהעמוד הראשוני כבר נטען.
+
+דרישות:
+1. לא לבטל לגמרי lazy loading.
+2. לא לטעון את כל התמונות מיד בבת אחת.
+3. כן להוסיף preload הדרגתי לתמונות המוצרים אחרי טעינת העמוד.
+4. להשתמש בעיקר בתמונות הקטנות של הכרטיסים:
+   card_image_url
+   או cards/*.webp
+   ולא בתמונות המלאות הכבדות.
+5. לא לטעון שוב תמונה שכבר נטענה.
+6. לא להציב שוב src לתמונה קיימת אם היא כבר נטענה.
+7. לשמור cache JS פנימי של URL שכבר נטענו.
+8. להשתמש ב-requestIdleCallback אם קיים, ואם לא — setTimeout.
+9. לטעון במנות קטנות, למשל 2–3 תמונות בכל פעם.
+10. לא לפגוע בתמונה הראשית / hero / וידאו / poster.
+
+יישום מומלץ:
+
+ב-main.js או site-content.js להוסיף פונקציה:
+
+function preloadImageUrl(url) {
+  if (!url) return Promise.resolve();
+  window.__liorPreloadedImages = window.__liorPreloadedImages || new Set();
+
+  if (window.__liorPreloadedImages.has(url)) {
+    return Promise.resolve();
+  }
+
+  window.__liorPreloadedImages.add(url);
+
+  return new Promise((resolve) => {
+    const img = new Image();
+    img.decoding = "async";
+    img.onload = () => resolve();
+    img.onerror = () => resolve();
+    img.src = url;
+  });
+}
+
+function preloadProductImagesInBackground(urls) {
+  const uniqueUrls = Array.from(new Set(urls.filter(Boolean)));
+
+  let index = 0;
+  const batchSize = 2;
+
+  function runBatch() {
+    const batch = uniqueUrls.slice(index, index + batchSize);
+    index += batchSize;
+
+    batch.forEach(preloadImageUrl);
+
+    if (index < uniqueUrls.length) {
+      if ("requestIdleCallback" in window) {
+        requestIdleCallback(runBatch, { timeout: 1500 });
+      } else {
+        setTimeout(runBatch, 350);
+      }
+    }
+  }
+
+  if ("requestIdleCallback" in window) {
+    requestIdleCallback(runBatch, { timeout: 1800 });
+  } else {
+    setTimeout(runBatch, 700);
+  }
+}
+
+איך להפעיל:
+אחרי ש-loadProducts מקבל את המוצרים מ-Supabase ומרנדר את הגריד:
+- לאסוף את URL התמונות הקטנות של המוצרים בלבד.
+- להפעיל preloadProductImagesInBackground.
+
+דוגמה:
+const preloadUrls = activeProducts
+  .map(product => productCardImageValue(product))
+  .filter(Boolean);
+
+preloadProductImagesInBackground(preloadUrls);
+
+חשוב:
+- לא להפעיל preload שוב אם המוצרים לא השתנו.
+- אפשר לשמור חתימה:
+window.__liorLastPreloadSignature
+אם signature זהה — לא להפעיל שוב preload.
+
+דוגמה:
+const preloadSignature = JSON.stringify(preloadUrls);
+if (window.__liorLastPreloadSignature !== preloadSignature) {
+  window.__liorLastPreloadSignature = preloadSignature;
+  preloadProductImagesInBackground(preloadUrls);
+}
+
+בנוסף:
+כאשר setImageWithFallback או setupImages מגיעים לתמונה שכבר נמצאת ב-window.__liorPreloadedImages:
+- לא לטעון אותה מחדש.
+- רק להציב src אם אין src בתגית.
+- אם src כבר קיים והתמונה complete — לסמן is-loaded ולצאת.
+
+בדיקות חובה:
+1. לפתוח DevTools > Network > Img.
+2. לרענן את האתר.
+3. לראות שהתמונות נטענות בהדרגה, לא כולן במכה אחת.
+4. לגלול למטה.
+5. לוודא שהתמונות מופיעות מהר יותר.
+6. לוודא שאין טעינה חוזרת של אותן תמונות בגלילה מעלה/מטה.
+7. לוודא שהעמוד הראשוני לא נהיה איטי יותר.
+8. לוודא שסך המשקל הראשוני לא קופץ בצורה קיצונית.
+
+תוצאה רצויה:
+בכניסה לאתר, התמונות הראשונות נטענות רגיל.
+אחרי רגע, שאר תמונות המוצרים נטענות ברקע בהדרגה.
+כאשר המשתמש גולל, התמונות כבר זמינות מה-cache ולכן הגלילה מרגישה חלקה ומהירה.
