@@ -4883,49 +4883,52 @@ html.hero-locked .home-products {
 }
 
 .contact-details-card {
-  width: min(420px, 100%);
-  max-width: 420px;
-  margin: 18px auto 0;
-  padding: 14px 18px;
-  border-radius: 22px;
-  background: rgba(255, 252, 247, 0.86);
-  border: 1px solid rgba(213, 180, 90, 0.28);
-  box-shadow: 0 10px 26px rgba(52, 24, 58, 0.09);
+  width: auto;
+  max-width: none;
+  margin: 10px auto 0;
+  padding: 0;
+  border-radius: 0;
+  background: transparent;
+  border: none;
+  box-shadow: none;
   text-align: center;
 }
 
 .contact-details-list {
   width: 100%;
-  display: grid;
-  gap: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
   justify-items: center;
-  direction: rtl;
+  direction: ltr;
 }
 
 .contact-details-list li {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  direction: rtl;
+  gap: 6px;
+  direction: ltr;
   width: 100%;
 }
 
 .contact-icon {
-  width: 30px;
-  height: 30px;
-  display: inline-grid;
-  place-items: center;
-  color: #5c2c66;
-  background: linear-gradient(135deg, #fff1b8, #e4c265);
-  border-radius: 999px;
-  box-shadow: 0 6px 13px rgba(95, 45, 110, 0.10);
+  width: auto;
+  height: auto;
+  display: inline;
+  place-items: unset;
+  color: var(--color-gold);
+  background: none;
+  border-radius: 0;
+  box-shadow: none;
+  font-size: 11px;
 }
 
 .contact-value {
   color: #4a2a50;
-  font-weight: 700;
-  text-align: right;
+  font-weight: 400;
+  font-size: 13px;
+  text-align: center;
 }
 
 .final .btn,
