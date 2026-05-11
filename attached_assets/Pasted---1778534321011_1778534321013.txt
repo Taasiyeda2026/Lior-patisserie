@@ -1,0 +1,155 @@
+יש לתקן בדחיפות את אזור צור קשר / הסיום באתר.
+
+הבעיה לפי צילום המסך:
+אזור צור קשר נראה גדול מדי, לא מאוזן, עם רווחים מוגזמים.
+הכרטיס הלבן ענק ותופס כמעט את כל המסך.
+השדות של טלפון ומייל נראים כמו פס ארוך ודק ולא כמו פרטי קשר מסודרים.
+הכפתור והחתימה לא בפרופורציה.
+יש יותר מדי גובה ריק בתוך הכרטיס.
+האזור צריך להיות אלגנטי, קומפקטי ומקצועי יותר.
+
+דרישות תיקון:
+
+1. להקטין את כרטיס צור קשר
+- להקטין את max-width של הכרטיס.
+- להקטין padding פנימי.
+- להקטין גובה כללי.
+- הכרטיס צריך להיות ממורכז אבל לא עצום.
+
+מומלץ:
+.contact-section .reveal,
+.contact-card,
+.final .reveal {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 42px 48px;
+}
+
+אם יש wrapper אחר בפועל — להתאים אליו.
+
+2. להקטין כותרת וטקסט
+הכותרת “רוצים להזמין טעם שאהבתם?” גדולה מדי.
+להקטין אותה מעט ולצמצם רווחים.
+
+מומלץ:
+.contact-section h2,
+.final h2 {
+  font-size: clamp(2rem, 4vw, 3.1rem);
+  line-height: 1.15;
+  margin-bottom: 14px;
+}
+
+.contact-section p,
+.final p {
+  margin-bottom: 18px;
+  line-height: 1.6;
+}
+
+3. לסדר את הטלפון והמייל
+כרגע הטלפון והמייל נראים בתוך פס ארוך ולא ברור.
+צריך להציג אותם בשתי שורות נקיות, בלי פס ענק.
+
+מומלץ:
+.contact-details-card {
+  max-width: 520px;
+  margin: 18px auto 22px;
+  padding: 12px 18px;
+  border-radius: 18px;
+}
+
+.contact-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+}
+
+.contact-details-list li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  min-height: 28px;
+  padding: 0;
+  border: none;
+  background: transparent;
+}
+
+.contact-value {
+  font-size: 0.95rem;
+  line-height: 1.3;
+}
+
+4. להקטין ולמרכז את כפתור “שליחת הזמנה”
+הכפתור צריך להיות קומפקטי יותר.
+
+מומלץ:
+.contact-submit {
+  min-width: 150px;
+  max-width: 190px;
+  min-height: 42px;
+  padding: 10px 22px;
+  margin: 10px auto 14px;
+  display: inline-flex;
+}
+
+5. להקטין את החתימה “באהבה, ליאור”
+החתימה גדולה מדי ותופסת הרבה מקום.
+
+מומלץ:
+.signature {
+  font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+  line-height: 1;
+  margin-top: 12px;
+}
+
+6. לצמצם רווחים כלליים באזור
+להקטין את padding העליון והתחתון של section צור קשר.
+
+מומלץ:
+.contact-section,
+.final.site-section {
+  padding-top: 48px;
+  padding-bottom: 56px;
+}
+
+7. לוודא שאין קו / פס מיותר סביב הטלפון והמייל
+אם יש border ארוך מדי או input-like style על פרטי הקשר — להסיר או לצמצם.
+פרטי הקשר צריכים להיראות כמו טקסט אלגנטי, לא כמו שדה טופס.
+
+8. מובייל
+במובייל הכרטיס צריך להיות כמעט ברוחב מלא אבל עם padding קטן.
+
+@media (max-width: 768px) {
+  .contact-section .reveal,
+  .contact-card,
+  .final .reveal {
+    max-width: calc(100% - 28px);
+    padding: 30px 20px;
+    border-radius: 26px;
+  }
+
+  .contact-section h2,
+  .final h2 {
+    font-size: 2rem;
+  }
+
+  .contact-details-card {
+    max-width: 100%;
+    padding: 10px 12px;
+  }
+
+  .signature {
+    font-size: 2rem;
+  }
+}
+
+חשוב:
+- לא לשנות תוכן.
+- לא לשנות קישורים.
+- לא לפגוע בכפתור הוואטסאפ.
+- רק לסדר פרופורציות, גודל, ריווחים ותצוגה.
+- התוצאה צריכה להיות כרטיס צור קשר אלגנטי, קומפקטי, ממורכז ונקי.
