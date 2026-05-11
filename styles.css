@@ -3709,15 +3709,22 @@
 }
 
 html {
-  scroll-padding-top: 54px;
+  scroll-padding-top: 46px;
 }
 
 body {
+  margin: 0;
+  padding: 0;
   background: var(--color-cream);
   color: var(--color-aubergine);
   font-family: var(--font-body);
   font-weight: 300;
+}
+
+main {
+  margin: 0;
   padding: 0;
+  display: block;
 }
 
 .page {
@@ -3725,7 +3732,7 @@ body {
   border-radius: 0;
   box-shadow: none;
   background: var(--color-cream);
-  overflow: clip;
+  overflow: hidden;
 }
 
 .container {
@@ -3736,13 +3743,13 @@ body {
   position: sticky;
   top: 0;
   z-index: 100;
-  height: 54px;
+  height: 46px;
   background: var(--color-cream);
   border-bottom: 0.5px solid rgba(196, 168, 68, 0.13);
 }
 
 .site-nav {
-  height: 54px;
+  height: 46px;
   display: grid;
   grid-template-columns: minmax(110px, 1fr) auto minmax(110px, 1fr);
   align-items: center;
@@ -3829,8 +3836,8 @@ body {
 }
 
 html.hero-locked .home-products {
-  height: calc(100svh - 54px);
-  max-height: calc(100svh - 54px);
+  height: calc(100svh - 46px);
+  max-height: calc(100svh - 46px);
 }
 
 .home-products,
@@ -3843,8 +3850,9 @@ html.hero-locked .home-products {
 }
 
 .home-hero {
-  min-height: calc(100svh - 54px);
-  height: calc(100svh - 54px);
+  min-height: calc(100svh - 46px);
+  height: calc(100svh - 46px);
+  margin: 0;
   padding: clamp(42px, 7vh, 76px) 24px clamp(34px, 6vh, 58px);
   background: var(--color-aubergine-dark);
   isolation: isolate;
@@ -4519,8 +4527,8 @@ html.hero-locked .home-products {
   }
 
   .home-hero {
-    min-height: calc(100svh - 54px);
-    height: calc(100svh - 54px);
+    min-height: calc(100svh - 46px);
+    height: calc(100svh - 46px);
     padding-inline: 18px;
   }
 
@@ -4567,7 +4575,7 @@ html.hero-locked .home-products {
   }
 
   .site-nav {
-    min-height: 54px;
+    min-height: 46px;
     height: auto;
     grid-template-columns: 1fr auto;
     padding-block: 8px;
@@ -4586,14 +4594,14 @@ html.hero-locked .home-products {
   }
 
   html {
-    scroll-padding-top: 86px;
+    scroll-padding-top: 78px;
   }
 
   html.hero-locked .home-products,
   .home-hero {
-    height: calc(100svh - 86px);
-    min-height: calc(100svh - 86px);
-    max-height: calc(100svh - 86px);
+    height: calc(100svh - 78px);
+    min-height: calc(100svh - 78px);
+    max-height: calc(100svh - 78px);
   }
 
   .hero-brand-logo {
