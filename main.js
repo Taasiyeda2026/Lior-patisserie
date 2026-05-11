@@ -152,13 +152,6 @@ ${productLine}
         options.push(placeholder);
       }
 
-      let index = 0;
-
-      img.onload = function () {
-        img.dataset.imageReady = "true";
-        img.classList.add("is-loaded");
-      };
-
       if (!options.length) {
         if (placeholder) {
           img.dataset.imageReady = "true";
@@ -168,11 +161,40 @@ ${productLine}
         return;
       }
 
-      if (img.getAttribute("src") === options[index]) {
-        if (img.complete && img.naturalWidth) {
-          img.dataset.imageReady = "true";
-          img.classList.add("is-loaded");
-        }
+      const loadedCache = window.__liorLoadedImageUrls || (window.__liorLoadedImageUrls = new Set());
+      const currentSrc = img.getAttribute("src") || "";
+
+      if (img.dataset.imageReady === "true" && img.dataset.loadedSrc) {
+        img.classList.add("is-loaded");
+        return;
+      }
+
+      if (currentSrc && img.complete && img.naturalWidth > 0) {
+        img.dataset.loadedSrc = currentSrc;
+        img.dataset.imageReady = "true";
+        img.classList.add("is-loaded");
+        loadedCache.add(currentSrc);
+        return;
+      }
+
+      if (options[0] && loadedCache.has(options[0]) && currentSrc === options[0]) {
+        img.dataset.imageReady = "true";
+        img.dataset.loadedSrc = currentSrc;
+        img.classList.add("is-loaded");
+        return;
+      }
+
+      let index = 0;
+
+      img.onload = function () {
+        const loadedUrl = img.currentSrc || img.src || "";
+        img.dataset.loadedSrc = loadedUrl;
+        img.dataset.imageReady = "true";
+        img.classList.add("is-loaded");
+        loadedCache.add(loadedUrl);
+      };
+
+      if (currentSrc === options[0]) {
         return;
       }
 
@@ -284,8 +306,9 @@ ${productLine}
         if (!name) return;
 
         const currentSrc = img.getAttribute("src") || "";
-        if (currentSrc && ((img.complete && img.naturalWidth) || (currentSrc.includes(name) && img.classList.contains("is-loaded")))) {
+        if (currentSrc && img.complete && img.naturalWidth > 0) {
           markReady(img);
+          img.dataset.imageQueued = "loaded";
           return;
         }
 

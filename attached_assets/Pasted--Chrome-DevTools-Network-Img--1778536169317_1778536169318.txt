@@ -1,0 +1,134 @@
+דחוף — בעיית טעינת התמונות עדיין לא נפתרה.
+
+בדיקה ב-Chrome DevTools > Network > Img מראה שעדיין יש הרבה בקשות חוזרות לתמונות בזמן טעינה/גלילה.
+רואים הרבה תמונות webp/jpeg עם Status 200, וה-Initiator הוא main.js.
+כלומר הקוד עדיין מפעיל טעינת תמונות מחדש דרך JavaScript.
+
+המטרה:
+למנוע לחלוטין טעינה חוזרת של תמונות שכבר נטענו.
+תמונה שנטענה פעם אחת לא צריכה לקבל שוב src, לא צריכה לעבור fallback מחדש, ולא צריכה להיטען שוב בגלילה.
+
+קבצים לבדיקה:
+main.js
+site-content.js
+index.html
+styles.css
+
+בעיה מרכזית:
+setImageWithFallback כנראה עדיין מחליפה src שוב ושוב או מנסה כמה אפשרויות fallback.
+בנוסף, setupImages מזהה תמונות מחדש ומפעיל loadImage גם כשהתמונה כבר נטענה.
+ייתכן שגם renderProducts הסטטי עדיין רץ לפני טעינת Supabase וגורם לבנייה כפולה של הגריד.
+
+דרישות תיקון:
+
+1. לחזק את setImageWithFallback ב-main.js
+יש להוסיף מנגנון קשיח שמונע טעינה חוזרת לאותה תמונה.
+
+בתחילת setImageWithFallback:
+- לחשב את ה-src הסופי הצפוי.
+- אם img.dataset.loadedSrc שווה ל-src הזה — לצאת מיד.
+- אם img.currentSrc או img.src כבר שווים ל-src הזה והתמונה complete — לסמן is-loaded ולצאת.
+- לא להסיר is-loaded אם לא באמת מחליפים src.
+- לא להציב img.src לאותו URL שוב.
+
+דוגמה לוגית:
+const current = img.currentSrc || img.getAttribute("src") || "";
+if (img.dataset.loadedSrc && current && img.dataset.loadedSrc === current && img.complete && img.naturalWidth > 0) {
+  img.dataset.imageReady = "true";
+  img.classList.add("is-loaded");
+  return;
+}
+
+ובתוך onload:
+img.dataset.loadedSrc = img.currentSrc || img.src || "";
+img.dataset.imageReady = "true";
+img.classList.add("is-loaded");
+
+2. לא להפעיל fallback על תמונות שכבר יש להן src תקין
+ב-loadImage בתוך setupImages:
+אם יש img.src והתמונה complete/naturalWidth — לא לקרוא setImageWithFallback.
+רק לסמן:
+data-image-ready=true
+data-loaded-src=currentSrc
+is-loaded
+
+3. לא להשתמש ב-currentSrc.includes(name)
+זה לא אמין.
+צריך להשוות URL מנורמל או להשתמש ב-dataset.loadedSrc.
+
+4. לוודא ש-setupImages לא רץ שוב על אותן תמונות
+אם:
+img.dataset.imageObserved === "true"
+או
+img.dataset.imageQueued === "loaded"
+או
+img.dataset.imageReady === "true"
+אז לא לעשות observe מחדש ולא לקרוא loadImage מחדש.
+
+5. לתקן render כפול
+בדוק אם main.js עדיין מרנדר מוצרים סטטיים באמצעות renderProducts ואז site-content.js מחליף אותם ממוצרים של Supabase.
+אם כן:
+- renderProducts צריך להיות fallback בלבד.
+- לא להריץ renderProducts אם Supabase פעיל.
+- אם Supabase נכשל — רק אז להריץ fallback.
+
+6. לתקן site-content.js
+ב-renderCategoryGrid:
+אם grid.dataset.productsSignature זהה — לא לקרוא hydrateGridImages שוב.
+כרגע גם אם אין שינוי, הקוד עדיין קורא hydrateGridImages.
+זה עלול לגרום לטיפול חוזר בתמונות.
+במקרה שהחתימה זהה — פשוט return מלא.
+
+כלומר:
+if (grid.dataset.productsSignature === sig) {
+  return;
+}
+
+לא:
+hydrateGridImages(grid);
+return;
+
+7. לצמצם fallback extensions
+אם התמונה כבר מגיעה כ-webp מפורש — לא לנסות jpg/jpeg/png וכו'.
+אם יש extension ברור, לנסות רק אותו.
+אם אין extension — רק אז לנסות רשימת fallback.
+לוודא שלא נוצרת סדרה של ניסיונות שמופיעה ב-Network.
+
+8. להוסיף cache קשיח ברמת JS
+להוסיף Set גלובלי:
+window.__liorLoadedImageUrls = window.__liorLoadedImageUrls || new Set();
+
+לפני הצבת img.src:
+if (window.__liorLoadedImageUrls.has(targetUrl) && img.getAttribute("src") === targetUrl) {
+  img.dataset.imageReady = "true";
+  img.classList.add("is-loaded");
+  return;
+}
+
+אחרי onload:
+window.__liorLoadedImageUrls.add(img.currentSrc || img.src);
+
+9. לבדוק תמונות Supabase
+אם תמונות מגיעות מ-Supabase Storage:
+- לוודא Cache-Control ארוך.
+- לוודא שאין query string משתנה.
+- לוודא שאין החלפה של URL בכל רינדור.
+- לוודא שהאתר משתמש ב-card_image_url הקטן ולא ב-image_url הכבד לגריד.
+
+10. בדיקה מחייבת לאחר תיקון
+ב-Chrome DevTools:
+- Network
+- Img
+- Disable cache כבוי
+- לרענן חזק Ctrl+Shift+R
+- לגלול למטה ולמעלה 5 פעמים
+- לבדוק שאותן תמונות לא מופיעות שוב ושוב עם Status 200
+- מותר לראות from memory cache / from disk cache
+- לא תקין לראות שוב ושוב את אותן תמונות כ-200 עם Initiator main.js
+
+תוצאה רצויה:
+בטעינה ראשונית התמונות נטענות פעם אחת.
+בגלילה למטה ולמעלה אין בקשות חוזרות לאותן תמונות.
+אין הבהוב של תמונות.
+אין טעינה מחדש בגלל main.js.
+אין rebuild של grid אם הנתונים לא השתנו.

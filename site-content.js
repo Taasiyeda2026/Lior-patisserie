@@ -353,11 +353,14 @@
 
   function hydrateGridImages(grid) {
     grid.querySelectorAll(".product-image img").forEach((img) => {
+      // Skip images that are already fully handled
+      if (img.dataset.imageReady === "true") return;
+      if (img.dataset.imageQueued === "loaded" && img.dataset.imageObserved === "true") return;
+
       const srcAttr = (img.getAttribute("src") || "").trim();
       const isRemoteSrc = /^https?:\/\//i.test(srcAttr) || srcAttr.startsWith("//");
 
       if (isRemoteSrc) {
-        // Remote src set directly in HTML - browser already started fetching; just wire handlers
         if (img.complete && img.naturalWidth > 0) {
           img.dataset.imageReady = "true";
           img.classList.add("is-loaded");
@@ -372,7 +375,10 @@
         return;
       }
 
-      // Local image with data-product-image / data-full-image attributes
+      // Local image — skip if already observed/queued
+      if (img.dataset.imageObserved === "true") return;
+      if (img.dataset.imageQueued === "loaded") return;
+
       const dataCard = (img.getAttribute("data-product-image") || "").trim();
       const fullFb = (img.dataset.fullImage || "").trim();
       const seed = dataCard || fullFb;
@@ -384,15 +390,13 @@
         img.fetchPriority === "high";
 
       if (isEager) {
-        // Eagerly load images near the top of the grid
         if (typeof window.setImageWithFallback === "function") {
           window.setImageWithFallback(img, seed);
         }
         img.dataset.imageQueued = "loaded";
         img.dataset.imageObserved = "true";
       }
-      // Lazy local images: leave imageQueued/imageObserved unset so setupImages
-      // can observe them via IntersectionObserver and load on scroll
+      // Lazy local images: leave unset so IntersectionObserver handles them
     });
   }
 
@@ -411,7 +415,6 @@
     // (which strips is-loaded and forces re-fetch) on every Supabase poll / page event
     const sig = productsSignature(products);
     if (grid.dataset.productsSignature === sig) {
-      hydrateGridImages(grid);
       return;
     }
 
