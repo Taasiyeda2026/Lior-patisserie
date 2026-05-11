@@ -51,6 +51,14 @@
   text-align: center !important;
   margin-left: auto !important;
   margin-right: auto !important;
+  border: none !important;
+  box-shadow: none !important;
+  background: transparent !important;
+}
+
+.contact-details-card::before,
+.contact-details-card::after {
+  display: none !important;
 }
 
 .contact-details-list {
