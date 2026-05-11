@@ -190,12 +190,30 @@
     <div class="order-modal-card" role="dialog" aria-modal="true" aria-labelledby="orderModalTitle" dir="rtl">
       <button class="order-modal-close" id="orderModalClose" type="button" aria-label="סגירת חלונית">×</button>
 
-      <h2 id="orderModalTitle">ההזמנה שלכם</h2>
-      <p class="order-modal-subtitle">
-        מלאו כמה פרטים קצרים וההזמנה תישלח לליאור ב־WhatsApp.
+      <h2 id="orderModalTitle">סל ההזמנה שלך</h2>
+      <p class="order-modal-subtitle" id="orderModalSubtitle">
+        בדקו את הטעמים שבחרתם, ואז המשיכו לפרטי ההזמנה.
       </p>
 
-      <form class="order-form" id="orderForm" novalidate>
+      <section class="order-step order-cart-step" id="orderCartStep" aria-label="סל ההזמנה שלך">
+        <div class="order-empty-state" id="orderEmptyState" hidden>
+          <strong>הסל עדיין ריק.</strong>
+          <span>בחרו טעם שאהבתם מהקולקציה, והוא יתווסף לכאן.</span>
+          <button class="btn order-back-to-products" id="backToProductsButton" type="button">חזרה לטעמים</button>
+        </div>
+
+        <div class="order-cart-wrap" id="orderCartWrap" hidden>
+          <div class="order-cart-header">
+            <div class="order-cart-title">סל ההזמנה שלך</div>
+            <button class="order-cart-clear" id="clearCartButton" type="button" hidden>ניקוי סל</button>
+          </div>
+          <div class="order-cart-list" id="orderCartList" aria-live="polite"></div>
+        </div>
+
+        <button class="btn order-continue" id="orderContinueButton" type="button" hidden>המשך להזמנה</button>
+      </section>
+
+      <form class="order-form order-details-step" id="orderForm" novalidate hidden>
         <div class="order-field">
           <label for="customerName">שם מלא *</label>
           <input id="customerName" name="customerName" type="text" autocomplete="name" required>
@@ -206,17 +224,9 @@
           <input id="customerPhone" name="customerPhone" type="tel" autocomplete="tel" required>
         </div>
 
-        <div class="order-cart-wrap" id="orderCartWrap" hidden>
-          <div class="order-cart-header">
-            <div class="order-cart-title">סל ההזמנה</div>
-            <button class="order-cart-clear" id="clearCartButton" type="button" hidden>ניקוי סל</button>
-          </div>
-          <div class="order-cart-list" id="orderCartList" aria-live="polite"></div>
-        </div>
-
-        <div class="order-field" id="manualOrderField">
+        <div class="order-field" id="manualOrderField" hidden>
           <label for="orderProduct">מה תרצו להזמין? *</label>
-          <input id="orderProduct" name="orderProduct" type="text" placeholder="לדוגמה: מארז עוגיות, מיקס טעמים, עוגייה אישית או קינוח לאירוח" required>
+          <input id="orderProduct" name="orderProduct" type="text" placeholder="לדוגמה: מארז עוגיות, מיקס טעמים, עוגייה אישית או קינוח לאירוח">
         </div>
 
         <div class="order-field order-field-date">
@@ -240,7 +250,7 @@
     </div>
   </div>
 
-  <button class="floating-cart" id="floatingCart" type="button" aria-label="פתיחת סל הזמנה">
+  <button class="floating-cart" id="floatingCart" type="button" data-order aria-label="פתיחת סל הזמנה">
     🛒
     <span class="floating-cart-count" id="floatingCartCount" hidden>0</span>
   </button>

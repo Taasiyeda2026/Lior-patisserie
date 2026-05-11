@@ -1089,6 +1089,8 @@
     }
 
     .product-link {
+      appearance: none;
+      text-decoration: none;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -1104,10 +1106,46 @@
       transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
 
+    .add-to-cart-btn {
+      cursor: pointer;
+      transition:
+        transform 0.18s ease,
+        box-shadow 0.18s ease,
+        background 0.18s ease;
+    }
+
+    .add-to-cart-btn.is-clicked {
+      animation: cartTap 0.42s ease;
+    }
+
+    @keyframes cartTap {
+      0% { transform: scale(1); }
+      35% { transform: scale(0.9); }
+      70% { transform: scale(1.08); }
+      100% { transform: scale(1); }
+    }
+
+    .cart-feedback {
+      min-height: 20px;
+      margin-top: 8px;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: #3D2249;
+      opacity: 0;
+      transform: translateY(4px);
+      transition: opacity 0.22s ease, transform 0.22s ease;
+    }
+
+    .cart-feedback.is-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
     .product-card .product-link,
     .product-card .btn,
     .product-card button,
-    .product-card [data-order] {
+    .product-card [data-add-to-cart],
+    .signature-card .add-to-cart-btn {
       min-height: 30px;
       margin-top: auto;
       padding: 5px 10px;
@@ -2407,7 +2445,7 @@
       inset: 0;
       z-index: 100;
       display: none;
-      align-items: flex-start;
+      align-items: center;
       justify-content: center;
       padding: 24px;
       overflow-y: auto;
@@ -2422,23 +2460,25 @@
     }
 
     .order-modal-card {
-      width: min(520px, calc(100% - 32px));
-      max-height: none;
-      overflow: visible;
+      width: min(92vw, 620px);
+      max-height: min(86vh, 720px);
+      overflow-y: auto;
       margin: auto;
       background: linear-gradient(
         180deg,
-        rgba(255, 249, 242, 0.97) 0%,
-        rgba(242, 234, 223, 0.94) 100%
+        rgba(255, 249, 242, 0.98) 0%,
+        rgba(242, 234, 223, 0.95) 100%
       );
       border: 1px solid rgba(200, 194, 184, 0.52);
-      border-radius: 24px;
+      border-radius: 28px;
       box-shadow:
         0 20px 56px rgba(0, 0, 0, 0.20),
         0 2px 10px rgba(85, 50, 30, 0.09),
         inset 0 1px 0 rgba(255, 255, 255, 0.55);
-      padding: 24px 28px;
+      padding: 30px 34px 32px;
       position: relative;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(111, 74, 124, 0.28) transparent;
     }
 
     .home-opening::before,
@@ -2471,10 +2511,10 @@
 
     .order-modal-close {
       position: absolute;
-      top: 16px;
-      left: 16px;
-      width: 32px;
-      height: 32px;
+      top: 18px;
+      left: 18px;
+      width: 36px;
+      height: 36px;
       border-radius: 999px;
       border: 1px solid rgba(200, 194, 184, 0.50);
       background: rgba(255, 250, 243, 0.92);
@@ -2485,64 +2525,110 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      transition: background 0.18s ease, color 0.18s ease;
+      transition: background 0.18s ease, color 0.18s ease, transform 0.18s ease;
     }
 
-    .order-modal h2 {
-      margin: 0 0 6px;
+    .order-modal-close:hover {
+      background: #FFF9F2;
+      color: #3D2249;
+      transform: translateY(-1px);
+    }
+
+    .order-modal-card h2 {
+      margin: 0 0 8px;
+      padding-left: 44px;
       font-family: var(--font-body);
-      font-size: clamp(1.25rem, 2vw, 1.55rem);
-      line-height: 1.22;
+      font-size: clamp(1.45rem, 2.2vw, 1.9rem);
+      line-height: 1.2;
       font-weight: 500;
       color: #2F211C;
       text-align: right;
-      padding-left: 36px;
     }
 
     .order-modal-subtitle {
-      margin: 0 0 14px;
-      color: #5f4a41;
-      line-height: 1.5;
-      font-size: 0.88rem;
+      margin: 0 0 22px;
+      color: rgba(47, 33, 28, 0.58);
+      line-height: 1.55;
+      font-size: 0.92rem;
       font-weight: 300;
       text-align: right;
     }
 
-    .order-form {
+    .order-step {
       display: grid;
-      gap: 10px;
+      gap: 12px;
+      max-width: 540px;
+      margin: 0 auto;
+    }
+
+    .order-form {
+      max-width: 500px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px 14px;
+    }
+
+    .order-step[hidden],
+    .order-form[hidden] {
+      display: none;
     }
 
     .order-field {
-      display: grid;
-      gap: 4px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .order-field:not(.order-field-phone):not(.order-field-date) {
+      grid-column: 1 / -1;
+    }
+
+    .order-field-phone,
+    .order-field-date {
+      grid-column: span 1;
+      width: 100%;
     }
 
     .order-field label {
-      color: #5C3D32;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 600;
-      letter-spacing: 0.01em;
+      line-height: 1.25;
+      color: rgba(47, 33, 28, 0.86);
+      text-align: right;
+      letter-spacing: 0;
     }
 
     .order-field input,
     .order-field textarea {
       width: 100%;
       box-sizing: border-box;
-      border: 1px solid rgba(200, 194, 184, 0.56);
-      background: rgba(255, 250, 243, 0.82);
-      color: #2F211C;
+      border: 1px solid rgba(92, 61, 50, 0.18);
       border-radius: 14px;
-      min-height: 42px;
-      padding: 9px 12px;
+      background: rgba(255, 249, 242, 0.72);
+      color: #2F211C;
       font-family: inherit;
       font-size: 0.9rem;
+      line-height: 1.35;
+      padding-inline: 14px;
       outline: none;
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.45),
+        0 6px 14px rgba(47, 33, 28, 0.035);
       transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
     }
 
+    .order-field input {
+      height: 44px;
+      padding-top: 0;
+      padding-bottom: 0;
+    }
+
     .order-field textarea {
-      min-height: 72px;
+      min-height: 76px;
+      padding-top: 10px;
+      padding-bottom: 10px;
       resize: vertical;
     }
 
@@ -2553,19 +2639,78 @@
       background: #FFF9F2;
     }
 
+    #customerPhone,
+    input[type="tel"] {
+      direction: ltr;
+      text-align: left;
+      letter-spacing: 0.02em;
+    }
+
+    #customerPhone::placeholder,
+    input[type="tel"]::placeholder {
+      direction: rtl;
+      text-align: right;
+    }
+
+    input[type="date"] {
+      min-width: 0;
+      line-height: 44px;
+    }
+
+    input[type="date"]::-webkit-calendar-picker-indicator {
+      margin-inline-start: 6px;
+      opacity: 0.68;
+    }
 
     .order-cart-wrap {
       display: grid;
-      gap: 7px;
-      padding: 10px;
+      gap: 9px;
+      padding: 12px;
       border: 1px solid rgba(200, 194, 184, 0.48);
-      border-radius: 16px;
+      border-radius: 18px;
       background: rgba(255, 250, 243, 0.58);
     }
 
     .order-cart-wrap[hidden],
+    .order-empty-state[hidden],
+    .order-continue[hidden],
     .order-field[hidden] {
       display: none;
+    }
+
+    .order-empty-state {
+      display: grid;
+      gap: 8px;
+      padding: 18px 16px;
+      border: 1px dashed rgba(111, 74, 124, 0.30);
+      border-radius: 18px;
+      background: rgba(255, 250, 243, 0.66);
+      color: #5C3D32;
+      text-align: center;
+    }
+
+    .order-empty-state strong {
+      color: #3D2249;
+      font-size: 1rem;
+    }
+
+    .order-empty-state span {
+      font-size: 0.88rem;
+      line-height: 1.55;
+    }
+
+    .order-modal .btn,
+    .order-submit {
+      min-height: 42px;
+      padding: 9px 22px;
+      border-radius: 14px;
+      font-size: 0.9rem;
+    }
+
+    .order-back-to-products,
+    .order-continue {
+      width: min(100%, 240px);
+      margin: 4px auto 0;
     }
 
     .order-cart-header {
@@ -2577,17 +2722,17 @@
 
     .order-cart-title {
       color: #5C3D32;
-      font-size: 0.82rem;
+      font-size: 0.84rem;
       font-weight: 700;
     }
 
     .order-cart-clear {
-      min-height: 24px;
+      min-height: 26px;
       border: 1px solid rgba(111, 74, 124, 0.22);
       border-radius: 999px;
       background: rgba(255, 250, 243, 0.76);
       color: #4E315E;
-      padding: 2px 9px;
+      padding: 3px 10px;
       font-family: inherit;
       font-size: 0.74rem;
       cursor: pointer;
@@ -2605,24 +2750,24 @@
 
     .order-cart-list {
       display: grid;
-      gap: 6px;
+      gap: 7px;
     }
 
     .order-cart-item {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
       align-items: center;
-      gap: 8px;
-      padding: 7px 8px;
-      border-radius: 12px;
-      background: rgba(255, 255, 255, 0.48);
+      gap: 10px;
+      padding: 8px 10px;
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.50);
       box-shadow: inset 0 0 0 1px rgba(200, 194, 184, 0.24);
     }
 
     .order-cart-name {
       min-width: 0;
       color: #2F211C;
-      font-size: 0.88rem;
+      font-size: 0.9rem;
       font-weight: 600;
       white-space: nowrap;
       overflow: hidden;
@@ -2646,11 +2791,11 @@
     }
 
     .order-cart-btn {
-      width: 24px;
-      height: 24px;
+      width: 26px;
+      height: 26px;
       border-radius: 999px;
       line-height: 1;
-      font-size: 0.86rem;
+      font-size: 0.88rem;
       display: inline-flex;
       align-items: center;
       justify-content: center;
@@ -2658,9 +2803,9 @@
     }
 
     .order-cart-remove {
-      min-height: 24px;
+      min-height: 26px;
       border-radius: 999px;
-      padding: 2px 8px;
+      padding: 3px 9px;
       font-size: 0.74rem;
     }
 
@@ -2681,6 +2826,7 @@
 
     .order-error {
       display: none;
+      grid-column: 1 / -1;
       margin: 2px 0 0;
       color: #7A2E2E;
       background: rgba(122, 46, 46, 0.08);
@@ -2695,88 +2841,61 @@
     }
 
     .order-submit {
-      width: auto;
-      min-width: 190px;
-      max-width: 260px;
-      margin-inline: auto;
-      min-height: 42px;
-      padding: 10px 22px;
-      border-radius: 16px;
-      font-size: 0.9rem;
+      grid-column: 1 / -1;
+      width: min(100%, 280px);
+      margin: 14px auto 0;
       box-shadow:
         0 6px 18px rgba(63, 39, 82, 0.22),
         inset 0 1px 0 rgba(255, 255, 255, 0.14);
     }
 
-    .order-field-phone,
-    .order-field-date {
-      width: 100%;
-    }
-
-    @media (min-width: 720px) {
-      .order-form {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        column-gap: 12px;
-        row-gap: 10px;
-      }
-
-      .order-field,
-      .order-cart-wrap {
-        grid-column: 1 / -1;
-      }
-
-      .order-field-phone,
-      .order-field-date {
-        grid-column: auto;
-      }
-
-      .order-submit,
-      .order-error {
-        grid-column: 1 / -1;
-      }
-    }
-
-    @media (max-width: 640px) {
+    @media (max-width: 700px) {
       .order-modal {
-        align-items: center;
-        padding: 12px;
+        padding: 14px;
         overflow-y: auto;
       }
 
       .order-modal-card {
-        width: min(100%, 440px);
-        padding: 20px 18px 22px;
-        border-radius: 20px;
+        width: calc(100vw - 28px);
+        max-height: 88vh;
+        padding: 24px 18px 26px;
+        border-radius: 24px;
       }
 
-      .order-modal h2 {
-        font-size: 1.25rem;
-        line-height: 1.24;
-        padding-left: 36px;
+      .order-modal-close {
+        top: 14px;
+        left: 14px;
+        width: 34px;
+        height: 34px;
+      }
+
+      .order-modal-card h2 {
+        padding-left: 40px;
+        font-size: 1.42rem;
       }
 
       .order-modal-subtitle {
-        font-size: 0.86rem;
-        margin-bottom: 12px;
+        font-size: 0.9rem;
+        margin-bottom: 18px;
       }
 
       .order-form {
-        gap: 9px;
+        max-width: 100%;
+        grid-template-columns: 1fr;
+        gap: 12px;
       }
 
-      .order-field input,
-      .order-field textarea {
-        font-size: 0.88rem;
-      }
-
-      .order-field textarea {
-        min-height: 64px;
+      .order-field,
+      .order-field-phone,
+      .order-field-date,
+      .order-error,
+      .order-submit {
+        grid-column: 1 / -1;
       }
 
       .order-cart-item {
         grid-template-columns: 1fr;
-        gap: 6px;
+        gap: 7px;
       }
 
       .order-cart-actions {
