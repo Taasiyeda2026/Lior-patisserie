@@ -1,6 +1,8 @@
 const WEBP_QUALITY = 0.82;
 const BUCKET = (window.LIOR_SUPABASE_CONFIG && window.LIOR_SUPABASE_CONFIG.STORAGE_BUCKET) || "site-images";
 
+let adminProductsCache = [];
+
 const ADMIN_IDLE_TIMEOUT_MS = 15 * 60 * 1000;
 const ADMIN_LAST_ACTIVITY_KEY = "liorAdminLastActivity";
 const ADMIN_IDLE_LOCK_MESSAGE = "האדמין ננעל לאחר 15 דקות ללא פעילות. יש להתחבר מחדש.";
@@ -88,6 +90,7 @@ async function lockAdminDueToInactivity() {
 
   sessionStorage.removeItem(ADMIN_LAST_ACTIVITY_KEY);
   clearAdminPasswordField();
+  closeProductDrawer();
   const logoutBtn = document.getElementById("logoutButton");
   if (logoutBtn) logoutBtn.classList.add("hidden");
   showLoginScreen();
@@ -125,7 +128,7 @@ function adminPreviewSrc(url, placeholder = "assets/logo.png") {
 
 function getAdminPreviewShellRaw(shell) {
   if (!shell) return "";
-  const row = shell.closest(".product-row, .feature-row, .gallery-row");
+  const row = shell.closest(".product-row, .feature-row, .gallery-row, .product-drawer-form");
   if (shell.dataset.previewField) {
     const tools = shell.closest(".image-tools");
     const primary = tools?.querySelector(`[data-field="${shell.dataset.previewField}"]`);
@@ -321,31 +324,166 @@ async function saveSettings(scope = "hero-settings", root = document) {
   showNotice(scope, "ההגדרות נשמרו בהצלחה");
 }
 
-function productTemplate(product = {}) {
+function productGridCardTemplate(product) {
+  const id = product.id;
+  const isActive = product.is_active !== false;
+  const nameRaw = String(product.name || "").trim() || "ללא שם";
+  const name = escapeHtml(nameRaw);
+  const priceRaw = product.price != null ? String(product.price).trim() : "";
+  const priceHtml = priceRaw ? `<span class="product-grid-card-price">${escapeHtml(priceRaw)}</span>` : "";
+  const badge = isActive ? "" : `<span class="product-grid-card-badge">מוסתר</span>`;
+  return `<button type="button" class="product-grid-card${isActive ? "" : " product-grid-card--inactive"}" data-product-id="${escapeHtml(String(id))}" aria-label="עריכה: ${name}">
+    <div class="product-grid-card-visual">
+      <img class="product-grid-card-img" alt="" loading="lazy" decoding="async">
+      <span class="product-grid-card-noimg" hidden>אין תמונה</span>
+    </div>
+    <div class="product-grid-card-meta">
+      <span class="product-grid-card-name">${name}</span>
+      ${priceHtml}
+      ${badge}
+    </div>
+  </button>`;
+}
+
+function hydrateProductGridCards(container) {
+  container.querySelectorAll(".product-grid-card").forEach((card) => {
+    const id = card.dataset.productId;
+    const product = adminProductsCache.find((p) => String(p.id) === String(id));
+    const img = card.querySelector(".product-grid-card-img");
+    const ph = card.querySelector(".product-grid-card-noimg");
+    if (!img || !ph) return;
+    if (!product) {
+      img.removeAttribute("src");
+      img.classList.add("is-hidden");
+      ph.hidden = false;
+      return;
+    }
+    const raw = String(product.card_image_url || "").trim() || String(product.image_url || "").trim();
+    const url = adminMediaPreviewUrl(raw);
+    img.onload = null;
+    img.onerror = null;
+    if (!url) {
+      img.removeAttribute("src");
+      img.classList.add("is-hidden");
+      ph.hidden = false;
+      return;
+    }
+    ph.hidden = true;
+    img.classList.remove("is-hidden");
+    img.alt = String(product.name || "");
+    img.onload = function () {
+      if (img.naturalWidth > 0) ph.hidden = true;
+    };
+    img.onerror = function () {
+      img.removeAttribute("src");
+      img.classList.add("is-hidden");
+      ph.hidden = false;
+    };
+    img.src = url;
+  });
+}
+
+function refreshProductDrawerFormIfOpen() {
+  const drawer = document.getElementById("productDrawer");
+  if (!drawer || !drawer.classList.contains("is-open")) return;
+  const form = document.getElementById("productDrawerForm");
+  const id = form && form.dataset.productId;
+  if (!id) return;
+  const fresh = adminProductsCache.find((p) => String(p.id) === String(id));
+  if (!fresh) return;
+  const body = document.getElementById("productDrawerBody");
+  const title = document.getElementById("productDrawerTitle");
+  if (title) title.textContent = "עריכת מוצר";
+  if (body) {
+    body.innerHTML = productDrawerFormTemplate(fresh);
+    initAdminPreviewShells(body);
+  }
+}
+
+function openProductDrawer(product) {
+  const drawer = document.getElementById("productDrawer");
+  const backdrop = document.getElementById("productDrawerBackdrop");
+  const title = document.getElementById("productDrawerTitle");
+  const body = document.getElementById("productDrawerBody");
+  if (!drawer || !backdrop || !body || !title) return;
+
+  let p;
+  let heading;
+  if (!product) {
+    const nextOrder = adminProductsCache.length
+      ? Math.max(...adminProductsCache.map((x) => Number(x.display_order) || 0)) + 1
+      : 0;
+    p = {
+      id: crypto.randomUUID(),
+      name: "",
+      description: "",
+      price: "",
+      image_url: "",
+      card_image_url: "",
+      display_order: nextOrder,
+      is_active: true
+    };
+    heading = "מוצר חדש";
+  } else {
+    p = { ...product };
+    heading = adminProductsCache.some((x) => String(x.id) === String(product.id)) ? "עריכת מוצר" : "מוצר חדש";
+  }
+
+  title.textContent = heading;
+  body.innerHTML = productDrawerFormTemplate(p);
+  initAdminPreviewShells(body);
+
+  backdrop.hidden = false;
+  drawer.hidden = false;
+  backdrop.classList.add("is-open");
+  drawer.classList.add("is-open");
+  backdrop.setAttribute("aria-hidden", "false");
+  drawer.setAttribute("aria-hidden", "false");
+  document.body.classList.add("has-product-drawer");
+
+  setTimeout(() => body.querySelector('[data-field="name"]')?.focus(), 0);
+}
+
+function closeProductDrawer() {
+  const drawer = document.getElementById("productDrawer");
+  const backdrop = document.getElementById("productDrawerBackdrop");
+  const body = document.getElementById("productDrawerBody");
+  if (!drawer || !backdrop) return;
+  backdrop.classList.remove("is-open");
+  drawer.classList.remove("is-open");
+  backdrop.hidden = true;
+  drawer.hidden = true;
+  backdrop.setAttribute("aria-hidden", "true");
+  drawer.setAttribute("aria-hidden", "true");
+  document.body.classList.remove("has-product-drawer");
+  if (body) body.innerHTML = "";
+}
+
+function productDrawerFormTemplate(product = {}) {
   const id = product.id || crypto.randomUUID();
   const isActive = product.is_active !== false;
   const priceVal = product.price != null ? String(product.price) : "";
-  return `<article class="product-row${isActive ? "" : " product-inactive"}" data-product-id="${id}">
-    <div class="grid">
+  return `<form id="productDrawerForm" class="product-drawer-form" data-product-id="${escapeHtml(String(id))}">
+    <div class="product-drawer-fields">
       <label class="field-label">שם הטעם <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
-      <label class="field-label">סדר <input data-field="display_order" type="number" value="${product.display_order || 0}"></label>
+      <label class="field-label">סדר תצוגה <input data-field="display_order" type="number" value="${Number(product.display_order) || 0}"></label>
       <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
       <label class="field-label">מחיר (אופציונלי) <input data-field="price" type="text" value="${escapeHtml(priceVal)}" placeholder="למשל 28 או ₪28"></label>
-      <label class="field-label">תיאור <textarea data-field="description">${escapeHtml(product.description || "")}</textarea></label>
+      <label class="field-label wide">תיאור <textarea data-field="description" rows="4">${escapeHtml(product.description || "")}</textarea></label>
       <label class="field-label wide">תמונה מלאה
-        <div class="image-tools">
+        <div class="image-tools product-drawer-image-tools">
           <div class="admin-preview-shell" data-preview-field="image_url">
             <img class="preview" alt="">
             <span class="admin-preview-placeholder">אין תמונה זמינה</span>
           </div>
           <div>
-            <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה מלאה">
+            <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה מלאה או העלאה">
             <input data-product-upload data-folder="products" data-max-width="900" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </div>
         </div>
       </label>
       <label class="field-label wide">תמונת כרטיס
-        <div class="image-tools">
+        <div class="image-tools product-drawer-image-tools">
           <div class="admin-preview-shell" data-preview-field="card_image_url" data-preview-fallback-field="image_url">
             <img class="preview" alt="">
             <span class="admin-preview-placeholder">אין תמונה זמינה</span>
@@ -357,11 +495,11 @@ function productTemplate(product = {}) {
         </div>
       </label>
     </div>
-    <div class="product-actions">
-      <button class="admin-button" type="button" data-save-product>שמירת מוצר</button>
+    <div class="product-drawer-actions">
+      <button class="admin-button" type="button" data-save-product-drawer>שמירת מוצר</button>
       <button class="admin-button ${isActive ? "muted" : "secondary"}" type="button" data-toggle-product data-active="${isActive}">${isActive ? "הסתר מהאתר" : "הצג באתר"}</button>
     </div>
-  </article>`;
+  </form>`;
 }
 
 async function loadProducts() {
@@ -373,33 +511,38 @@ async function loadProducts() {
 
   const supabaseProducts = data || [];
   const container = document.getElementById("productsAdmin");
+  adminProductsCache = supabaseProducts;
+
   if (!supabaseProducts.length) {
-    container.innerHTML = '<p class="hint admin-empty-hint">אין מוצרים במסד הנתונים. אפשר להוסיף מוצרים כאן או להריץ את קובץ seed-content.sql בפרויקט Supabase לנתוני פתיחה בלבד.</p>';
+    container.innerHTML =
+      '<p class="hint admin-empty-hint">אין מוצרים במסד הנתונים. אפשר להוסיף מוצרים כאן או להריץ את קובץ seed-content.sql בפרויקט Supabase לנתוני פתיחה בלבד.</p>';
+    refreshProductDrawerFormIfOpen();
     return;
   }
 
-  container.innerHTML = supabaseProducts.map(productTemplate).join("");
-  initAdminPreviewShells(container);
+  container.innerHTML = supabaseProducts.map(productGridCardTemplate).join("");
+  hydrateProductGridCards(container);
+  refreshProductDrawerFormIfOpen();
 }
 
-async function saveProduct(row) {
-  const payload = rowPayload(row, "product");
+async function saveProduct(root) {
+  const payload = rowPayload(root, "product");
   const { error } = await client().from("products").upsert(payload, { onConflict: "id" });
   if (error) throw error;
-  row.classList.toggle("product-inactive", !payload.is_active);
-  const toggleBtn = row.querySelector("[data-toggle-product]");
+  const toggleBtn = root.querySelector("[data-toggle-product]");
   if (toggleBtn) {
     toggleBtn.dataset.active = String(payload.is_active);
     toggleBtn.textContent = payload.is_active ? "הסתר מהאתר" : "הצג באתר";
     toggleBtn.className = `admin-button ${payload.is_active ? "muted" : "secondary"}`;
   }
+  await loadProducts();
   showNotice("products", "המוצר נשמר בהצלחה");
 }
 
-async function toggleProductActive(row) {
-  const id = row.dataset.productId;
-  const btn = row.querySelector("[data-toggle-product]");
-  const select = row.querySelector('[data-field="is_active"]');
+async function toggleProductActive(root) {
+  const id = root.dataset.productId;
+  const btn = root.querySelector("[data-toggle-product]");
+  const select = root.querySelector('[data-field="is_active"]');
   const currentActive = btn.dataset.active === "true";
   const newActive = !currentActive;
 
@@ -413,7 +556,7 @@ async function toggleProductActive(row) {
   btn.textContent = newActive ? "הסתר מהאתר" : "הצג באתר";
   btn.className = `admin-button ${newActive ? "muted" : "secondary"}`;
   if (select) select.value = String(newActive);
-  row.classList.toggle("product-inactive", !newActive);
+  await loadProducts();
   showNotice("products", newActive ? "המוצר מוצג באתר" : "המוצר הוסתר מהאתר");
 }
 
@@ -656,6 +799,7 @@ function setupEvents() {
       stopAdminIdleTimer();
       sessionStorage.removeItem(ADMIN_LAST_ACTIVITY_KEY);
       clearAdminPasswordField();
+      closeProductDrawer();
       try {
         await client().auth.signOut();
       } catch {
@@ -676,6 +820,20 @@ function setupEvents() {
     if (e.key === "Enter") document.getElementById("loginButton").click();
   });
 
+  document.addEventListener("keydown", (e) => {
+    if (e.key !== "Escape") return;
+    const d = document.getElementById("productDrawer");
+    if (!d || !d.classList.contains("is-open")) return;
+    e.preventDefault();
+    e.stopPropagation();
+    closeProductDrawer();
+  }, true);
+
+  const productDrawerBackdrop = document.getElementById("productDrawerBackdrop");
+  const productDrawerClose = document.getElementById("productDrawerClose");
+  if (productDrawerBackdrop) productDrawerBackdrop.addEventListener("click", closeProductDrawer);
+  if (productDrawerClose) productDrawerClose.addEventListener("click", closeProductDrawer);
+
   document.addEventListener("click", async (event) => {
     if (event.target.matches("[data-save-settings]")) {
       const scope = event.target.dataset.saveSettings || "home-settings";
@@ -683,12 +841,15 @@ function setupEvents() {
       try { await saveSettings(scope, settingsRoot); } catch (error) { showNotice(scope, error.message, false); }
     }
     if (event.target.id === "addProduct") {
-      const wrap = document.getElementById("productsAdmin");
-      const emptyHint = wrap.querySelector(".admin-empty-hint");
-      if (emptyHint) wrap.innerHTML = "";
-      wrap.insertAdjacentHTML("beforeend", productTemplate({ display_order: 0, is_active: true }));
-      const row = wrap.querySelector(".product-row:last-of-type");
-      if (row) initAdminPreviewShells(row);
+      openProductDrawer(null);
+      return;
+    }
+    const gridCard = event.target.closest(".product-grid-card");
+    if (gridCard) {
+      const id = gridCard.dataset.productId;
+      const product = adminProductsCache.find((p) => String(p.id) === String(id));
+      if (product) openProductDrawer(product);
+      return;
     }
     if (event.target.id === "addFeature") {
       const wrap = document.getElementById("featuresAdmin");
@@ -702,11 +863,25 @@ function setupEvents() {
       const row = wrap.querySelector(".gallery-row:last-of-type");
       if (row) initAdminPreviewShells(row);
     }
-    if (event.target.matches("[data-save-product]")) {
-      try { await saveProduct(event.target.closest(".product-row")); } catch (error) { showNotice("products", error.message, false); }
+    if (event.target.matches("[data-save-product-drawer]")) {
+      const form = document.getElementById("productDrawerForm");
+      if (form) {
+        try {
+          await saveProduct(form);
+        } catch (error) {
+          showNotice("products", error.message, false);
+        }
+      }
     }
     if (event.target.matches("[data-toggle-product]")) {
-      try { await toggleProductActive(event.target.closest(".product-row")); } catch (error) { showNotice("products", error.message, false); }
+      const form = document.getElementById("productDrawerForm");
+      if (form && form.contains(event.target)) {
+        try {
+          await toggleProductActive(form);
+        } catch (error) {
+          showNotice("products", error.message, false);
+        }
+      }
     }
     if (event.target.matches("[data-save-feature]")) {
       try { await saveFeature(event.target.closest(".feature-row")); } catch (error) { showNotice("features", error.message, false); }
@@ -728,7 +903,7 @@ function setupEvents() {
   document.addEventListener("input", (event) => {
     const input = event.target;
     if (input.matches("[data-field]") && ["image_url", "card_image_url"].includes(input.dataset.field)) {
-      const row = input.closest(".product-row, .feature-row, .gallery-row");
+      const row = input.closest(".product-row, .feature-row, .gallery-row, .product-drawer-form");
       if (row) initAdminPreviewShells(row);
       return;
     }

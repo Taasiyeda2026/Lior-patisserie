@@ -140,8 +140,27 @@
           <button id="addProduct" class="admin-button" type="button">הוספת מוצר חדש</button>
           <div class="notice" data-notice="products"></div>
         </div>
-        <div id="productsAdmin" class="stack-list"></div>
+        <div id="productsAdmin" class="products-admin-grid"></div>
       </section>
+
+      <div id="productDrawerBackdrop" class="product-drawer-backdrop" hidden aria-hidden="true"></div>
+      <aside
+        id="productDrawer"
+        class="product-drawer"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="productDrawerTitle"
+        aria-hidden="true"
+        hidden
+      >
+        <div class="product-drawer-inner">
+          <header class="product-drawer-header">
+            <h3 id="productDrawerTitle" class="product-drawer-title">עריכת מוצר</h3>
+            <button type="button" class="product-drawer-close" id="productDrawerClose" aria-label="סגירת עריכת מוצר">×</button>
+          </header>
+          <div id="productDrawerBody" class="product-drawer-body"></div>
+        </div>
+      </aside>
 
       <section class="editor-card" id="handmadePanel">
         <div class="section-heading">
