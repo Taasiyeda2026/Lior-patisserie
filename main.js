@@ -354,28 +354,7 @@ ${productLine}
         const link = event.target.closest("a[data-contact-whatsapp]");
         if (!link) return;
         event.preventDefault();
-
-        const nameEl  = document.getElementById("contactName");
-        const phoneEl = document.getElementById("contactPhone");
-        const notesEl = document.getElementById("contactNotes");
-        const errorEl = document.getElementById("contactError");
-
-        const name  = nameEl  ? nameEl.value.trim()  : "";
-        const phone = phoneEl ? phoneEl.value.trim()  : "";
-        const notes = notesEl ? notesEl.value.trim()  : "";
-
-        const missing = !name || !phone;
-        if (errorEl) {
-          errorEl.classList.toggle("is-visible", missing);
-          errorEl.setAttribute("aria-hidden", String(!missing));
-        }
-        if (missing) {
-          if (!name  && nameEl)  nameEl.focus();
-          else if (!phone && phoneEl) phoneEl.focus();
-          return;
-        }
-
-        const url = buildGeneralWhatsAppUrl({ name, phone, notes });
+        const url = buildGeneralWhatsAppUrl();
         if (!url) return;
         window.open(url, "_blank", "noopener,noreferrer");
       });

@@ -1,0 +1,207 @@
+דחוף — צריך להחזיר את אזור “צור קשר / שליחת הזמנה” למבנה התקין שלו.
+
+הבעיה:
+בעקבות השינוי האחרון, כל טופס שליחת ההזמנה נכנס לתוך אזור הסיום של האתר, וזה שבר את העמוד.
+כרגע באזור “רוצים להזמין טעם שאהבתם?” מופיעים שדות טופס מלאים:
+שם מלא
+טלפון
+הערות / פרטי הזמנה
+
+זה לא צריך להיות שם.
+
+הדרישה המרכזית:
+אזור הסיום באתר צריך להישאר אזור צור קשר נקי בלבד, עם:
+כותרת
+טקסט קצר
+טלפון
+מייל
+כפתור “שליחת הזמנה”
+חתימה “באהבה, ליאור”
+
+הטופס המלא של ההזמנה צריך להישאר רק בתוך חלונית ההזמנה / modal / סל ההזמנה, ולא להיות מוצג בתוך הדף עצמו.
+
+מה לתקן:
+
+1. להסיר מאזור contact-section / final / contact את הטופס המלא
+אין להציג בתוך אזור הסיום:
+input של שם מלא
+input של טלפון
+textarea של הערות
+שדות חובה
+טופס הזמנה מלא
+
+2. להחזיר את אזור הסיום למבנה המקורי
+המבנה הרצוי באזור הסיום:
+
+<section class="final site-section contact-section" id="contact">
+  <div class="container">
+    <div class="reveal">
+      <div class="section-label">- בואו נדבר -</div>
+      <h2>רוצים להזמין טעם שאהבתם?</h2>
+      <p>ספרו לליאור איזה טעם אהבתם ונמשיך משם בצורה פשוטה ונעימה.</p>
+
+      <div class="contact-details-card">
+        טלפון
+        מייל
+      </div>
+
+      <a class="btn contact-submit" href="#" data-contact-whatsapp target="_blank" rel="noopener noreferrer">
+        שליחת הזמנה
+      </a>
+
+      <div class="signature">באהבה, ליאור</div>
+    </div>
+  </div>
+</section>
+
+3. לוודא שכפתור “שליחת הזמנה” באזור הסיום לא פותח טופס בתוך הדף
+הכפתור צריך:
+- או לפתוח WhatsApp ישירות
+- או לפתוח את modal ההזמנה הקיים
+אבל בשום מצב לא להכניס את שדות הטופס לתוך אזור הסיום.
+
+4. להשאיר את טופס ההזמנה רק בתוך orderModal
+הטופס הבא צריך להישאר רק בתוך:
+<div class="order-modal" id="orderModal">
+
+כל השדות:
+customerName
+customerPhone
+manualOrderField / orderProduct
+orderDate
+orderNotes
+orderForm
+
+צריכים להיות רק בתוך ה-modal, לא בתוך contact-section.
+
+5. לבדוק שאין CSS שהפך את orderForm לגלוי בתוך הדף
+בדוק אם נוספו כללים כמו:
+.order-form { display: block; }
+.order-details-step { display: block; }
+form { display: block; }
+
+אם כן — לא לשבור את hidden.
+הכלל התקין:
+אלמנט עם hidden חייב להישאר מוסתר:
+[hidden] {
+  display: none !important;
+}
+
+6. לתקן את גודל כרטיס צור קשר בלי להכניס טופס
+הכרטיס צריך להיות קומפקטי ונקי, אבל רק עם פרטי קשר.
+
+CSS מומלץ:
+
+.contact-section .reveal,
+.final .reveal {
+  max-width: 760px;
+  margin-inline: auto;
+  padding: 42px 48px;
+  border-radius: 34px;
+}
+
+.contact-section h2,
+.final h2 {
+  font-size: clamp(2rem, 3.6vw, 3rem);
+  line-height: 1.15;
+  margin-bottom: 12px;
+}
+
+.contact-section p,
+.final p {
+  margin: 0 auto 18px;
+  max-width: 560px;
+  line-height: 1.6;
+}
+
+.contact-details-card {
+  max-width: 520px;
+  margin: 16px auto 22px;
+  padding: 10px 16px;
+  border-radius: 18px;
+}
+
+.contact-details-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.contact-details-list li {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: auto;
+  border: none;
+  background: transparent;
+  padding: 0;
+}
+
+.contact-submit {
+  min-width: 150px;
+  max-width: 190px;
+  min-height: 42px;
+  padding: 10px 22px;
+  margin: 10px auto 14px;
+  display: inline-flex;
+}
+
+.signature {
+  font-size: clamp(1.8rem, 3.4vw, 2.5rem);
+  line-height: 1;
+  margin-top: 12px;
+}
+
+7. מובייל
+במובייל:
+- הכרטיס יהיה ברוחב כמעט מלא
+- לא להציג טופס בתוך אזור הסיום
+- רק פרטי קשר וכפתור
+
+@media (max-width: 768px) {
+  .contact-section .reveal,
+  .final .reveal {
+    max-width: calc(100% - 28px);
+    padding: 30px 20px;
+    border-radius: 26px;
+  }
+
+  .contact-section h2,
+  .final h2 {
+    font-size: 2rem;
+  }
+
+  .contact-details-card {
+    max-width: 100%;
+  }
+
+  .signature {
+    font-size: 2rem;
+  }
+}
+
+בדיקות חובה:
+1. לפתוח את האתר בעמוד #products.
+2. לגלול לאזור הסיום.
+3. לוודא שאין שם שדות טופס בכלל.
+4. לוודא שרואים רק כותרת, טקסט, טלפון, מייל, כפתור וחתימה.
+5. ללחוץ על “שליחת הזמנה”.
+6. לוודא שהפעולה תקינה:
+   - WhatsApp נפתח
+   או
+   - modal הזמנה נפתח
+7. לוודא שה-orderModal עדיין עובד כשפותחים סל / הזמנה.
+8. לוודא שהטופס המלא קיים רק בתוך modal ולא בתוך הדף.
+
+חשוב מאוד:
+לא להכניס את טופס ההזמנה לתוך contact-section.
+לא להציג שדות קלט באזור הסיום.
+לא למחוק את orderModal.
+רק להחזיר הפרדה נכונה:
+אזור צור קשר נקי בדף
+טופס הזמנה מלא בתוך modal בלבד.
