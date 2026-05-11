@@ -31,6 +31,34 @@
   box-shadow: none !important;
 }
 
+/* Contact section centering */
+.final .section-label,
+.contact-section .section-label {
+  display: flex !important;
+  justify-content: center !important;
+  text-align: center !important;
+  width: 100% !important;
+}
+
+.contact-details-card {
+  text-align: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.contact-details-list {
+  align-items: center !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.contact-details-list li {
+  display: flex !important;
+  justify-content: center !important;
+  width: 100% !important;
+  text-align: center !important;
+}
+
 @media (max-width: 700px) {
   .hero-brand-logo {
     top: 23% !important;
