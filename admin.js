@@ -215,20 +215,16 @@ function syncAdminPreviewShell(shell) {
     ph.hidden = false;
   };
 
-  shell.classList.remove("has-image");
-  shell.classList.add("is-loading");
-  ph.hidden = false;
+  ph.hidden = true;
 
-  if (img.getAttribute("src") === url && img.complete && img.naturalWidth > 0) {
-    shell.classList.remove("is-loading");
+  if (img.getAttribute("src") === url) {
+    shell.classList.toggle("is-loading", !img.complete);
     shell.classList.add("has-image");
-    ph.hidden = true;
     return;
   }
 
-  requestAnimationFrame(() => {
-    img.src = url;
-  });
+  shell.classList.add("has-image", "is-loading");
+  img.src = url;
 }
 
 function initAdminPreviewShells(root) {
@@ -476,7 +472,7 @@ function hydrateProductGridCards(container) {
       ph.hidden = false;
       return;
     }
-    const raw = String(product.card_image_url || "").trim();
+    const raw = String(product.card_image_url || product.image_url || "").trim();
     const url = adminPreviewSrc(raw, { whenEmpty: "" });
     img.onload = null;
     img.onerror = null;
@@ -581,22 +577,21 @@ function productDrawerFormTemplate(product = {}) {
   const id = product.id || crypto.randomUUID();
   const isActive = product.is_active !== false;
   const priceVal = product.price != null ? String(product.price) : "";
-  return `<form id="productDrawerForm" class="product-drawer-form" data-product-id="${escapeHtml(String(id))}" data-display-order="${Number(product.display_order) || 0}">
+  return `<form id="productDrawerForm" class="product-drawer-form" data-product-id="${escapeHtml(String(id))}" data-display-order="${Number(product.display_order) || 0}" data-is-active="${isActive}">
     <div class="product-drawer-fields">
       <label class="field-label">שם הטעם <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
-      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
       <label class="field-label">מחיר (אופציונלי) <input data-field="price" type="text" value="${escapeHtml(priceVal)}" placeholder="למשל 28 או ₪28"></label>
       <label class="field-label wide">תיאור <textarea data-field="description" rows="4">${escapeHtml(product.description || "")}</textarea></label>
       <div class="field-label wide product-image-manager">
         <span class="field-title">תמונת מוצר</span>
         <div class="image-tools product-drawer-image-tools admin-simple-image-tools">
-          <div class="admin-preview-shell" data-preview-field="card_image_url">
+          <div class="admin-preview-shell" data-preview-field="card_image_url" data-preview-fallback-field="image_url">
             <img class="preview" alt="תמונה נוכחית" loading="lazy" decoding="async">
             <span class="admin-preview-placeholder">אין תמונה</span>
           </div>
           <div class="admin-image-controls">
             <div class="admin-image-actions">
-              <label class="admin-button secondary admin-file-button">החלפת תמונה
+              <label class="admin-button secondary admin-file-button">קובץ
                 <input data-product-upload data-folder="products" data-max-width="1280" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
               </label>
               <button class="admin-button muted admin-remove-image" type="button" data-remove-product-image hidden>הסרת תמונה</button>
@@ -620,7 +615,6 @@ function productDrawerFormTemplate(product = {}) {
     </div>
     <div class="product-drawer-actions">
       <button class="admin-button" type="button" data-save-product-drawer>שמירת מוצר</button>
-      <button class="admin-button ${isActive ? "muted" : "secondary"}" type="button" data-toggle-product data-active="${isActive}">${isActive ? "הסתר מהאתר" : "הצג באתר"}</button>
     </div>
   </form>`;
 }
@@ -677,12 +671,6 @@ async function saveProduct(root) {
   const payload = rowPayload(root, "product");
   const { error } = await client().from("products").upsert(payload, { onConflict: "id" });
   if (error) throw error;
-  const toggleBtn = root.querySelector("[data-toggle-product]");
-  if (toggleBtn) {
-    toggleBtn.dataset.active = String(payload.is_active);
-    toggleBtn.textContent = payload.is_active ? "הסתר מהאתר" : "הצג באתר";
-    toggleBtn.className = `admin-button ${payload.is_active ? "muted" : "secondary"}`;
-  }
   updateProductInCache(payload);
   rerenderProductGrid();
   showNotice("products", "המוצר נשמר בהצלחה");
@@ -703,7 +691,7 @@ async function toggleProductActive(root) {
   if (error) throw error;
 
   btn.dataset.active = String(newActive);
-  btn.textContent = newActive ? "הסתר מהאתר" : "הצג באתר";
+  btn.textContent = newActive ? "מוסתר באתר" : "הצג באתר";
   btn.className = `admin-button ${newActive ? "muted" : "secondary"}`;
   if (select) select.value = String(newActive);
   updateProductInCache({ id, is_active: newActive, updated_at: now });
@@ -735,7 +723,6 @@ function featureTemplate(feature = {}) {
     </div>
     <div class="product-actions">
       <button class="admin-button" type="button" data-save-feature>שמירה</button>
-      <button class="admin-button ${isActive ? "muted" : "secondary"}" type="button" data-toggle-feature data-active="${isActive}">${isActive ? "הסתר מהאתר" : "הצג באתר"}</button>
     </div>
   </article>`;
 }
@@ -780,7 +767,7 @@ function syncFeatureToggleUi(row, isActive) {
   const btn = row.querySelector("[data-toggle-feature]");
   if (!btn) return;
   btn.dataset.active = String(isActive);
-  btn.textContent = isActive ? "הסתר מהאתר" : "הצג באתר";
+  btn.textContent = isActive ? "מוסתר באתר" : "הצג באתר";
   btn.className = `admin-button ${isActive ? "muted" : "secondary"}`;
 }
 
@@ -796,6 +783,9 @@ function rowPayload(row, type) {
     payload[input.dataset.field] = value;
   });
   if (payload.display_order === undefined) payload.display_order = Number(row.dataset.displayOrder) || 0;
+  if (payload.is_active === undefined && row.dataset.isActive !== undefined) {
+    payload.is_active = row.dataset.isActive === "true";
+  }
   if (type === "product") {
     payload.name ||= "";
     payload.description ||= "";
