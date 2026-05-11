@@ -166,12 +166,11 @@
         link.textContent = formatPhoneForDisplay(phone);
       });
 
-      document.querySelectorAll("[data-whatsapp], [data-order]").forEach((link) => {
-        if (!link.hasAttribute("data-order")) {
-          link.href = buildWhatsAppUrl(phone);
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-        }
+      document.querySelectorAll("[data-whatsapp]").forEach((link) => {
+        if (link.hasAttribute("data-order")) return;
+        link.href = buildWhatsAppUrl(phone);
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
       });
     }
 
@@ -235,7 +234,9 @@
   }
 
   function remapLegacyCardFilename(path) {
-    return String(path || "").trim().replace(/A(\d+)-card\.webp$/i, "A$1.webp");
+    return String(path || "")
+      .trim()
+      .replace(/A(\d+)-card\.webp/gi, "A$1.webp");
   }
 
   function productCardImageValue(product) {
@@ -246,6 +247,13 @@
     const localCardImage = getLocalProductCardImage(product.name || "");
     if (hasText(localCardImage)) return normalizeProductMediaPath(localCardImage);
     return productImageValue(product);
+  }
+
+  /** True when a dedicated card file exists (not only falling back to full image_url). */
+  function hasExplicitCardSource(product) {
+    if (hasText(product.card_image_url)) return true;
+    const match = fallbackProducts().find((item) => item.name === product.name);
+    return !!(match && hasText(match.cardImage));
   }
 
   function isRemoteImageValue(value) {
@@ -320,10 +328,24 @@
       const fullImageValue = productImageValue(product);
       const cardImageValue = productCardImageValue(product);
       const fullForLightbox = hasText(fullImageValue) ? fullImageValue : cardImageValue;
-      const isRemoteCard = isRemoteImageValue(cardImageValue);
-      const srcAttr = isRemoteCard && hasText(cardImageValue) ? `src="${escapeHtml(cardImageValue)}"` : "";
-      const dataAttr = !isRemoteCard && hasText(cardImageValue) ? `data-product-image="${escapeHtml(cardImageValue)}"` : "";
+      const explicitCard = hasExplicitCardSource(product);
+      const isRemoteGrid = isRemoteImageValue(cardImageValue);
+
+      let srcAttr = "";
+      let dataAttr = "";
+      if (hasText(cardImageValue)) {
+        if (explicitCard && isRemoteGrid) {
+          srcAttr = `src="${escapeHtml(cardImageValue)}"`;
+        } else {
+          dataAttr = `data-product-image="${escapeHtml(cardImageValue)}"`;
+        }
+      }
+
       const fullAttr = hasText(fullForLightbox) ? `data-full-image="${escapeHtml(fullForLightbox)}"` : "";
+
+      const eagerFirst = explicitCard && isRemoteGrid && index < 4;
+      const loadingAttr = eagerFirst ? "eager" : "lazy";
+      const fetchPri = eagerFirst ? "high" : "low";
 
       const priceLabel = hasDisplayablePrice(product) ? formatProductPriceLabel(product) : "";
       const priceBlock = priceLabel
@@ -333,7 +355,7 @@
       return `
         <article class="product-card reveal is-visible" data-reveal-ready="true">
           <div class="product-image">
-            <img ${srcAttr} ${dataAttr} ${fullAttr} alt="${escapeHtml(product.name || "")}" width="800" height="688" loading="${index < 4 ? "eager" : "lazy"}" fetchpriority="${index < 4 ? "high" : "auto"}" decoding="async">
+            <img ${srcAttr} ${dataAttr} ${fullAttr} alt="${escapeHtml(product.name || "")}" width="800" height="688" loading="${loadingAttr}" fetchpriority="${fetchPri}" decoding="async">
           </div>
           <div class="product-body">
             <h3>${escapeHtml(product.name || "")}</h3>
@@ -357,21 +379,18 @@
     grid.dataset.productsSignature = nextSignature;
 
     grid.querySelectorAll(".product-image img").forEach((img) => {
-      const initialSrc = img.getAttribute("src") || "";
-      const fullFallback = img.dataset.fullImage || "";
-      if (!fullFallback || !/^https?:\/\//i.test(initialSrc)) return;
-      img.onload = function () {
+      const dataCard = (img.getAttribute("data-product-image") || "").trim();
+      const srcAttr = (img.getAttribute("src") || "").trim();
+      const primary =
+        dataCard || (/^https?:\/\//i.test(srcAttr) || srcAttr.startsWith("//") ? srcAttr : "");
+      const fullFb = (img.dataset.fullImage || "").trim();
+      const seed = primary || fullFb;
+      if (typeof window.setImageWithFallback === "function" && seed) {
+        window.setImageWithFallback(img, seed);
+      } else if (window.LIOR_IMAGE_PLACEHOLDER) {
+        img.src = window.LIOR_IMAGE_PLACEHOLDER;
         img.classList.add("is-loaded");
-      };
-      img.onerror = function () {
-        img.onerror = null;
-        if (typeof window.setImageWithFallback === "function") {
-          window.setImageWithFallback(img, fullFallback);
-        } else if (window.LIOR_IMAGE_PLACEHOLDER) {
-          img.src = window.LIOR_IMAGE_PLACEHOLDER;
-          img.classList.add("is-loaded");
-        }
-      };
+      }
     });
 
     refreshDynamicBehaviors();
@@ -444,7 +463,9 @@
   function refreshDynamicBehaviors() {
     if (typeof window.setupImages === "function") window.setupImages();
     if (typeof window.setupRevealAnimations === "function") window.setupRevealAnimations();
-    if (typeof window.setupImageLightbox === "function") window.setupImageLightbox();
+    if (typeof window.setupImageLightbox === "function" && !window.__liorImageLightboxInitialized) {
+      window.setupImageLightbox();
+    }
   }
 
   function escapeHtml(value) {

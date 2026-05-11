@@ -157,7 +157,7 @@
                 </li>
               </ul>
             </div>
-            <a class="btn" href="#" data-order data-content-key="order_button_text">שליחת הזמנה</a>
+            <a class="btn" href="#" data-contact-whatsapp data-content-key="order_button_text" target="_blank" rel="noopener noreferrer">שליחת הזמנה</a>
             <div class="signature" data-content-key="contact_signature_text">באהבה, ליאור</div>
           </div>
         </div>
@@ -183,6 +183,7 @@
             role="region"
             aria-label="מסמכי אתר"
             aria-hidden="true"
+            hidden
             inert
           >
             <nav class="footer-legal-popnav" dir="rtl" aria-label="מסמכי אתר">
@@ -215,7 +216,7 @@
 
       <h2 id="orderModalTitle">סל ההזמנה שלך</h2>
       <p class="order-modal-subtitle" id="orderModalSubtitle">
-        בדקו את הטעמים שבחרתם, ואז המשיכו לפרטי ההזמנה.
+        עדיין לא בחרתם טעמים. חזרו לקולקציה, בחרו טעם שאהבתם והוא יתווסף לכאן.
       </p>
 
       <section class="order-step order-cart-step" id="orderCartStep" aria-label="סל ההזמנה שלך">
@@ -281,6 +282,7 @@
   <div class="image-lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="תצוגת תמונה מוגדלת" aria-hidden="true">
     <button class="image-lightbox-close" id="imageLightboxClose" type="button" aria-label="סגירת תצוגת התמונה">×</button>
     <img id="imageLightboxImg" src="" alt="" decoding="async">
+    <p class="image-lightbox-status" id="imageLightboxStatus" role="status" aria-live="polite" hidden></p>
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
