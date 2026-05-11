@@ -30,7 +30,7 @@ insert into public.site_settings (key, value, updated_at) values
   ('contact_text', 'ספרו לליאור איזה טעם אהבתם ונמשיך משם בצורה פשוטה ונעימה.', now()),
   ('contact_email', 'liornahum1911@gmail.com', now()),
   ('whatsapp_number', '972506422900', now()),
-  ('order_button_text', 'דברו עם ליאור', now()),
+  ('order_button_text', 'שליחת הזמנה', now()),
   ('contact_signature_text', 'באהבה, ליאור', now()),
   ('instagram_sentence_text', 'לעוד רגעים מתוקים, טעמים חדשים והצצות מהמטבח - מוזמנים להמשיך איתנו', now()),
   ('instagram_link_text', 'באינסטגרם', now()),
