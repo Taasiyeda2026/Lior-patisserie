@@ -110,6 +110,7 @@
     if (!p) return "";
     if (/^https?:\/\//i.test(p) || p.startsWith("//") || p.startsWith("/")) return p;
     if (/^prdimages\//i.test(p)) return p.replace(/^prdimages\//i, "prdimages/");
+    if (/^(assets|images|attached_assets)\//i.test(p)) return p;
     return `prdimages/${p}`;
   }
 
@@ -118,6 +119,7 @@
 
     const fallbackSrc = img.getAttribute("src") || "";
     const fallbackDataImg = img.dataset.img || img.dataset.productImage || "";
+    const placeholder = window.LIOR_IMAGE_PLACEHOLDER || "";
 
     const nextSrc = normalizeProductMediaPath(imageUrl);
     img.onload = function () {
@@ -134,7 +136,14 @@
         window.setImageWithFallback(img, fallbackDataImg);
         return;
       }
-      if (fallbackSrc) img.src = fallbackSrc;
+      if (fallbackSrc) {
+        img.src = fallbackSrc;
+        return;
+      }
+      if (placeholder) {
+        img.src = placeholder;
+        img.classList.add("is-loaded");
+      }
     };
     img.classList.remove("is-loaded");
     img.src = nextSrc;
@@ -225,8 +234,15 @@
     return "";
   }
 
+  function remapLegacyCardFilename(path) {
+    return String(path || "").trim().replace(/A(\d+)-card\.webp$/i, "A$1.webp");
+  }
+
   function productCardImageValue(product) {
-    if (hasText(product.card_image_url)) return normalizeProductMediaPath(product.card_image_url);
+    if (hasText(product.card_image_url)) {
+      const c = remapLegacyCardFilename(String(product.card_image_url).trim());
+      return normalizeProductMediaPath(c);
+    }
     const localCardImage = getLocalProductCardImage(product.name || "");
     if (hasText(localCardImage)) return normalizeProductMediaPath(localCardImage);
     return productImageValue(product);
@@ -305,7 +321,7 @@
       const cardImageValue = productCardImageValue(product);
       const fullForLightbox = hasText(fullImageValue) ? fullImageValue : cardImageValue;
       const isRemoteCard = isRemoteImageValue(cardImageValue);
-      const srcAttr = isRemoteCard ? `src="${escapeHtml(cardImageValue)}" data-fallback-image="${escapeHtml(fullImageValue)}"` : "";
+      const srcAttr = isRemoteCard && hasText(cardImageValue) ? `src="${escapeHtml(cardImageValue)}"` : "";
       const dataAttr = !isRemoteCard && hasText(cardImageValue) ? `data-product-image="${escapeHtml(cardImageValue)}"` : "";
       const fullAttr = hasText(fullForLightbox) ? `data-full-image="${escapeHtml(fullForLightbox)}"` : "";
 
@@ -340,20 +356,20 @@
     grid.dataset.renderSignature = nextSignature;
     grid.dataset.productsSignature = nextSignature;
 
-    grid.querySelectorAll("img[data-fallback-image]").forEach((img) => {
-      const fallback = img.dataset.fallbackImage;
+    grid.querySelectorAll(".product-image img").forEach((img) => {
+      const initialSrc = img.getAttribute("src") || "";
+      const fullFallback = img.dataset.fullImage || "";
+      if (!fullFallback || !/^https?:\/\//i.test(initialSrc)) return;
       img.onload = function () {
         img.classList.add("is-loaded");
       };
-      if (!fallback) return;
       img.onerror = function () {
         img.onerror = null;
-        if (/^https?:\/\//i.test(fallback) || fallback.startsWith("//") || fallback.startsWith("/")) {
-          img.src = fallback;
-          return;
-        }
         if (typeof window.setImageWithFallback === "function") {
-          window.setImageWithFallback(img, fallback);
+          window.setImageWithFallback(img, fullFallback);
+        } else if (window.LIOR_IMAGE_PLACEHOLDER) {
+          img.src = window.LIOR_IMAGE_PLACEHOLDER;
+          img.classList.add("is-loaded");
         }
       };
     });
@@ -392,7 +408,11 @@
 
     grid.innerHTML = activeFeatures.map((feature) => {
       const icon = hasText(feature.image_url)
-        ? `<img src="${escapeHtml(feature.image_url)}" alt="${escapeHtml(feature.title || "")}" loading="lazy" decoding="async">`
+        ? (() => {
+            const fu = String(feature.image_url).trim();
+            const src = isRemoteImageValue(fu) ? fu : normalizeProductMediaPath(fu);
+            return `<img src="${escapeHtml(src)}" alt="${escapeHtml(feature.title || "")}" loading="lazy" decoding="async">`;
+          })()
         : FEATURE_ICON_FALLBACK;
 
       return `
@@ -452,14 +472,15 @@
     };
 
     grid.innerHTML = activeItems.map((item) => {
-      const url = normalizeProductMediaPath(item.image_url.trim());
+      const rawPath = item.image_url.trim();
+      const url = normalizeProductMediaPath(rawPath);
       const altRaw = hasText(item.alt_text)
         ? item.alt_text.trim()
         : (hasText(item.title) ? item.title.trim() : "");
       const imgAlt = hasText(altRaw) ? altRaw : "תמונה מהגלריה של Lior's Pâtisserie";
       return `
         <button type="button" class="gallery-thumb reveal is-visible" data-reveal-ready="true" role="listitem" data-lightbox-src="${escapeHtml(url)}" aria-label="${escapeHtml(labelFor(item))}">
-          <img src="${escapeHtml(url)}" alt="${escapeHtml(imgAlt)}" width="480" height="360" loading="lazy" decoding="async">
+          <img src="${escapeHtml(url)}" data-img="${escapeHtml(rawPath)}" alt="${escapeHtml(imgAlt)}" width="480" height="360" loading="lazy" decoding="async">
         </button>
       `;
     }).join("");
