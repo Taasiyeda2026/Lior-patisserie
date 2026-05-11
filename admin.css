@@ -54,10 +54,7 @@ body {
   font-family: var(--font-body);
   line-height: 1.65;
   min-height: 100vh;
-  background:
-    radial-gradient(circle at 12% 8%, rgba(199, 178, 214, 0.22), transparent 28%),
-    radial-gradient(circle at 86% 12%, rgba(200, 169, 106, 0.14), transparent 32%),
-    linear-gradient(145deg, #2b1738 0%, #3d2249 26%, #f7f0e6 26.2%, #f2eadf 100%);
+  background: var(--cream-2);
 }
 
 button,
