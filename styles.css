@@ -4868,7 +4868,7 @@ html.hero-locked .home-products {
   width: 62%;
   max-width: 120px;
   height: 2px;
-  margin: 9px auto 0;
+  margin: 9px 0 0 auto;
   border: 0;
   border-radius: 999px;
   background: linear-gradient(
