@@ -82,6 +82,16 @@
       --font-body: "IBM Plex Sans Hebrew", "Assistant", sans-serif;
       --font-display: "Lora", "IBM Plex Sans Hebrew", serif;
       --font-signature: "Gveret Levin", "IBM Plex Sans Hebrew", cursive;
+
+      /* Boutique palette — flavors (#products) & contact (#contact) only */
+      --lior-cream: #F8F3EC;
+      --lior-lilac: #C9B8D8;
+      --lior-aubergine: #3D1650;
+      --lior-gold: #B8943A;
+      --lior-text-muted: rgba(61, 22, 80, 0.74);
+      --lior-shadow-near: 0 4px 14px rgba(61, 22, 80, 0.07);
+      --lior-shadow-mid: 0 12px 32px rgba(61, 22, 80, 0.09);
+      --lior-shadow-far: 0 26px 64px rgba(61, 22, 80, 0.07);
     }
 
     * {
@@ -495,15 +505,36 @@
       position: relative;
       z-index: 1;
       margin-top: 0;
-      padding: 30px 0 42px;
+      padding: 30px 0 36px;
       text-align: center;
       background:
-        linear-gradient(180deg, rgba(255, 249, 242, 0.62) 0%, rgba(247, 240, 230, 0.94) 10%, rgba(255, 249, 242, 0.35) 28%, transparent 42%),
-        linear-gradient(180deg, #f3ebe4 0%, var(--cream) 42%, #ebe2d8 100%);
-      border-bottom: 1px solid rgba(200, 194, 184, 0.22);
+        radial-gradient(circle at 50% -8%, rgba(201, 184, 216, 0.16), transparent 48%),
+        radial-gradient(circle at 82% 48%, rgba(184, 148, 58, 0.06), transparent 46%),
+        linear-gradient(180deg, var(--lior-cream) 0%, rgba(201, 184, 216, 0.07) 100%);
+      border-bottom: 1px solid rgba(201, 184, 216, 0.32);
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.55),
-        0 18px 40px rgba(47, 33, 28, 0.05);
+        inset 0 1px 0 rgba(255, 255, 255, 0.42),
+        var(--lior-shadow-mid);
+    }
+
+    .home-opening::after {
+      content: "";
+      display: block;
+      width: min(520px, 88%);
+      height: 2px;
+      margin: 26px auto 0;
+      border-radius: 999px;
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(201, 184, 216, 0.25) 10%,
+        var(--lior-lilac) 26%,
+        var(--lior-gold) 50%,
+        var(--lior-lilac) 74%,
+        rgba(201, 184, 216, 0.25) 90%,
+        transparent 100%
+      );
+      box-shadow: 0 1px 8px rgba(61, 22, 80, 0.07);
     }
 
     .home-opening-inner {
@@ -534,28 +565,29 @@
       font-size: clamp(1.55rem, 3vw, 2.6rem);
       line-height: 1.12;
       font-weight: 500;
-      color: #2F211C;
-      text-shadow:
-        0 1px 0 rgba(255, 250, 243, 0.45),
-        0 10px 26px rgba(47, 33, 28, 0.07);
+      color: var(--lior-aubergine);
+      text-shadow: 0 1px 0 rgba(255, 255, 255, 0.35);
     }
 
     .home-flavors-heading::after {
       content: "";
       display: block;
       width: min(200px, 48vw);
-      height: 4px;
-      margin: 6px auto 0;
+      height: 3px;
+      margin: 8px auto 0;
       border-radius: 999px;
-      border: 1px solid rgba(255, 250, 243, 0.5);
-      background:
-        linear-gradient(90deg, transparent 0%, rgba(255, 250, 243, 0.55) 40%, rgba(255, 250, 243, 0.55) 60%, transparent 100%),
-        linear-gradient(90deg, transparent 0%, rgba(200, 169, 106, 0.22) 12%, rgba(200, 169, 106, 1) 38%, rgba(111, 74, 124, 0.92) 55%, rgba(200, 169, 106, 1) 76%, rgba(200, 169, 106, 0.22) 88%, transparent 100%);
+      border: 1px solid rgba(201, 184, 216, 0.45);
+      background: linear-gradient(
+        90deg,
+        transparent 0%,
+        rgba(201, 184, 216, 0.35) 18%,
+        var(--lior-gold) 50%,
+        rgba(201, 184, 216, 0.35) 82%,
+        transparent 100%
+      );
       box-shadow:
-        0 0 22px rgba(200, 169, 106, 0.42),
-        0 0 38px rgba(111, 74, 124, 0.16),
-        0 3px 10px rgba(47, 33, 28, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.7);
+        0 2px 10px rgba(61, 22, 80, 0.08),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
     }
 
     .home-flavors-lede {
@@ -569,6 +601,11 @@
       margin: 6px auto;
       line-height: 1.55;
       text-align: center;
+    }
+
+    .home-opening .products-intro-text {
+      color: var(--lior-text-muted);
+      font-weight: 400;
     }
 
     .home-opening .products-grid {
@@ -644,12 +681,12 @@
     }
 
     .home-opening .btn.secondary {
-      background: rgba(255, 249, 242, 0.78);
-      color: var(--plum);
-      border-color: rgba(111, 74, 124, 0.26);
+      background: rgba(248, 243, 236, 0.88);
+      color: var(--lior-aubergine);
+      border-color: rgba(201, 184, 216, 0.65);
       box-shadow:
-        0 10px 24px rgba(47, 33, 28, 0.10),
-        inset 0 1px 0 rgba(255, 255, 255, 0.54);
+        var(--lior-shadow-near),
+        inset 0 1px 0 rgba(255, 255, 255, 0.55);
     }
 
     .flavors-actions {
@@ -664,16 +701,18 @@
       justify-content: center;
       width: fit-content;
       margin: 14px auto 10px;
-      padding: 3px 10px;
+      padding: 4px 12px;
       min-height: 0;
       border-radius: 999px;
       font-size: 0.72rem;
-      font-weight: 500;
+      font-weight: 600;
       line-height: 1.2;
-      color: #4a3428;
-      background: rgba(255, 249, 242, 0.42);
-      border: 1px solid rgba(200, 169, 106, 0.18);
-      box-shadow: none;
+      color: var(--lior-aubergine);
+      background: linear-gradient(180deg, rgba(248, 243, 236, 0.95), rgba(201, 184, 216, 0.12));
+      border: 1px solid rgba(184, 148, 58, 0.38);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        0 2px 8px rgba(61, 22, 80, 0.06);
       cursor: default;
       pointer-events: none;
     }
@@ -681,22 +720,35 @@
     .flavors-actions .btn {
       width: auto;
       min-width: 110px;
-      max-width: 135px;
+      max-width: 148px;
       min-height: 36px;
-      padding: 8px 16px;
+      padding: 8px 18px;
       border-radius: 14px;
-      font-size: 0.88rem;
+      font-size: 0.86rem;
       line-height: 1.15;
       font-weight: 600;
-      letter-spacing: 0.015em;
+      letter-spacing: 0.02em;
+      color: var(--lior-aubergine);
+      background: linear-gradient(180deg, var(--lior-cream) 0%, rgba(248, 243, 236, 0.88) 100%);
+      border: 1px solid rgba(61, 22, 80, 0.42);
       box-shadow:
-        0 8px 18px rgba(47, 33, 28, 0.16),
-        0 2px 0 rgba(35, 19, 42, 0.46),
-        inset 0 1px 0 rgba(255, 255, 255, 0.14);
+        var(--lior-shadow-near),
+        inset 0 1px 0 rgba(184, 148, 58, 0.35),
+        inset 0 -1px 0 rgba(201, 184, 216, 0.2);
+      filter: none;
     }
 
     .flavors-actions .btn:hover {
       transform: translateY(-1px);
+      filter: brightness(1.02);
+      box-shadow:
+        var(--lior-shadow-mid),
+        inset 0 1px 0 rgba(184, 148, 58, 0.42),
+        inset 0 -1px 0 rgba(201, 184, 216, 0.22);
+    }
+
+    .flavors-actions .btn:active {
+      transform: translateY(0);
     }
 
     .home-hero .btn {
@@ -986,15 +1038,15 @@
     }
 
     .product-card {
-      background: linear-gradient(180deg, rgba(255, 249, 242, 0.96) 0%, rgba(242, 234, 223, 0.80) 100%);
-      border: 1px solid rgba(200, 169, 106, 0.34);
+      background: linear-gradient(165deg, var(--lior-cream) 0%, rgba(201, 184, 216, 0.14) 100%);
+      border: 1px solid rgba(201, 184, 216, 0.55);
       border-radius: var(--radius);
       overflow: hidden;
       box-shadow:
-        0 8px 28px rgba(47, 33, 28, 0.11),
-        0 2px 8px rgba(61, 34, 73, 0.07),
-        0 1px 3px rgba(47, 33, 28, 0.05),
-        inset 0 1px 0 rgba(255, 255, 255, 0.80);
+        var(--lior-shadow-near),
+        var(--lior-shadow-mid),
+        inset 0 1px 0 rgba(255, 255, 255, 0.72),
+        inset 0 0 0 1px rgba(255, 255, 255, 0.12);
       display: flex;
       flex-direction: column;
       height: auto;
@@ -1002,20 +1054,21 @@
     }
 
     .product-card:hover {
-      transform: translateY(-5px);
+      transform: translateY(-4px);
       box-shadow:
-        0 18px 52px rgba(47, 33, 28, 0.16),
-        0 6px 20px rgba(61, 34, 73, 0.10),
-        0 1px 4px rgba(47, 33, 28, 0.06),
-        inset 0 1px 0 rgba(255, 255, 255, 0.72);
-      border-color: rgba(200, 169, 106, 0.56);
+        var(--lior-shadow-mid),
+        var(--lior-shadow-far),
+        inset 0 1px 0 rgba(255, 255, 255, 0.78),
+        inset 0 0 0 1px rgba(201, 184, 216, 0.25);
+      border-color: rgba(184, 148, 58, 0.42);
     }
 
     .product-image {
       position: relative;
       aspect-ratio: 1 / 0.78;
       overflow: hidden;
-      background: linear-gradient(135deg, rgba(255, 249, 242, 0.70), rgba(234, 223, 206, 0.95));
+      background:
+        radial-gradient(circle at 50% 20%, rgba(248, 243, 236, 0.9), rgba(201, 184, 216, 0.2));
     }
 
     .product-image::after {
@@ -1024,9 +1077,9 @@
       inset: 0;
       pointer-events: none;
       background:
-        linear-gradient(to top, rgba(47, 33, 28, 0.14), transparent 44%),
-        radial-gradient(circle at 50% 15%, rgba(255, 249, 242, 0.10), transparent 42%);
-      box-shadow: inset 0 -1px 0 rgba(200, 169, 106, 0.22);
+        linear-gradient(to top, rgba(61, 22, 80, 0.12), transparent 46%),
+        radial-gradient(circle at 50% 12%, rgba(248, 243, 236, 0.12), transparent 44%);
+      box-shadow: inset 0 -1px 0 rgba(201, 184, 216, 0.35);
     }
 
     .product-image img {
@@ -1060,7 +1113,7 @@
       font-weight: 500;
       line-height: 1.3;
       letter-spacing: 0.01em;
-      color: #5C3D32;
+      color: var(--lior-aubergine);
       max-width: 100%;
       text-wrap: balance;
     }
@@ -1069,17 +1122,21 @@
       content: "";
       display: block;
       width: min(108px, 42vw);
-      height: 3px;
-      margin: 6px auto 0;
+      height: 2px;
+      margin: 7px auto 0;
       border-radius: 999px;
-      border: 1px solid rgba(255, 250, 243, 0.32);
-      background:
-        linear-gradient(90deg, rgba(255, 250, 243, 0), rgba(255, 250, 243, 0.5), rgba(255, 250, 243, 0)),
-        linear-gradient(90deg, rgba(200, 169, 106, 0.2), rgba(200, 169, 106, 0.76), rgba(90, 57, 103, 0.62), rgba(200, 194, 184, 0.7), rgba(200, 169, 106, 0.2));
+      border: 1px solid rgba(201, 184, 216, 0.4);
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(201, 184, 216, 0.5) 22%,
+        var(--lior-gold) 50%,
+        rgba(201, 184, 216, 0.5) 78%,
+        transparent
+      );
       box-shadow:
-        0 0 0 1px rgba(200, 194, 184, 0.16),
-        0 4px 10px rgba(47, 33, 28, 0.08),
-        inset 0 1px 0 rgba(255, 255, 255, 0.55);
+        0 2px 8px rgba(61, 22, 80, 0.06),
+        inset 0 1px 0 rgba(255, 255, 255, 0.5);
     }
 
     .product-price {
@@ -1094,16 +1151,18 @@
       font-size: 0.78rem;
       font-weight: 600;
       letter-spacing: 0.04em;
-      color: #5a3957;
-      background: linear-gradient(180deg, rgba(255, 249, 242, 0.95), rgba(234, 223, 206, 0.55));
-      border: 1px solid rgba(200, 169, 106, 0.35);
+      color: var(--lior-aubergine);
+      background: linear-gradient(180deg, rgba(248, 243, 236, 0.98), rgba(201, 184, 216, 0.12));
+      border: 1px solid rgba(184, 148, 58, 0.4);
       border-radius: 999px;
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.65);
+      box-shadow:
+        inset 0 1px 0 rgba(255, 255, 255, 0.7),
+        0 1px 4px rgba(61, 22, 80, 0.05);
     }
 
     .product-body p {
       margin: 0 0 8px;
-      color: #52362C;
+      color: var(--lior-text-muted);
       font-size: 0.88rem;
       line-height: 1.58;
       font-weight: 400;
@@ -1118,15 +1177,17 @@
       display: inline-flex;
       align-items: center;
       justify-content: center;
-      border: 1px solid rgba(111, 74, 124, 0.30);
-      background: rgba(90, 57, 103, 0.06);
-      color: #4A2460;
+      border: 1px solid rgba(61, 22, 80, 0.28);
+      background: rgba(248, 243, 236, 0.75);
+      color: var(--lior-aubergine);
       border-radius: 999px;
       padding: 5px 10px;
       font-size: 0.78rem;
       font-weight: 600;
       letter-spacing: 0;
-      box-shadow: 0 1px 5px rgba(90, 57, 103, 0.08);
+      box-shadow:
+        0 2px 8px rgba(61, 22, 80, 0.06),
+        inset 0 1px 0 rgba(184, 148, 58, 0.22);
       transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease;
     }
 
@@ -1154,7 +1215,7 @@
       margin-top: 4px;
       font-size: 0.78rem;
       font-weight: 600;
-      color: #3D2249;
+      color: var(--lior-aubergine);
       opacity: 0;
       transform: translateY(4px);
       transition: opacity 0.22s ease, transform 0.22s ease;
@@ -1184,9 +1245,9 @@
     }
 
     .product-link:hover {
-      background: rgba(90, 57, 103, 0.11);
-      border-color: rgba(111, 74, 124, 0.52);
-      box-shadow: 0 2px 10px rgba(90, 57, 103, 0.14);
+      background: rgba(201, 184, 216, 0.2);
+      border-color: rgba(61, 22, 80, 0.45);
+      box-shadow: 0 3px 12px rgba(61, 22, 80, 0.1);
       transform: translateY(-1px);
     }
 
@@ -1732,35 +1793,55 @@
       padding: 40px 0 34px;
       text-align: center;
       background:
-        radial-gradient(circle at 50% 22%, rgba(199, 178, 214, 0.1), transparent 40%),
-        radial-gradient(circle at 50% 30%, rgba(255, 250, 243, 0.5), transparent 38%),
-        linear-gradient(165deg, #ebe4d8 0%, #e4d9cc 42%, #f7f0e6 100%);
-      border-top: 1px solid rgba(200, 194, 184, 0.26);
+        radial-gradient(circle at 50% 0%, rgba(201, 184, 216, 0.14), transparent 46%),
+        radial-gradient(circle at 24% 100%, rgba(184, 148, 58, 0.07), transparent 40%),
+        linear-gradient(180deg, var(--lior-cream) 0%, rgba(201, 184, 216, 0.1) 100%);
+      border-top: 1px solid rgba(201, 184, 216, 0.38);
       box-shadow:
-        inset 0 1px 0 rgba(255, 255, 255, 0.42),
-        0 -10px 32px rgba(47, 33, 28, 0.04);
+        inset 0 1px 0 rgba(255, 255, 255, 0.4),
+        0 -12px 40px rgba(61, 22, 80, 0.05);
     }
 
     .final .reveal::before {
       content: "";
       display: block;
-      width: 78px;
-      height: 1px;
-      margin: 0 auto 10px;
+      width: min(320px, 88%);
+      height: 2px;
+      margin: 0 auto 14px;
+      border-radius: 999px;
       background: linear-gradient(
         90deg,
-        transparent,
-        rgba(200, 169, 106, 0.68),
-        rgba(200, 194, 184, 0.72),
-        transparent
+        transparent 0%,
+        rgba(201, 184, 216, 0.35) 14%,
+        var(--lior-lilac) 30%,
+        var(--lior-gold) 50%,
+        var(--lior-lilac) 70%,
+        rgba(201, 184, 216, 0.35) 86%,
+        transparent 100%
       );
+      box-shadow: 0 1px 8px rgba(61, 22, 80, 0.07);
     }
 
     .final .section-label {
-      color: rgba(92, 61, 50, 0.88);
+      position: relative;
+      color: var(--lior-text-muted);
       letter-spacing: 0.14em;
       font-size: 0.86rem;
       font-weight: 500;
+    }
+
+    .final .section-label::before {
+      content: "";
+      display: block;
+      width: 7px;
+      height: 7px;
+      margin: 0 auto 12px;
+      background: linear-gradient(135deg, var(--lior-gold), rgba(184, 148, 58, 0.75));
+      transform: rotate(45deg);
+      border-radius: 1px;
+      box-shadow:
+        0 0 0 1px rgba(201, 184, 216, 0.55),
+        0 2px 6px rgba(61, 22, 80, 0.08);
     }
 
     .final h2 {
@@ -1769,35 +1850,62 @@
       font-size: clamp(1.7rem, 4vw, 2.7rem);
       font-weight: 500;
       line-height: 1.18;
+      color: var(--lior-aubergine);
     }
 
     .final p {
       margin: 8px auto 0;
       max-width: 500px;
-      color: rgba(92, 61, 50, 0.94);
+      color: var(--lior-text-muted);
       font-size: 0.94rem;
       line-height: 1.72;
       font-weight: 400;
     }
 
     .contact-details-card {
+      position: relative;
       width: min(390px, 100%);
-      margin: 14px auto 0;
-      padding: 10px 18px;
-      border-radius: 20px;
-      background: linear-gradient(
-        180deg,
-        rgba(255, 249, 242, 0.88) 0%,
-        rgba(242, 234, 223, 0.76) 100%
-      );
-      border: 1px solid rgba(200, 194, 184, 0.46);
+      margin: 18px auto 0;
+      padding: 18px 20px 16px;
+      border-radius: 22px;
+      background: linear-gradient(165deg, var(--lior-cream) 0%, rgba(201, 184, 216, 0.12) 100%);
+      border: 1px solid rgba(61, 22, 80, 0.22);
       box-shadow:
-        0 10px 26px rgba(47, 33, 28, 0.10),
-        inset 0 1px 0 rgba(255, 255, 255, 0.58);
+        var(--lior-shadow-near),
+        var(--lior-shadow-mid),
+        var(--lior-shadow-far),
+        inset 0 1px 0 rgba(255, 255, 255, 0.65),
+        inset 0 0 0 1px rgba(201, 184, 216, 0.4);
       text-align: right;
     }
 
+    .contact-details-card::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 16px;
+      border: 1px solid rgba(201, 184, 216, 0.38);
+      pointer-events: none;
+    }
+
+    .contact-details-card::after {
+      content: "";
+      position: absolute;
+      top: -5px;
+      left: 50%;
+      width: 9px;
+      height: 9px;
+      margin-left: -4.5px;
+      background: linear-gradient(135deg, var(--lior-lilac), var(--lior-gold));
+      transform: rotate(45deg);
+      border-radius: 1px;
+      box-shadow: 0 2px 8px rgba(61, 22, 80, 0.12);
+      pointer-events: none;
+    }
+
     .contact-details-list {
+      position: relative;
+      z-index: 1;
       margin: 0;
       padding: 0;
       list-style: none;
@@ -1816,7 +1924,7 @@
     }
 
     .contact-label {
-      color: rgba(92, 61, 50, 0.9);
+      color: var(--lior-aubergine);
       font-weight: 600;
       display: inline-flex;
       align-items: center;
@@ -1825,14 +1933,14 @@
     }
 
     .contact-value {
-      color: #3D2249;
+      color: var(--lior-aubergine);
       font-weight: 500;
       text-decoration: none;
       transition: color 0.2s ease;
     }
 
     .contact-value:hover {
-      color: #5A3967;
+      color: rgba(61, 22, 80, 0.72);
     }
 
     .contact-value.phone-link {
@@ -1848,27 +1956,42 @@
     }
 
     .final .btn {
-      margin-top: 14px;
+      margin-top: 16px;
       min-height: 40px;
-      padding: 9px 20px;
+      max-width: 260px;
+      padding: 9px 22px;
+      border-radius: 14px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--lior-aubergine);
+      background: linear-gradient(180deg, var(--lior-cream) 0%, rgba(248, 243, 236, 0.9) 100%);
+      border: 1px solid rgba(61, 22, 80, 0.42);
       box-shadow:
-        0 10px 24px rgba(47, 33, 28, 0.18),
-        0 3px 0 rgba(35, 19, 42, 0.70),
-        inset 0 1px 0 rgba(255, 255, 255, 0.18);
+        var(--lior-shadow-near),
+        inset 0 1px 0 rgba(184, 148, 58, 0.35),
+        inset 0 -1px 0 rgba(201, 184, 216, 0.2);
+      filter: none;
     }
 
     .final .btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.02);
       box-shadow:
-        0 14px 30px rgba(47, 33, 28, 0.22),
-        0 4px 0 rgba(35, 19, 42, 0.70),
-        inset 0 1px 0 rgba(255, 255, 255, 0.2);
+        var(--lior-shadow-mid),
+        inset 0 1px 0 rgba(184, 148, 58, 0.42),
+        inset 0 -1px 0 rgba(201, 184, 216, 0.22);
+    }
+
+    .final .btn:active {
+      transform: translateY(0);
     }
 
     .signature {
       margin-top: 16px;
       font-family: var(--font-signature);
       font-style: italic;
-      color: rgba(92, 61, 50, 0.88);
+      color: var(--lior-text-muted);
       font-size: 1.02rem;
       letter-spacing: 0.02em;
       line-height: 1.5;
@@ -2513,7 +2636,7 @@
         gap: 8px;
         font-size: 0.9rem;
         padding: 12px 0;
-        border-bottom: 1px solid rgba(200, 194, 184, 0.34);
+        border-bottom: 1px solid rgba(201, 184, 216, 0.4);
       }
 
       .contact-details-list li:last-child {
@@ -2689,10 +2812,34 @@
       scrollbar-color: rgba(111, 74, 124, 0.28) transparent;
     }
 
-    .home-opening::before,
+    .home-opening::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 16% 4%, rgba(201, 184, 216, 0.14), transparent 34%),
+        radial-gradient(circle at 88% 20%, rgba(184, 148, 58, 0.07), transparent 38%),
+        linear-gradient(180deg, rgba(248, 243, 236, 0.28) 0%, transparent min(36%, 240px));
+      opacity: 1;
+    }
+
+    .final::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(circle at 48% 0%, rgba(201, 184, 216, 0.12), transparent 40%),
+        radial-gradient(circle at 12% 88%, rgba(184, 148, 58, 0.06), transparent 36%),
+        linear-gradient(180deg, rgba(248, 243, 236, 0.2) 0%, transparent 55%);
+      opacity: 1;
+    }
+
     .editorial::before,
     .catalog-cta::before,
-    .final::before,
     .why::before,
     .order::before {
       content: "";
