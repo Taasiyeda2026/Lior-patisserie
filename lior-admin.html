@@ -85,11 +85,6 @@
             <input data-upload="hero_logo_image" data-folder="logo" data-max-width="600" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </label>
         </div>
-        <div class="grid two-columns section-fields">
-          <label class="field-label">כפתור גלילה
-            <input data-setting="hero_scroll_button_text" type="text" placeholder="גללו מטה">
-          </label>
-        </div>
         <div class="actions-row">
           <button class="admin-button" type="button" data-save-settings="hero-settings">שמירה</button>
           <div class="notice" data-notice="hero-settings"></div>
@@ -108,17 +103,8 @@
           <label class="field-label">כותרת אזור הטעמים - “הטעמים שלנו”
             <input data-setting="flavors_title" type="text" placeholder="הטעמים שלנו">
           </label>
-          <label class="field-label">תגית אמון באזור הטעמים - “כשר למהדרין”
-            <input data-setting="flavors_badge_text" type="text" placeholder="כשר למהדרין">
-          </label>
-          <label class="field-label">טקסט כפתור ראשי באזור הטעמים - “להזמנה”
-            <input data-setting="flavors_order_button_text" type="text" placeholder="להזמנה">
-          </label>
-          <label class="field-label wide">פסקה ראשונה באזור הטעמים
-            <textarea data-setting="flavors_intro_primary" placeholder="ב־Lior’s Pâtisserie כל עוגיית Crumble..."></textarea>
-          </label>
-          <label class="field-label wide">פסקה שנייה באזור הטעמים
-            <textarea data-setting="flavors_intro_secondary" placeholder="הקולקציה שלנו משלבת טעמים עשירים..."></textarea>
+          <label class="field-label wide">טקסט פתיחה באזור הטעמים
+            <textarea data-setting="flavors_intro_primary" data-merged-setting="flavors_intro_secondary" placeholder="ב־Lior’s Pâtisserie כל עוגיית Crumble..."></textarea>
           </label>
         </div>
         <div class="actions-row">
@@ -132,7 +118,7 @@
           <span class="section-number">03</span>
           <div>
             <h2>מוצרים וטעמים</h2>
-            <p>הטעמים שמופיעים באתר. ניתן לערוך שם, תיאור, מחיר, תמונה מלאה, תמונת כרטיס וסדר תצוגה.</p>
+            <p>הטעמים שמופיעים באתר. ניתן לערוך שם, תיאור, מחיר, תמונה מלאה ותמונת כרטיס.</p>
           </div>
         </div>
         <div class="actions-row top-action">
@@ -216,9 +202,6 @@
           </label>
           <label class="field-label">מייל באזור צור קשר
             <input data-setting="contact_email" type="email" placeholder="liornahum1911@gmail.com">
-          </label>
-          <label class="field-label">טקסט כפתור הזמנה באזור צור קשר
-            <input data-setting="order_button_text" type="text" placeholder="שליחת הזמנה">
           </label>
           <label class="field-label">חתימה מתחת לכפתור באזור צור קשר
             <input data-setting="contact_signature_text" type="text" placeholder="באהבה, ליאור">

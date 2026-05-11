@@ -376,20 +376,33 @@ async function uploadImageAsWebP(file, folder, maxWidth) {
 async function loadSettings() {
   const { data, error } = await client().from("site_settings").select("key,value");
   if (error) throw error;
-  (data || []).forEach((row) => {
-    const input = document.querySelector(`[data-setting="${row.key}"]`);
-    if (input) input.value = row.value || "";
+
+  const settings = (data || []).reduce((acc, row) => {
+    if (row && row.key) acc[row.key] = row.value || "";
+    return acc;
+  }, {});
+
+  document.querySelectorAll("[data-setting]").forEach((input) => {
+    const primaryValue = settings[input.dataset.setting] || "";
+    const mergedKey = input.dataset.mergedSetting;
+    const mergedValue = mergedKey ? settings[mergedKey] || "" : "";
+    input.value = [primaryValue, mergedValue].filter((value) => value.trim()).join("\n\n");
   });
   document.querySelectorAll(".admin-preview-shell[data-setting-preview]").forEach(syncAdminPreviewShell);
 }
 
 async function saveSettings(scope = "hero-settings", root = document) {
   const inputs = Array.from(root.querySelectorAll("[data-setting]"));
-  const rows = inputs.map((input) => ({
-    key: input.dataset.setting,
-    value: input.value.trim(),
-    updated_at: new Date().toISOString()
-  }));
+  const now = new Date().toISOString();
+  const rows = inputs.flatMap((input) => {
+    const row = {
+      key: input.dataset.setting,
+      value: input.value.trim(),
+      updated_at: now
+    };
+    if (!input.dataset.mergedSetting) return [row];
+    return [row, { key: input.dataset.mergedSetting, value: "", updated_at: now }];
+  });
   if (!rows.length) return;
   const { error } = await client().from("site_settings").upsert(rows, { onConflict: "key" });
   if (error) throw error;
@@ -535,10 +548,9 @@ function productDrawerFormTemplate(product = {}) {
   const id = product.id || crypto.randomUUID();
   const isActive = product.is_active !== false;
   const priceVal = product.price != null ? String(product.price) : "";
-  return `<form id="productDrawerForm" class="product-drawer-form" data-product-id="${escapeHtml(String(id))}">
+  return `<form id="productDrawerForm" class="product-drawer-form" data-product-id="${escapeHtml(String(id))}" data-display-order="${Number(product.display_order) || 0}">
     <div class="product-drawer-fields">
       <label class="field-label">שם הטעם <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
-      <label class="field-label">סדר תצוגה <input data-field="display_order" type="number" value="${Number(product.display_order) || 0}"></label>
       <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
       <label class="field-label">מחיר (אופציונלי) <input data-field="price" type="text" value="${escapeHtml(priceVal)}" placeholder="למשל 28 או ₪28"></label>
       <label class="field-label wide">תיאור <textarea data-field="description" rows="4">${escapeHtml(product.description || "")}</textarea></label>
@@ -635,10 +647,9 @@ async function toggleProductActive(root) {
 function featureTemplate(feature = {}) {
   const id = feature.id || crypto.randomUUID();
   const isActive = feature.is_active !== false;
-  return `<article class="feature-row${isActive ? "" : " product-inactive"}" data-feature-id="${id}">
+  return `<article class="feature-row${isActive ? "" : " product-inactive"}" data-feature-id="${id}" data-display-order="${Number(feature.display_order) || 0}">
     <div class="grid">
       <label class="field-label">כותרת <input data-field="title" value="${escapeHtml(feature.title || "")}"></label>
-      <label class="field-label">סדר <input data-field="display_order" type="number" value="${feature.display_order || 0}"></label>
       <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
       <label class="field-label">טקסט <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
       <label class="field-label wide">תמונה (אופציונלי)
@@ -716,6 +727,7 @@ function rowPayload(row, type) {
     if (input.dataset.field === "display_order") value = Number(value || 0);
     payload[input.dataset.field] = value;
   });
+  if (payload.display_order === undefined) payload.display_order = Number(row.dataset.displayOrder) || 0;
   if (type === "product") {
     payload.name ||= "";
     payload.description ||= "";
@@ -833,7 +845,10 @@ function setupEvents() {
     }
     if (event.target.id === "addFeature") {
       const wrap = document.getElementById("featuresAdmin");
-      wrap.insertAdjacentHTML("beforeend", featureTemplate({ display_order: 0, is_active: true }));
+      const orders = Array.from(wrap.querySelectorAll(".feature-row"))
+        .map((row) => Number(row.dataset.displayOrder) || 0);
+      const nextOrder = orders.length ? Math.max(...orders) + 1 : 0;
+      wrap.insertAdjacentHTML("beforeend", featureTemplate({ display_order: nextOrder, is_active: true }));
       const row = wrap.querySelector(".feature-row:last-of-type");
       if (row) initAdminPreviewShells(row);
     }
