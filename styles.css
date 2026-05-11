@@ -3878,7 +3878,7 @@ html.hero-locked .home-products {
 
 .hero-brand-logo {
   top: 20% !important;
-  width: clamp(160px, 18vw, 210px) !important;
+  width: clamp(210px, 24vw, 290px) !important;
   opacity: 0.98;
 }
 
@@ -4564,7 +4564,7 @@ html.hero-locked .home-products {
 
   .hero-brand-logo {
     top: 19% !important;
-    width: 110px !important;
+    width: 150px !important;
   }
 
   .hero-copy {
@@ -4636,7 +4636,7 @@ html.hero-locked .home-products {
 
   .hero-brand-logo {
     top: 17% !important;
-    width: 92px !important;
+    width: 120px !important;
   }
 
   .hero-copy {

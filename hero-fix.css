@@ -1,7 +1,7 @@
 /* Final hero positioning tuned for the boutique redesign. */
 .hero-brand-logo {
   top: 22% !important;
-  width: clamp(116px, 13vw, 150px) !important;
+  width: clamp(210px, 24vw, 290px) !important;
   background: transparent !important;
   border: 0 !important;
   box-shadow: none !important;
@@ -34,14 +34,14 @@
 @media (max-width: 700px) {
   .hero-brand-logo {
     top: 19% !important;
-    width: 110px !important;
+    width: 150px !important;
   }
 }
 
 @media (max-width: 520px) {
   .hero-brand-logo {
     top: 17% !important;
-    width: 92px !important;
+    width: 120px !important;
   }
 
   .home-hero-panel {
