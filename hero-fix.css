@@ -34,10 +34,17 @@
 /* Contact section centering */
 .final .section-label,
 .contact-section .section-label {
-  display: flex !important;
-  justify-content: center !important;
-  text-align: center !important;
+  display: block !important;
   width: 100% !important;
+  text-align: center !important;
+  margin-inline: auto !important;
+  justify-content: center;
+  align-items: center;
+}
+
+.final .reveal,
+.contact-section .reveal {
+  text-align: center !important;
 }
 
 .contact-details-card {
