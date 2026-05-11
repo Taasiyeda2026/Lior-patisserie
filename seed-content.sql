@@ -1,5 +1,7 @@
 -- seed-content.sql — initial content for Lior's Pâtisserie (Supabase / Postgres)
 --
+-- Gallery was removed from the site and admin. No seed data is inserted for gallery_images.
+--
 -- Safe to run on a project that already has edits:
 --   * site_settings: INSERT ... ON CONFLICT (key) DO NOTHING (never overwrites values).
 --   * products, site_features: each row is inserted only if no row exists with the

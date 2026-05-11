@@ -1,10 +1,15 @@
--- Lior's Pâtisserie Supabase schema
--- Run in Supabase SQL Editor.
+-- Lior's Pâtisserie — Supabase schema (site + admin, no gallery)
+-- Run in the Supabase SQL Editor.
 --
--- Existing databases that still have public.gallery_images: run drop-gallery-images.sql
--- once in the SQL Editor to drop the table and dependent objects (CASCADE).
+-- For existing projects that still have public.gallery_images, run cleanup-gallery.sql
+-- once before or after this script (safe to run either order).
+--
+-- Security note: write policies allow any authenticated Supabase Auth user. If you add
+-- more users later, tighten policies (e.g. restrict to admin email or a custom claim).
 
 create extension if not exists "pgcrypto";
+
+-- ── Tables ─────────────────────────────────────────────────────────────────
 
 create table if not exists public.site_settings (
   key text primary key,
@@ -24,8 +29,8 @@ create table if not exists public.products (
   updated_at timestamp with time zone default now()
 );
 
-alter table public.products
-add column if not exists card_image_url text;
+alter table public.products add column if not exists card_image_url text;
+alter table public.products add column if not exists price text;
 
 create table if not exists public.site_features (
   id uuid primary key default gen_random_uuid(),
@@ -36,6 +41,8 @@ create table if not exists public.site_features (
   display_order int default 0,
   updated_at timestamp with time zone default now()
 );
+
+-- ── updated_at trigger helper ───────────────────────────────────────────────
 
 create or replace function public.set_updated_at()
 returns trigger
@@ -62,11 +69,13 @@ create trigger site_features_set_updated_at
 before update on public.site_features
 for each row execute function public.set_updated_at();
 
+-- ── Row Level Security ─────────────────────────────────────────────────────
+
 alter table public.site_settings enable row level security;
 alter table public.products enable row level security;
 alter table public.site_features enable row level security;
 
--- ── Public read (the static site on GitHub Pages) ──────────────────────────
+-- ── Public read (anon + authenticated) ────────────────────────────────────
 
 drop policy if exists "Public read site_settings" on public.site_settings;
 create policy "Public read site_settings"
@@ -74,24 +83,29 @@ on public.site_settings for select
 to anon, authenticated
 using (true);
 
+-- Drop legacy policy names if present
 drop policy if exists "Public read active products" on public.products;
-create policy "Public read active products"
+drop policy if exists "Public read products" on public.products;
+create policy "Public read products"
 on public.products for select
 to anon, authenticated
 using (true);
 
 drop policy if exists "Public read active site_features" on public.site_features;
-create policy "Public read active site_features"
+drop policy if exists "Public read site_features" on public.site_features;
+create policy "Public read site_features"
 on public.site_features for select
 to anon, authenticated
 using (true);
 
--- ── Remove old temporary anon write policies ───────────────────────────────
+-- ── Remove legacy temporary anon write (tables) ────────────────────────────
 
-drop policy if exists "Temporary anon write site_settings"  on public.site_settings;
-drop policy if exists "Temporary anon write products"       on public.products;
-drop policy if exists "Temporary anon write site_features"  on public.site_features;
--- ── Authenticated write policies (admin only) ──────────────────────────────
+drop policy if exists "Temporary anon write site_settings" on public.site_settings;
+drop policy if exists "Temporary anon write products" on public.products;
+drop policy if exists "Temporary anon write site_features" on public.site_features;
+
+-- ── Authenticated write (admin session) ───────────────────────────────────
+-- See security note at top before relying on this in multi-user projects.
 
 drop policy if exists "Authenticated write site_settings" on public.site_settings;
 create policy "Authenticated write site_settings"
@@ -114,24 +128,21 @@ to authenticated
 using (true)
 with check (true);
 
--- ── Storage bucket ─────────────────────────────────────────────────────────
+-- ── Storage: bucket site-images ───────────────────────────────────────────
 
 insert into storage.buckets (id, name, public)
 values ('site-images', 'site-images', true)
 on conflict (id) do update set public = excluded.public;
 
--- Public read for all uploaded images (needed by the public site).
 drop policy if exists "Public read site-images" on storage.objects;
 create policy "Public read site-images"
 on storage.objects for select
 to anon, authenticated
 using (bucket_id = 'site-images');
 
--- Remove old temporary anon storage write policies.
 drop policy if exists "Temporary anon upload site-images" on storage.objects;
 drop policy if exists "Temporary anon update site-images" on storage.objects;
 
--- Authenticated upload / update / delete (admin only).
 drop policy if exists "Authenticated upload site-images" on storage.objects;
 create policy "Authenticated upload site-images"
 on storage.objects for insert
@@ -150,3 +161,7 @@ create policy "Authenticated delete site-images"
 on storage.objects for delete
 to authenticated
 using (bucket_id = 'site-images');
+
+-- ── Remove deprecated gallery table (safe if already absent) ───────────────
+
+drop table if exists public.gallery_images cascade;
