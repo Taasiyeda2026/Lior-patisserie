@@ -4,7 +4,13 @@
   Never place a service role key in client-side code.
 */
 
-/** Normalize repo-relative image refs without doubling `prdimages/`. */
+/**
+ * Normalize repo-relative image refs without doubling `prdimages/`.
+ * - Full URLs (http/https), protocol-relative, and root-absolute paths stay as-is.
+ * - Paths already under prdimages/ stay as-is (after collapsing duplicates).
+ * - Other site-root paths (assets/, images/, attached_assets/) stay as-is.
+ * - Bare filenames and paths like cards/*.webp get a single prdimages/ prefix.
+ */
 window.normalizeImagePath = function normalizeImagePath(value) {
   let path = String(value || "").trim().replace(/\\/g, "/");
   if (!path) return "";
@@ -16,8 +22,21 @@ window.normalizeImagePath = function normalizeImagePath(value) {
   if (/^prdimages\//i.test(path)) {
     return path.replace(/^prdimages\//i, "prdimages/");
   }
+  if (/^(assets|images|attached_assets)\//i.test(path)) return path;
   return `prdimages/${path}`;
 };
+
+/** Shown when a product/gallery image has no working URL (data URI SVG). */
+window.LIOR_IMAGE_PLACEHOLDER =
+  "data:image/svg+xml," +
+  encodeURIComponent(
+    '<svg xmlns="http://www.w3.org/2000/svg" width="800" height="688" viewBox="0 0 800 688">' +
+      '<defs><linearGradient id="p" x1="0" y1="0" x2="1" y2="1">' +
+      '<stop stop-color="#fff9f2"/><stop offset="1" stop-color="#ebe2d6"/></linearGradient></defs>' +
+      '<rect width="100%" height="100%" fill="url(#p)"/>' +
+      '<g opacity="0.22" fill="#c8a96a"><circle cx="400" cy="330" r="7"/><circle cx="424" cy="358" r="4"/></g>' +
+      "</svg>"
+  );
 
 window.LIOR_SUPABASE_CONFIG = {
   SUPABASE_URL: "https://osehkbkeydhpesjlisuk.supabase.co",
