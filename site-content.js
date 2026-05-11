@@ -2,7 +2,8 @@
   const LOCAL_PRODUCT_DIR = "prdimages/";
   const IMAGE_SETTINGS = [
     "hero_image",
-    "hero_logo_image"
+    "hero_logo_image",
+    "handmade_image"
   ];
   const TEXT_SETTINGS = [
     "flavors_title",
