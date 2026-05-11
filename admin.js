@@ -158,6 +158,26 @@ function getAdminPreviewShellRaw(shell) {
   return "";
 }
 
+function syncImageToolState(tools) {
+  if (!tools) return;
+  const hasImage = Boolean(
+    String(tools.querySelector('[data-field="image_url"]')?.value || "").trim() ||
+    String(tools.querySelector('[data-field="card_image_url"]')?.value || "").trim()
+  );
+  tools.classList.toggle("has-managed-image", hasImage);
+  tools.querySelectorAll("[data-remove-product-image]").forEach((btn) => {
+    btn.hidden = !hasImage;
+  });
+}
+
+function showImageToolStatus(tools, message = "", ok = true) {
+  if (!tools) return;
+  const status = tools.querySelector("[data-image-status]");
+  if (!status) return;
+  status.textContent = message;
+  status.className = `admin-image-status${message ? " is-visible" : ""} ${ok ? "ok" : "error"}`;
+}
+
 function syncAdminPreviewShell(shell) {
   if (!shell) return;
   const img = shell.querySelector(".preview");
@@ -166,19 +186,24 @@ function syncAdminPreviewShell(shell) {
 
   const raw = getAdminPreviewShellRaw(shell);
   const url = adminPreviewSrc(raw, { whenEmpty: "" });
+  const tools = shell.closest(".image-tools");
+  syncImageToolState(tools);
 
+  img.loading = img.loading || "lazy";
+  img.decoding = img.decoding || "async";
   img.onload = null;
   img.onerror = null;
 
   if (!url) {
     img.removeAttribute("src");
     img.alt = "";
-    shell.classList.remove("has-image");
+    shell.classList.remove("has-image", "is-loading");
     ph.hidden = false;
     return;
   }
 
   img.onload = function () {
+    shell.classList.remove("is-loading");
     if (img.naturalWidth > 0) {
       shell.classList.add("has-image");
       ph.hidden = true;
@@ -186,25 +211,30 @@ function syncAdminPreviewShell(shell) {
   };
   img.onerror = function () {
     img.removeAttribute("src");
-    shell.classList.remove("has-image");
+    shell.classList.remove("has-image", "is-loading");
     ph.hidden = false;
   };
 
   shell.classList.remove("has-image");
-  ph.hidden = true;
+  shell.classList.add("is-loading");
+  ph.hidden = false;
 
   if (img.getAttribute("src") === url && img.complete && img.naturalWidth > 0) {
+    shell.classList.remove("is-loading");
     shell.classList.add("has-image");
     ph.hidden = true;
     return;
   }
 
-  img.src = url;
+  requestAnimationFrame(() => {
+    img.src = url;
+  });
 }
 
 function initAdminPreviewShells(root) {
   const el = root && root.querySelectorAll ? root : document;
   el.querySelectorAll(".admin-preview-shell").forEach(syncAdminPreviewShell);
+  el.querySelectorAll(".image-tools").forEach(syncImageToolState);
 }
 
 function showNotice(scope, message, ok = true) {
@@ -446,7 +476,7 @@ function hydrateProductGridCards(container) {
       ph.hidden = false;
       return;
     }
-    const raw = String(product.card_image_url || "").trim() || String(product.image_url || "").trim();
+    const raw = String(product.card_image_url || "").trim();
     const url = adminPreviewSrc(raw, { whenEmpty: "" });
     img.onload = null;
     img.onerror = null;
@@ -519,7 +549,6 @@ function openProductDrawer(product) {
 
   title.textContent = heading;
   body.innerHTML = productDrawerFormTemplate(p);
-  initAdminPreviewShells(body);
 
   backdrop.hidden = false;
   drawer.hidden = false;
@@ -529,6 +558,7 @@ function openProductDrawer(product) {
   drawer.setAttribute("aria-hidden", "false");
   document.body.classList.add("has-product-drawer");
 
+  requestAnimationFrame(() => initAdminPreviewShells(body));
   setTimeout(() => body.querySelector('[data-field="name"]')?.focus(), 0);
 }
 
@@ -557,30 +587,36 @@ function productDrawerFormTemplate(product = {}) {
       <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
       <label class="field-label">מחיר (אופציונלי) <input data-field="price" type="text" value="${escapeHtml(priceVal)}" placeholder="למשל 28 או ₪28"></label>
       <label class="field-label wide">תיאור <textarea data-field="description" rows="4">${escapeHtml(product.description || "")}</textarea></label>
-      <label class="field-label wide">תמונה מלאה
-        <div class="image-tools product-drawer-image-tools">
-          <div class="admin-preview-shell" data-preview-field="image_url">
-            <img class="preview" alt="">
+      <div class="field-label wide product-image-manager">
+        <span class="field-title">תמונת מוצר</span>
+        <div class="image-tools product-drawer-image-tools admin-simple-image-tools">
+          <div class="admin-preview-shell" data-preview-field="card_image_url">
+            <img class="preview" alt="תמונה נוכחית" loading="lazy" decoding="async">
             <span class="admin-preview-placeholder">אין תמונה</span>
           </div>
-          <div>
-            <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה מלאה או העלאה">
-            <input data-product-upload data-folder="products" data-max-width="1280" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+          <div class="admin-image-controls">
+            <div class="admin-image-actions">
+              <label class="admin-button secondary admin-file-button">החלפת תמונה
+                <input data-product-upload data-folder="products" data-max-width="1280" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+              </label>
+              <button class="admin-button muted admin-remove-image" type="button" data-remove-product-image hidden>הסרת תמונה</button>
+            </div>
+            <div class="admin-image-status" data-image-status aria-live="polite"></div>
+            <details class="admin-image-advanced">
+              <summary>אפשרויות מתקדמות</summary>
+              <label class="field-label">כתובת תמונה מלאה
+                <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה מלאה">
+              </label>
+              <label class="field-label">כתובת תמונת כרטיס
+                <input data-field="card_image_url" value="${escapeHtml(product.card_image_url || "")}" placeholder="כתובת תמונת כרטיס">
+              </label>
+              <label class="field-label">העלאת תמונת כרטיס בלבד
+                <input data-product-card-upload data-folder="products" data-max-width="768" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+              </label>
+            </details>
           </div>
         </div>
-      </label>
-      <label class="field-label wide">תמונת כרטיס
-        <div class="image-tools product-drawer-image-tools">
-          <div class="admin-preview-shell" data-preview-field="card_image_url" data-preview-fallback-field="image_url">
-            <img class="preview" alt="">
-            <span class="admin-preview-placeholder">אין תמונה</span>
-          </div>
-          <div>
-            <input data-field="card_image_url" value="${escapeHtml(product.card_image_url || "")}" placeholder="כתובת תמונה או העלאה">
-            <input data-product-card-upload data-folder="products" data-max-width="768" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
-          </div>
-        </div>
-      </label>
+      </div>
     </div>
     <div class="product-drawer-actions">
       <button class="admin-button" type="button" data-save-product-drawer>שמירת מוצר</button>
@@ -904,6 +940,15 @@ function setupEvents() {
         }
       }
     }
+    if (event.target.matches("[data-remove-product-image]")) {
+      const tools = event.target.closest(".image-tools");
+      tools?.querySelectorAll('[data-field="image_url"], [data-field="card_image_url"]').forEach((input) => {
+        input.value = "";
+      });
+      const shell = tools?.querySelector(".admin-preview-shell");
+      if (shell) syncAdminPreviewShell(shell);
+      showImageToolStatus(tools, "התמונה הוסרה. לחצו שמירה לעדכון באתר.", true);
+    }
     if (event.target.matches("[data-save-feature]")) {
       try { await saveFeature(event.target.closest(".feature-row")); } catch (error) { showNotice("features", error.message, false); }
     }
@@ -936,6 +981,8 @@ function setupEvents() {
     const settingKey = fileInput.dataset.upload;
     const settingImg = settingKey ? document.querySelector(`[data-preview="${settingKey}"]`) : null;
     const settingShell = settingImg?.closest(".admin-preview-shell");
+
+    showImageToolStatus(tools, "מעלה תמונה...", true);
 
     const blobUrl = URL.createObjectURL(file);
     const previewImg = shellFromRow?.querySelector(".preview") || settingImg;
@@ -975,13 +1022,16 @@ function setupEvents() {
         const form = fileInput.closest("#productDrawerForm");
         const cardField = form?.querySelector('[data-field="card_image_url"]');
         const cardShell = form?.querySelector('.admin-preview-shell[data-preview-field="card_image_url"]');
-        if (cardField && !String(cardField.value || "").trim()) {
+        if (cardField) {
           cardField.value = String(cardUrlExtra).trim();
           if (cardShell) syncAdminPreviewShell(cardShell);
         }
       }
 
-      if (shellFromRow) syncAdminPreviewShell(shellFromRow);
+      if (shellFromRow) {
+        syncAdminPreviewShell(shellFromRow);
+        showImageToolStatus(tools, "התמונה עודכנה בהצלחה", true);
+      }
       else if (settingShell) syncAdminPreviewShell(settingShell);
       else if (settingImg && url) {
         settingImg.src = String(url).trim();
@@ -994,6 +1044,7 @@ function setupEvents() {
       });
     } catch (error) {
       showUploadMessage(error.message || "העלאת התמונה נכשלה", false);
+      showImageToolStatus(tools, error.message || "העלאת התמונה נכשלה", false);
       if (shellFromRow) syncAdminPreviewShell(shellFromRow);
       else if (settingShell) syncAdminPreviewShell(settingShell);
     }

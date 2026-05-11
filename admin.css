@@ -1653,3 +1653,171 @@ textarea {
     border-radius: 16px;
   }
 }
+
+/* ── Simple, fast product image management ── */
+.product-image-manager {
+  display: block;
+}
+
+.field-title {
+  display: inline-block;
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: var(--espresso);
+}
+
+.product-drawer-image-tools.admin-simple-image-tools {
+  display: grid !important;
+  grid-template-columns: 140px minmax(0, 1fr) !important;
+  align-items: center;
+  gap: 12px;
+  padding: 10px;
+  border-radius: 12px;
+  background: rgba(255, 249, 242, 0.72);
+  border: 1px solid rgba(200, 194, 184, 0.42);
+}
+
+.product-drawer .admin-simple-image-tools .admin-preview-shell,
+.product-drawer .admin-simple-image-tools .admin-preview-shell.has-image .preview,
+.product-drawer .admin-simple-image-tools .preview {
+  width: 140px !important;
+  max-width: 140px !important;
+  height: 100px !important;
+  min-height: 100px !important;
+  max-height: 100px !important;
+  border-radius: 10px;
+}
+
+.product-drawer .admin-simple-image-tools .admin-preview-shell {
+  background:
+    linear-gradient(135deg, rgba(199, 178, 214, 0.16), rgba(200, 169, 106, 0.10)),
+    rgba(255, 249, 242, 0.8);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.52);
+}
+
+.product-drawer .admin-simple-image-tools .admin-preview-shell.is-loading::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.42), transparent);
+  transform: translateX(-100%);
+  animation: admin-image-skeleton 1.1s ease-in-out infinite;
+}
+
+@keyframes admin-image-skeleton {
+  to { transform: translateX(100%); }
+}
+
+.admin-image-controls {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+}
+
+.admin-image-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.admin-file-button {
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+  margin: 0;
+}
+
+.admin-file-button input[type="file"] {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  cursor: pointer;
+}
+
+.admin-remove-image[hidden] {
+  display: none !important;
+}
+
+.admin-image-status {
+  min-height: 18px;
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+.admin-image-status.is-visible.ok {
+  color: #427a55;
+}
+
+.admin-image-status.is-visible.error {
+  color: #9a3d3d;
+}
+
+.admin-image-advanced {
+  margin-top: 2px;
+  border: 0;
+}
+
+.admin-image-advanced summary {
+  width: max-content;
+  cursor: pointer;
+  color: rgba(90, 57, 103, 0.76);
+  font-size: 0.74rem;
+  font-weight: 600;
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+}
+
+.admin-image-advanced[open] {
+  display: grid;
+  gap: 8px;
+  margin-top: 6px;
+  padding-top: 8px;
+  border-top: 1px solid rgba(200, 194, 184, 0.32);
+}
+
+.admin-image-advanced .field-label {
+  gap: 4px;
+  font-size: 0.74rem;
+  color: rgba(74, 62, 58, 0.72);
+}
+
+.admin-image-advanced input[data-field] {
+  direction: ltr;
+  text-align: left;
+  font-size: 0.78rem;
+}
+
+#featuresAdmin {
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+}
+
+@media (max-width: 700px) {
+  .product-drawer-image-tools.admin-simple-image-tools {
+    grid-template-columns: 120px minmax(0, 1fr) !important;
+  }
+
+  .product-drawer .admin-simple-image-tools .admin-preview-shell,
+  .product-drawer .admin-simple-image-tools .admin-preview-shell.has-image .preview,
+  .product-drawer .admin-simple-image-tools .preview {
+    width: 120px !important;
+    max-width: 120px !important;
+    height: 90px !important;
+    min-height: 90px !important;
+    max-height: 90px !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .product-drawer-image-tools.admin-simple-image-tools {
+    grid-template-columns: 1fr !important;
+  }
+
+  #featuresAdmin {
+    grid-template-columns: 1fr !important;
+  }
+}
