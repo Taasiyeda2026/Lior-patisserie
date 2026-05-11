@@ -29,23 +29,23 @@
       </div>
     </header>
 
-    <section id="loginCard" class="login-card editor-card">
-      <div class="section-heading">
-        <span class="section-number">כניסה</span>
-        <div>
-          <h2>התחברות לאדמין</h2>
+    <section id="loginCard" class="login-card editor-card admin-login-card">
+      <div class="admin-login-panel">
+        <header class="admin-login-heading">
+          <span class="admin-login-eyebrow">כניסה</span>
+          <h2 class="admin-login-title">התחברות לאדמין</h2>
+        </header>
+        <div class="login-form admin-login-form">
+          <label class="field-label">שם משתמש
+            <input id="adminUsername" type="text" autocomplete="username" placeholder="שם משתמש">
+          </label>
+          <label class="field-label">סיסמה
+            <input id="adminPassword" type="password" autocomplete="current-password" placeholder="••••••••">
+          </label>
+          <button id="loginButton" class="admin-button admin-login-submit" type="button">כניסה לניהול</button>
+          <div id="loginNotice" class="notice error admin-login-notice" role="alert" aria-live="polite"></div>
         </div>
       </div>
-      <div class="login-form">
-        <label class="field-label">שם משתמש
-          <input id="adminUsername" type="text" autocomplete="username" placeholder="שם משתמש">
-        </label>
-        <label class="field-label">סיסמה
-          <input id="adminPassword" type="password" autocomplete="current-password" placeholder="••••••••">
-        </label>
-        <button id="loginButton" class="admin-button" type="button">כניסה לניהול</button>
-      </div>
-      <div id="loginNotice" class="notice error"></div>
     </section>
 
     <section id="adminApp" class="hidden">

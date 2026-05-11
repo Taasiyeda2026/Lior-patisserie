@@ -224,7 +224,7 @@ function showUploadMessage(message, ok = false) {
   const loginNotice = document.getElementById("loginNotice");
   if (loginNotice) {
     loginNotice.textContent = message;
-    loginNotice.className = `notice is-visible ${ok ? "ok" : "error"}`;
+    loginNotice.className = `notice admin-login-notice is-visible ${ok ? "ok" : "error"}`;
   }
 }
 
@@ -232,7 +232,7 @@ function showLoginError(message) {
   const notice = document.getElementById("loginNotice");
   if (!notice) return;
   notice.textContent = message;
-  notice.className = "notice is-visible error";
+  notice.className = "notice admin-login-notice is-visible error";
 }
 
 function showAdminApp() {
@@ -246,7 +246,7 @@ function showLoginScreen() {
   const logoutBtn = document.getElementById("logoutButton");
   if (logoutBtn) logoutBtn.classList.add("hidden");
   const notice = document.getElementById("loginNotice");
-  if (notice) notice.className = "notice error";
+  if (notice) notice.className = "notice admin-login-notice error";
 }
 
 function cleanFileName(name) {
@@ -787,7 +787,7 @@ function setupEvents() {
       const notice = document.getElementById("loginNotice");
       if (notice) {
         notice.textContent = "";
-        notice.className = "notice";
+        notice.className = "notice admin-login-notice";
       }
       showLoginScreen();
     });
