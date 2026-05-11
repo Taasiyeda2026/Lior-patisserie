@@ -1100,11 +1100,12 @@
       object-fit: cover;
       object-position: center center;
       cursor: pointer;
-      transition: transform 0.75s ease;
+      transform: none;
+      transition: none;
     }
 
     .product-card:hover .product-image img {
-      transform: scale(1.045);
+      transform: none;
     }
 
     .product-body {
