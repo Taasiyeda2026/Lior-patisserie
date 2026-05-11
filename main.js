@@ -71,14 +71,19 @@ ${productLine}
       return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
     }
 
-    /** General inquiry from the contact section (no cart / no product line). */
-    function buildGeneralWhatsAppUrl() {
-      const message = `שלום ליאור, אשמח להתייעץ לגבי הזמנה מ־Lior’s Pâtisserie.
-
-שם:
-טלפון:
-פרטים / שאלה:`;
-      return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
+    /** General inquiry from the contact section — reads live form fields when available. */
+    function buildGeneralWhatsAppUrl({ name = "", phone = "", notes = "" } = {}) {
+      const nameLine  = name  ? `שם: ${name}`            : "שם:";
+      const phoneLine = phone ? `טלפון: ${phone}`         : "טלפון:";
+      const notesLine = notes ? `פרטים / שאלה: ${notes}` : "פרטים / שאלה:";
+      const msg = [
+        `שלום ליאור, אשמח להתייעץ לגבי הזמנה מדַLior’s Pâtisserie.`,
+        "",
+        nameLine,
+        phoneLine,
+        notesLine,
+      ].join("\n");
+      return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(msg)}`;
     }
 
     function imagePath(name) {
@@ -349,7 +354,28 @@ ${productLine}
         const link = event.target.closest("a[data-contact-whatsapp]");
         if (!link) return;
         event.preventDefault();
-        const url = buildGeneralWhatsAppUrl();
+
+        const nameEl  = document.getElementById("contactName");
+        const phoneEl = document.getElementById("contactPhone");
+        const notesEl = document.getElementById("contactNotes");
+        const errorEl = document.getElementById("contactError");
+
+        const name  = nameEl  ? nameEl.value.trim()  : "";
+        const phone = phoneEl ? phoneEl.value.trim()  : "";
+        const notes = notesEl ? notesEl.value.trim()  : "";
+
+        const missing = !name || !phone;
+        if (errorEl) {
+          errorEl.classList.toggle("is-visible", missing);
+          errorEl.setAttribute("aria-hidden", String(!missing));
+        }
+        if (missing) {
+          if (!name  && nameEl)  nameEl.focus();
+          else if (!phone && phoneEl) phoneEl.focus();
+          return;
+        }
+
+        const url = buildGeneralWhatsAppUrl({ name, phone, notes });
         if (!url) return;
         window.open(url, "_blank", "noopener,noreferrer");
       });
