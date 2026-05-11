@@ -1086,8 +1086,13 @@ ${productLine}
         panel.classList.toggle("is-open", open);
         btn.setAttribute("aria-expanded", open ? "true" : "false");
         panel.setAttribute("aria-hidden", open ? "false" : "true");
-        if (open) panel.removeAttribute("inert");
-        else panel.setAttribute("inert", "");
+        if (open) {
+          panel.removeAttribute("hidden");
+          panel.removeAttribute("inert");
+        } else {
+          panel.setAttribute("hidden", "");
+          panel.setAttribute("inert", "");
+        }
       }
 
       btn.addEventListener("click", (event) => {

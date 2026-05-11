@@ -235,7 +235,9 @@
   }
 
   function remapLegacyCardFilename(path) {
-    return String(path || "").trim().replace(/A(\d+)-card\.webp$/i, "A$1.webp");
+    return String(path || "")
+      .trim()
+      .replace(/A(\d+)-card\.webp/gi, "A$1.webp");
   }
 
   function productCardImageValue(product) {
@@ -357,21 +359,18 @@
     grid.dataset.productsSignature = nextSignature;
 
     grid.querySelectorAll(".product-image img").forEach((img) => {
-      const initialSrc = img.getAttribute("src") || "";
-      const fullFallback = img.dataset.fullImage || "";
-      if (!fullFallback || !/^https?:\/\//i.test(initialSrc)) return;
-      img.onload = function () {
+      const dataCard = (img.getAttribute("data-product-image") || "").trim();
+      const srcAttr = (img.getAttribute("src") || "").trim();
+      const primary =
+        dataCard || (/^https?:\/\//i.test(srcAttr) || srcAttr.startsWith("//") ? srcAttr : "");
+      const fullFb = (img.dataset.fullImage || "").trim();
+      const seed = primary || fullFb;
+      if (typeof window.setImageWithFallback === "function" && seed) {
+        window.setImageWithFallback(img, seed);
+      } else if (window.LIOR_IMAGE_PLACEHOLDER) {
+        img.src = window.LIOR_IMAGE_PLACEHOLDER;
         img.classList.add("is-loaded");
-      };
-      img.onerror = function () {
-        img.onerror = null;
-        if (typeof window.setImageWithFallback === "function") {
-          window.setImageWithFallback(img, fullFallback);
-        } else if (window.LIOR_IMAGE_PLACEHOLDER) {
-          img.src = window.LIOR_IMAGE_PLACEHOLDER;
-          img.classList.add("is-loaded");
-        }
-      };
+      }
     });
 
     refreshDynamicBehaviors();

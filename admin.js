@@ -104,9 +104,11 @@ function client() {
   return supabaseClient;
 }
 
-/** Same legacy rule as site-content: *-card.webp → *.webp under cards/. */
+/** Same legacy rule as site-content: *-card.webp → *.webp (any path segment). */
 function remapLegacyAdminImagePath(path) {
-  return String(path || "").trim().replace(/A(\d+)-card\.webp$/i, "A$1.webp");
+  return String(path || "")
+    .trim()
+    .replace(/A(\d+)-card\.webp/gi, "A$1.webp");
 }
 
 /** Resolve admin/public display URL (https, /, prdimages/, assets/, bare filename → prdimages/). */
