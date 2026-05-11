@@ -71,29 +71,34 @@ ${productLine}
       return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
     }
 
-    function isExternalImagePath(name) {
-      return /^https?:\/\//i.test(name) || String(name || "").startsWith("/");
-    }
-
     function imagePath(name) {
-      return isExternalImagePath(name) ? name : `prdimages/${name}`;
+      return typeof window.normalizeImagePath === "function"
+        ? window.normalizeImagePath(name)
+        : (function fallbackNormalize(v) {
+          const path = String(v || "").trim();
+          if (!path) return "";
+          if (/^https?:\/\//i.test(path) || path.startsWith("/")) return path;
+          if (path.startsWith("prdimages/")) return path;
+          return `prdimages/${path}`;
+        })(name);
     }
 
     function setImageWithFallback(img, name) {
-      const hasExtension = /\.[a-zA-Z0-9]+$/.test(name);
+      const base = imagePath(name);
+      const hasExtension = /\.[a-zA-Z0-9]+$/.test(base);
       const fullImageName = img.dataset.fullImage || "";
 
       const options = hasExtension
-        ? [imagePath(name)]
+        ? [base]
         : [
-            `${imagePath(name)}.webp`,
-            `${imagePath(name)}.jpg`,
-            `${imagePath(name)}.jpeg`,
-            `${imagePath(name)}.png`,
-            `${imagePath(name)}.JPG`,
-            `${imagePath(name)}.JPEG`,
-            `${imagePath(name)}.PNG`,
-            `${imagePath(name)}.WEBP`
+            `${base}.webp`,
+            `${base}.jpg`,
+            `${base}.jpeg`,
+            `${base}.png`,
+            `${base}.JPG`,
+            `${base}.JPEG`,
+            `${base}.PNG`,
+            `${base}.WEBP`
           ];
 
       if (fullImageName && fullImageName !== name) {
@@ -418,13 +423,14 @@ ${productLine}
             <button class="order-cart-btn" type="button" data-cart-decrease="${escapeHtml(item.name)}" aria-label="הפחתת כמות ${escapeHtml(item.name)}">−</button>
             <span class="order-cart-qty" aria-label="כמות">${item.quantity}</span>
             <button class="order-cart-btn" type="button" data-cart-increase="${escapeHtml(item.name)}" aria-label="הגדלת כמות ${escapeHtml(item.name)}">+</button>
-            <button class="order-cart-remove" type="button" data-cart-remove="${escapeHtml(item.name)}">הסרה</button>
+            <button class="order-cart-remove" type="button" data-cart-remove="${escapeHtml(item.name)}" aria-label="הסרת ${escapeHtml(item.name)} מהסל">הסרה</button>
           </div>
         </div>
       `).join("");
     }
 
     function showOrderStep(step) {
+      setOrderErrorVisible(false);
       const cartStep = document.getElementById("orderCartStep");
       const detailsStep = document.getElementById("orderForm");
       const title = document.getElementById("orderModalTitle");
@@ -488,8 +494,11 @@ ${productLine}
     }
 
     let modalOpener = null;
+    let lightboxOpener = null;
 
     function trapModalFocus(event) {
+      const lightbox = document.getElementById("imageLightbox");
+      if (lightbox && lightbox.classList.contains("is-open")) return;
       const modal = document.getElementById("orderModal");
       if (!modal || modal.getAttribute("aria-hidden") === "true") return;
       const card = modal.querySelector(".order-modal-card");
@@ -507,24 +516,41 @@ ${productLine}
       }
     }
 
+    function setOrderErrorVisible(visible) {
+      const error = document.getElementById("orderError");
+      if (!error) return;
+      if (visible) {
+        error.classList.add("is-visible");
+        error.setAttribute("aria-hidden", "false");
+      } else {
+        error.classList.remove("is-visible");
+        error.setAttribute("aria-hidden", "true");
+      }
+    }
+
     function openOrderModal() {
       const modal = document.getElementById("orderModal");
       const error = document.getElementById("orderError");
 
       if (!modal) return;
 
-      modalOpener = document.activeElement || null;
+      if (!modalOpener) {
+        modalOpener = document.activeElement && document.activeElement !== document.body
+          ? document.activeElement
+          : null;
+      }
 
       renderOrderCart();
       showOrderStep("cart");
 
-      if (error) {
-        error.classList.remove("is-visible");
-      }
+      setOrderErrorVisible(false);
 
       modal.classList.add("is-open");
       modal.setAttribute("aria-hidden", "false");
       document.body.classList.add("has-modal");
+
+      const floatingCart = document.getElementById("floatingCart");
+      if (floatingCart) floatingCart.setAttribute("aria-expanded", "true");
 
       setTimeout(() => {
         const firstAction = orderCart.length
@@ -541,6 +567,11 @@ ${productLine}
       modal.classList.remove("is-open");
       modal.setAttribute("aria-hidden", "true");
       document.body.classList.remove("has-modal");
+
+      const floatingCart = document.getElementById("floatingCart");
+      if (floatingCart) floatingCart.setAttribute("aria-expanded", "false");
+
+      setOrderErrorVisible(false);
 
       if (modalOpener && typeof modalOpener.focus === "function") {
         modalOpener.focus();
@@ -585,7 +616,6 @@ ${productLine}
       const modal = document.getElementById("orderModal");
       const closeBtn = document.getElementById("orderModalClose");
       const form = document.getElementById("orderForm");
-      const error = document.getElementById("orderError");
       const cartList = document.getElementById("orderCartList");
       const clearCartButton = document.getElementById("clearCartButton");
       const continueButton = document.getElementById("orderContinueButton");
@@ -598,6 +628,7 @@ ${productLine}
         const button = event.target.closest("[data-order]");
         if (!button) return;
         event.preventDefault();
+        modalOpener = button;
         openOrderModal();
       });
       window.openOrderModal = openOrderModal;
@@ -664,7 +695,14 @@ ${productLine}
 
       document.addEventListener("keydown", (event) => {
         if (event.key === "Escape") {
+          const lightbox = document.getElementById("imageLightbox");
+          if (lightbox && lightbox.classList.contains("is-open")) {
+            closeImageLightbox();
+            event.preventDefault();
+            return;
+          }
           closeOrderModal();
+          return;
         }
         if (event.key === "Tab") {
           trapModalFocus(event);
@@ -688,11 +726,11 @@ ${productLine}
           const isValid = data.name && data.phone && data.products;
 
           if (!isValid) {
-            if (error) error.classList.add("is-visible");
+            setOrderErrorVisible(true);
             return;
           }
 
-          if (error) error.classList.remove("is-visible");
+          setOrderErrorVisible(false);
 
           const url = buildOrderWhatsAppUrl(data);
           window.open(url, "_blank", "noopener,noreferrer");
@@ -806,14 +844,22 @@ ${productLine}
     function openImageLightbox(src, alt = "") {
       const lightbox = document.getElementById("imageLightbox");
       const image = document.getElementById("imageLightboxImg");
+      const closeBtn = document.getElementById("imageLightboxClose");
 
       if (!lightbox || !image) return;
+
+      lightboxOpener = document.activeElement && document.activeElement !== document.body
+        ? document.activeElement
+        : null;
 
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.classList.add("has-lightbox");
       image.src = src;
-      image.alt = alt;
+      image.alt = alt || "תמונה מהאתר";
+      requestAnimationFrame(() => {
+        if (closeBtn && typeof closeBtn.focus === "function") closeBtn.focus();
+      });
     }
 
     function closeImageLightbox() {
@@ -827,26 +873,43 @@ ${productLine}
       document.body.classList.remove("has-lightbox");
       image.src = "";
       image.alt = "";
+      if (lightboxOpener && typeof lightboxOpener.focus === "function") {
+        lightboxOpener.focus();
+      }
+      lightboxOpener = null;
     }
 
     function setupImageLightbox() {
       const lightbox = document.getElementById("imageLightbox");
       const closeBtn = document.getElementById("imageLightboxClose");
-      const lightboxImg = document.getElementById("imageLightboxImg");
 
-      document.querySelectorAll(".product-image img").forEach((img) => {
-        img.addEventListener("click", () => {
-          const fullName = img.dataset.fullImage;
-          const src = fullName ? imagePath(fullName) : (img.currentSrc || img.src);
-          openImageLightbox(src, img.alt || "");
+      if (!window.__liorLightboxDelegated) {
+        window.__liorLightboxDelegated = true;
+        document.addEventListener("click", (event) => {
+          const productImg = event.target.closest(".product-image img");
+          if (productImg) {
+            const fullName = productImg.dataset.fullImage;
+            const src = fullName ? imagePath(fullName) : (productImg.currentSrc || productImg.src);
+            openImageLightbox(src, productImg.alt || "");
+            return;
+          }
+          const galleryThumb = event.target.closest(".gallery-thumb[data-lightbox-src]");
+          if (galleryThumb) {
+            const src = galleryThumb.dataset.lightboxSrc || "";
+            if (!src) return;
+            const img = galleryThumb.querySelector("img");
+            openImageLightbox(src, (img && img.alt) || galleryThumb.getAttribute("aria-label") || "");
+          }
         });
-      });
+      }
 
-      if (closeBtn) {
+      if (closeBtn && !closeBtn.dataset.liorLightboxCloseBound) {
+        closeBtn.dataset.liorLightboxCloseBound = "true";
         closeBtn.addEventListener("click", closeImageLightbox);
       }
 
-      if (lightbox) {
+      if (lightbox && !lightbox.dataset.liorLightboxBackdropBound) {
+        lightbox.dataset.liorLightboxBackdropBound = "true";
         lightbox.addEventListener("click", (event) => {
           if (event.target === lightbox) {
             closeImageLightbox();
@@ -854,11 +917,6 @@ ${productLine}
         });
       }
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          closeImageLightbox();
-        }
-      });
     }
 
 
@@ -894,13 +952,9 @@ ${productLine}
     document.addEventListener("DOMContentLoaded", () => {
 
     function setupNavDots() {
-      const sections = Array.from(document.querySelectorAll("main > section"));
-      const dots = Array.from(document.querySelectorAll(".nav-dot"));
-
-      if (!sections.length || !dots.length) return;
-
-      dots.forEach((dot) => {
+      document.querySelectorAll(".nav-dot").forEach((dot) => {
         dot.addEventListener("click", () => {
+          if (dot.hidden) return;
           const target = dot.dataset.target;
           const el = document.querySelector(target);
           if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -908,23 +962,37 @@ ${productLine}
       });
 
       function updateActive() {
+        const sections = Array.from(document.querySelectorAll("main > section:not([hidden])"));
+        const dots = Array.from(document.querySelectorAll(".nav-dot:not([hidden])"));
+        if (!sections.length || !dots.length) return;
+
         const mid = window.scrollY + window.innerHeight * 0.45;
         let activeIndex = 0;
         sections.forEach((section, i) => {
           if (section.offsetTop <= mid) activeIndex = i;
         });
         dots.forEach((dot, i) => {
-          dot.classList.toggle("is-active", i === activeIndex);
+          const active = i === activeIndex;
+          dot.classList.toggle("is-active", active);
+          if (active) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
         });
       }
 
+      window.__liorRefreshSectionNav = updateActive;
       window.addEventListener("scroll", updateActive, { passive: true });
       updateActive();
     }
 
       setupHeroUnlock();
       renderSignatureProducts();
-      renderProducts();
+      window.__liorRenderStaticProductsFallback = function renderStaticProductsFallback() {
+        renderProducts();
+      };
+      const supabaseClientReady = typeof window.getLiorSupabaseClient === "function" && window.getLiorSupabaseClient();
+      if (!supabaseClientReady) {
+        renderProducts();
+      }
       setupImages();
       setupWhatsappLinks();
       setupSectionUnlockAnimations();
