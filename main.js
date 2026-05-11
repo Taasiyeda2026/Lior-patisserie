@@ -419,6 +419,17 @@ ${productLine}
       badge.hidden = total === 0;
     }
 
+    function setOrderModalCartHeaders() {
+      const title = document.getElementById("orderModalTitle");
+      const subtitle = document.getElementById("orderModalSubtitle");
+      if (!title || !subtitle) return;
+      title.textContent = "סל ההזמנה שלך";
+      subtitle.textContent =
+        orderCart.length === 0
+          ? "עדיין לא בחרתם טעמים. חזרו לקולקציה, בחרו טעם שאהבתם והוא יתווסף לכאן."
+          : "בדקו את הטעמים שבחרתם, ואז המשיכו לפרטי ההזמנה.";
+    }
+
     function renderOrderCart() {
       const cartWrap = document.getElementById("orderCartWrap");
       const cartList = document.getElementById("orderCartList");
@@ -470,6 +481,12 @@ ${productLine}
           </div>
         </div>
       `).join("");
+
+      const modal = document.getElementById("orderModal");
+      const detailsStep = document.getElementById("orderForm");
+      if (modal && modal.classList.contains("is-open") && detailsStep && detailsStep.hidden) {
+        setOrderModalCartHeaders();
+      }
     }
 
     function showOrderStep(step) {
@@ -483,14 +500,13 @@ ${productLine}
       if (cartStep) cartStep.hidden = showDetails;
       if (detailsStep) detailsStep.hidden = !showDetails;
 
-      if (title) {
-        title.textContent = showDetails ? "פרטי ההזמנה" : "סל ההזמנה שלך";
-      }
-
-      if (subtitle) {
-        subtitle.textContent = showDetails
-          ? "מלאו כמה פרטים קצרים וההזמנה תישלח לליאור ב־WhatsApp."
-          : "בדקו את הטעמים שבחרתם, ואז המשיכו לפרטי ההזמנה.";
+      if (showDetails) {
+        if (title) title.textContent = "פרטי ההזמנה";
+        if (subtitle) {
+          subtitle.textContent = "מלאו כמה פרטים קצרים וההזמנה תישלח לליאור ב־WhatsApp.";
+        }
+      } else {
+        setOrderModalCartHeaders();
       }
     }
 
