@@ -419,6 +419,17 @@ ${productLine}
       badge.hidden = total === 0;
     }
 
+    function setOrderModalCartHeaders() {
+      const title = document.getElementById("orderModalTitle");
+      const subtitle = document.getElementById("orderModalSubtitle");
+      if (!title || !subtitle) return;
+      title.textContent = "סל ההזמנה שלך";
+      subtitle.textContent =
+        orderCart.length === 0
+          ? "עדיין לא בחרתם טעמים. חזרו לקולקציה, בחרו טעם שאהבתם והוא יתווסף לכאן."
+          : "בדקו את הטעמים שבחרתם, ואז המשיכו לפרטי ההזמנה.";
+    }
+
     function renderOrderCart() {
       const cartWrap = document.getElementById("orderCartWrap");
       const cartList = document.getElementById("orderCartList");
@@ -470,6 +481,12 @@ ${productLine}
           </div>
         </div>
       `).join("");
+
+      const modal = document.getElementById("orderModal");
+      const detailsStep = document.getElementById("orderForm");
+      if (modal && modal.classList.contains("is-open") && detailsStep && detailsStep.hidden) {
+        setOrderModalCartHeaders();
+      }
     }
 
     function showOrderStep(step) {
@@ -483,14 +500,13 @@ ${productLine}
       if (cartStep) cartStep.hidden = showDetails;
       if (detailsStep) detailsStep.hidden = !showDetails;
 
-      if (title) {
-        title.textContent = showDetails ? "פרטי ההזמנה" : "סל ההזמנה שלך";
-      }
-
-      if (subtitle) {
-        subtitle.textContent = showDetails
-          ? "מלאו כמה פרטים קצרים וההזמנה תישלח לליאור ב־WhatsApp."
-          : "בדקו את הטעמים שבחרתם, ואז המשיכו לפרטי ההזמנה.";
+      if (showDetails) {
+        if (title) title.textContent = "פרטי ההזמנה";
+        if (subtitle) {
+          subtitle.textContent = "מלאו כמה פרטים קצרים וההזמנה תישלח לליאור ב־WhatsApp.";
+        }
+      } else {
+        setOrderModalCartHeaders();
       }
     }
 
@@ -888,34 +904,79 @@ ${productLine}
       const lightbox = document.getElementById("imageLightbox");
       const image = document.getElementById("imageLightboxImg");
       const closeBtn = document.getElementById("imageLightboxClose");
+      const statusEl = document.getElementById("imageLightboxStatus");
 
       if (!lightbox || !image) return;
+      const url = String(src || "").trim();
+      if (!url) return;
 
       lightboxOpener = document.activeElement && document.activeElement !== document.body
         ? document.activeElement
         : null;
 
+      image.onload = null;
+      image.onerror = null;
+      if (statusEl) {
+        statusEl.hidden = true;
+        statusEl.textContent = "";
+      }
+      lightbox.classList.remove("is-error");
+      lightbox.classList.add("is-loading");
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.classList.add("has-lightbox");
-      image.src = src;
       image.alt = alt || "תמונה מהאתר";
+      image.classList.remove("is-loaded");
+
+      image.onload = function () {
+        lightbox.classList.remove("is-loading");
+        image.classList.add("is-loaded");
+      };
+      image.onerror = function () {
+        lightbox.classList.remove("is-loading");
+        lightbox.classList.add("is-error");
+        image.removeAttribute("src");
+        if (statusEl) {
+          statusEl.textContent = "התמונה לא זמינה כרגע";
+          statusEl.hidden = false;
+        }
+      };
+
+      image.src = url;
+
       requestAnimationFrame(() => {
         if (closeBtn && typeof closeBtn.focus === "function") closeBtn.focus();
+        if (image.complete && image.naturalWidth) {
+          lightbox.classList.remove("is-loading");
+          image.classList.add("is-loaded");
+        }
       });
     }
 
     function closeImageLightbox() {
       const lightbox = document.getElementById("imageLightbox");
       const image = document.getElementById("imageLightboxImg");
+      const statusEl = document.getElementById("imageLightboxStatus");
 
       if (!lightbox || !image) return;
 
-      lightbox.classList.remove("is-open");
+      image.onload = null;
+      image.onerror = null;
+
+      lightbox.classList.remove("is-open", "is-loading", "is-error");
       lightbox.setAttribute("aria-hidden", "true");
       document.body.classList.remove("has-lightbox");
-      image.src = "";
-      image.alt = "";
+      if (statusEl) {
+        statusEl.hidden = true;
+        statusEl.textContent = "";
+      }
+
+      requestAnimationFrame(() => {
+        image.removeAttribute("src");
+        image.alt = "";
+        image.classList.remove("is-loaded");
+      });
+
       if (lightboxOpener && typeof lightboxOpener.focus === "function") {
         lightboxOpener.focus();
       }
@@ -923,8 +984,12 @@ ${productLine}
     }
 
     function setupImageLightbox() {
+      if (window.__liorImageLightboxInitialized) return;
+
       const lightbox = document.getElementById("imageLightbox");
       const closeBtn = document.getElementById("imageLightboxClose");
+      const image = document.getElementById("imageLightboxImg");
+      if (!lightbox || !closeBtn || !image) return;
 
       if (!window.__liorLightboxDelegated) {
         window.__liorLightboxDelegated = true;
@@ -938,12 +1003,12 @@ ${productLine}
         });
       }
 
-      if (closeBtn && !closeBtn.dataset.liorLightboxCloseBound) {
+      if (!closeBtn.dataset.liorLightboxCloseBound) {
         closeBtn.dataset.liorLightboxCloseBound = "true";
         closeBtn.addEventListener("click", closeImageLightbox);
       }
 
-      if (lightbox && !lightbox.dataset.liorLightboxBackdropBound) {
+      if (!lightbox.dataset.liorLightboxBackdropBound) {
         lightbox.dataset.liorLightboxBackdropBound = "true";
         lightbox.addEventListener("click", (event) => {
           if (event.target === lightbox) {
@@ -952,6 +1017,7 @@ ${productLine}
         });
       }
 
+      window.__liorImageLightboxInitialized = true;
     }
 
 
@@ -1070,8 +1136,13 @@ ${productLine}
         panel.classList.toggle("is-open", open);
         btn.setAttribute("aria-expanded", open ? "true" : "false");
         panel.setAttribute("aria-hidden", open ? "false" : "true");
-        if (open) panel.removeAttribute("inert");
-        else panel.setAttribute("inert", "");
+        if (open) {
+          panel.removeAttribute("hidden");
+          panel.removeAttribute("inert");
+        } else {
+          panel.setAttribute("hidden", "");
+          panel.setAttribute("inert", "");
+        }
       }
 
       btn.addEventListener("click", (event) => {
