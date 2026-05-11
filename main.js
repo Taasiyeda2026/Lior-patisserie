@@ -1044,6 +1044,7 @@ ${productLine}
       setupOrderModal();
       setupImageLightbox();
       setupNavDots();
+      setupFooterLegalMenu();
       setupInstagramLinks();   // async - runs in background, updates links when ready
       setupHiddenAdminEntry();
       setupOrderActionsVisibility();
@@ -1065,6 +1066,52 @@ ${productLine}
 
     let hiddenAdminClickCount = 0;
     let hiddenAdminTimer = null;
+
+    function setupFooterLegalMenu() {
+      const wrap = document.querySelector(".footer-legal-wrap");
+      const btn = document.getElementById("footerLegalToggle");
+      const panel = document.getElementById("footerLegalPanel");
+      if (!wrap || !btn || !panel) return;
+
+      function setFooterLegalOpen(open) {
+        wrap.classList.toggle("is-open", open);
+        panel.classList.toggle("is-open", open);
+        btn.setAttribute("aria-expanded", open ? "true" : "false");
+        panel.setAttribute("aria-hidden", open ? "false" : "true");
+        if (open) panel.removeAttribute("inert");
+        else panel.setAttribute("inert", "");
+      }
+
+      btn.addEventListener("click", (event) => {
+        event.stopPropagation();
+        setFooterLegalOpen(!wrap.classList.contains("is-open"));
+      });
+
+      document.addEventListener(
+        "click",
+        (event) => {
+          if (!wrap.classList.contains("is-open")) return;
+          if (!wrap.contains(event.target)) setFooterLegalOpen(false);
+        },
+        false
+      );
+
+      document.addEventListener(
+        "keydown",
+        (event) => {
+          if (event.key !== "Escape") return;
+          const lightbox = document.getElementById("imageLightbox");
+          if (lightbox && lightbox.classList.contains("is-open")) return;
+          const orderModal = document.getElementById("orderModal");
+          if (orderModal && orderModal.classList.contains("is-open")) return;
+          if (!wrap.classList.contains("is-open")) return;
+          event.preventDefault();
+          setFooterLegalOpen(false);
+          btn.focus();
+        },
+        true
+      );
+    }
 
     function setupHiddenAdminEntry() {
       const trigger = document.querySelector('[data-admin-trigger="true"]');
