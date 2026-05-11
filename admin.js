@@ -548,11 +548,13 @@ function openProductDrawer(product) {
 
   backdrop.hidden = false;
   drawer.hidden = false;
-  backdrop.classList.add("is-open");
-  drawer.classList.add("is-open");
   backdrop.setAttribute("aria-hidden", "false");
   drawer.setAttribute("aria-hidden", "false");
   document.body.classList.add("has-product-drawer");
+  requestAnimationFrame(() => {
+    backdrop.classList.add("is-open");
+    drawer.classList.add("is-open");
+  });
 
   requestAnimationFrame(() => initAdminPreviewShells(body));
   setTimeout(() => body.querySelector('[data-field="name"]')?.focus(), 0);
@@ -565,12 +567,14 @@ function closeProductDrawer() {
   if (!drawer || !backdrop) return;
   backdrop.classList.remove("is-open");
   drawer.classList.remove("is-open");
-  backdrop.hidden = true;
-  drawer.hidden = true;
   backdrop.setAttribute("aria-hidden", "true");
   drawer.setAttribute("aria-hidden", "true");
   document.body.classList.remove("has-product-drawer");
-  if (body) body.innerHTML = "";
+  setTimeout(() => {
+    backdrop.hidden = true;
+    drawer.hidden = true;
+    if (body) body.innerHTML = "";
+  }, 210);
 }
 
 function productDrawerFormTemplate(product = {}) {
@@ -591,24 +595,14 @@ function productDrawerFormTemplate(product = {}) {
           </div>
           <div class="admin-image-controls">
             <div class="admin-image-actions">
-              <label class="admin-button secondary admin-file-button">קובץ
+              <label class="admin-button secondary admin-file-button">העלאת תמונה
                 <input data-product-upload data-folder="products" data-max-width="1280" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
               </label>
               <button class="admin-button muted admin-remove-image" type="button" data-remove-product-image hidden>הסרת תמונה</button>
             </div>
             <div class="admin-image-status" data-image-status aria-live="polite"></div>
-            <details class="admin-image-advanced">
-              <summary>אפשרויות מתקדמות</summary>
-              <label class="field-label">כתובת תמונה מלאה
-                <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה מלאה">
-              </label>
-              <label class="field-label">כתובת תמונת כרטיס
-                <input data-field="card_image_url" value="${escapeHtml(product.card_image_url || "")}" placeholder="כתובת תמונת כרטיס">
-              </label>
-              <label class="field-label">העלאת תמונת כרטיס בלבד
-                <input data-product-card-upload data-folder="products" data-max-width="768" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
-              </label>
-            </details>
+            <input type="hidden" data-field="image_url" value="${escapeHtml(product.image_url || "")}">
+            <input type="hidden" data-field="card_image_url" value="${escapeHtml(product.card_image_url || "")}">
           </div>
         </div>
       </div>
