@@ -4179,6 +4179,29 @@ html.hero-locked .home-products {
   font-size: 10px;
 }
 
+.section-divider {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 0 clamp(24px, 6vw, 80px);
+  margin: 0;
+  background: var(--color-cream);
+}
+
+.section-divider-line {
+  flex: 1;
+  height: 0.5px;
+  background: linear-gradient(90deg, transparent, rgba(196, 168, 68, 0.55), transparent);
+}
+
+.section-divider-ornament {
+  font-size: 10px;
+  color: rgba(196, 168, 68, 0.7);
+  letter-spacing: 0;
+  line-height: 1;
+  padding: 10px 0;
+}
+
 .editorial {
   padding: 2.6rem 0;
   background: var(--color-cream);
