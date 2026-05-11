@@ -1918,7 +1918,7 @@
     }
 
     .footer {
-      padding: 14px 0 12px;
+      padding: 28px clamp(16px, 4vw, 28px) 24px;
       background: var(--cream-2);
       color: rgba(47, 33, 28, 0.50);
       text-align: center;
@@ -1926,62 +1926,104 @@
       border-top: 1px solid rgba(200, 194, 184, 0.30);
     }
 
-    .ig-closing {
-      margin: 0 0 6px;
-      font-size: 0.80rem;
-      color: rgba(47, 33, 28, 0.52);
-      line-height: 1.6;
+    .footer-inner {
+      max-width: min(720px, 100%);
+      margin-inline: auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .footer-instagram.ig-closing {
+      margin: 0 0 12px;
+      padding: 0;
+      width: 100%;
+      max-width: 100%;
+      font-size: clamp(0.88rem, 2.8vw, 0.96rem);
+      line-height: 1.72;
+      color: rgba(92, 61, 50, 0.94);
       text-align: center;
+      text-wrap: pretty;
     }
 
     .instagram-closing-link {
       display: inline-flex;
       align-items: center;
-      gap: 0.25em;
-      white-space: nowrap;
-      color: rgba(92, 61, 50, 0.80);
+      gap: 0.28em;
+      white-space: normal;
+      color: rgba(90, 57, 103, 0.92);
       font-weight: 600;
       text-decoration: underline;
-      text-underline-offset: 2px;
-      text-decoration-color: rgba(92, 61, 50, 0.28);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+      text-decoration-color: rgba(90, 57, 103, 0.35);
       transition: color 0.2s ease, text-decoration-color 0.2s ease;
     }
 
     .instagram-closing-link:hover {
       color: var(--plum);
-      text-decoration-color: rgba(61, 34, 73, 0.50);
+      text-decoration-color: rgba(61, 34, 73, 0.45);
     }
 
     .instagram-inline-icon {
       width: 1em;
       height: 1em;
-      display: inline-block;
-      vertical-align: -0.12em;
+      min-width: 14px;
+      min-height: 14px;
+      flex-shrink: 0;
+      display: block;
       object-fit: contain;
+      position: relative;
+      top: 0.06em;
     }
 
     .footer-legal {
-      margin: 6px 0 2px;
-      font-size: 0.76rem;
-      color: rgba(47, 33, 28, 0.44);
+      margin: 0 0 8px;
+      padding: 0;
+      width: 100%;
+      max-width: 100%;
+      font-size: 0.74rem;
+      line-height: 1.68;
+      color: rgba(47, 33, 28, 0.42);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: baseline;
+      gap: 0.35rem 0.55rem;
+      row-gap: 0.5rem;
+    }
+
+    .footer-legal .footer-link:not(:first-child)::before {
+      content: "·";
+      display: inline-block;
+      margin-inline-end: 0.55em;
+      color: rgba(47, 33, 28, 0.32);
+      font-weight: 400;
+      text-decoration: none;
+      pointer-events: none;
     }
 
     .footer-copy {
-      margin: 2px 0 0;
-      font-size: 0.76rem;
-      color: rgba(47, 33, 28, 0.38);
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      font-size: 0.7rem;
+      line-height: 1.55;
+      color: rgba(47, 33, 28, 0.36);
     }
 
     .footer-link {
-      color: rgba(61, 34, 73, 0.65);
+      color: rgba(61, 34, 73, 0.52);
       text-decoration: underline;
+      text-decoration-thickness: 1px;
       text-underline-offset: 2px;
-      text-decoration-color: rgba(61, 34, 73, 0.22);
-      transition: color 0.18s ease;
+      text-decoration-color: rgba(61, 34, 73, 0.16);
+      transition: color 0.18s ease, text-decoration-color 0.18s ease;
     }
 
     .footer-link:hover {
       color: var(--plum);
+      text-decoration-color: rgba(61, 34, 73, 0.32);
     }
 
     .footer-link:focus-visible {
