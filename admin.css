@@ -1033,3 +1033,283 @@ body.has-product-drawer {
     transform: none;
   }
 }
+
+/* Compact admin-only refinements: restrain management forms while preserving the product grid width. */
+.admin-shell {
+  width: min(1120px, calc(100% - 32px));
+}
+
+.editor-card,
+.login-card {
+  width: 100%;
+  max-width: 680px;
+  margin-inline: auto;
+  padding: clamp(12px, 1.7vw, 18px);
+  border-radius: 20px;
+}
+
+.section-heading {
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.section-number {
+  min-width: 36px;
+  min-height: 36px;
+}
+
+.section-heading h2 {
+  font-size: clamp(1.06rem, 1.65vw, 1.36rem);
+}
+
+.editor-card > .grid,
+.editor-card > .image-grid,
+.editor-card > .section-fields,
+.editor-card > .actions-row,
+.editor-card > .subsection-head,
+.editor-card > .stack-list,
+.editor-card > .notice,
+.editor-card > .hint {
+  width: 100%;
+  max-width: 620px;
+  margin-inline: auto;
+}
+
+.grid,
+.login-form {
+  gap: 9px;
+}
+
+.field-label {
+  gap: 6px;
+  font-size: 0.92rem;
+}
+
+input,
+textarea,
+select {
+  border-radius: 11px;
+  padding: 7px 11px;
+}
+
+textarea {
+  min-height: 72px;
+}
+
+.actions-row,
+.subsection-head,
+.top-action {
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.subsection-head {
+  margin-top: 16px;
+  padding-top: 14px;
+}
+
+.stack-list {
+  gap: 9px;
+  margin-top: 10px;
+}
+
+.product-row,
+.feature-row {
+  padding: 11px;
+  border-radius: 16px;
+}
+
+.image-grid {
+  gap: 10px;
+}
+
+.image-card,
+.image-tools {
+  padding: 10px;
+  border-radius: 14px;
+}
+
+.image-tools {
+  grid-template-columns: 100px 1fr;
+  gap: 10px;
+}
+
+.admin-preview-shell {
+  width: 100px;
+  max-width: 100px;
+  min-height: 76px;
+}
+
+.admin-preview-shell.has-image .preview,
+.preview {
+  width: 100px;
+  max-width: 100px;
+  height: 76px;
+}
+
+.editor-card:not(#productsPanel) .actions-row .admin-button {
+  width: auto;
+  min-width: 180px;
+}
+
+/* Focused, centered login card and in-form error notice. */
+.login-card.admin-login-card {
+  max-width: 520px;
+  padding: 1.9rem 1.65rem 2rem;
+}
+
+.admin-login-heading {
+  margin-bottom: 1rem;
+}
+
+.admin-login-title {
+  font-size: clamp(1.15rem, 2.2vw, 1.42rem);
+}
+
+.login-card.admin-login-card .admin-login-form {
+  width: 100%;
+  max-width: 430px;
+  gap: 0.8rem;
+}
+
+.login-card.admin-login-card .admin-login-submit {
+  width: 100%;
+  max-width: none;
+}
+
+.login-card.admin-login-card .admin-login-notice {
+  width: 100%;
+  max-width: 430px;
+  margin: 0.25rem auto 0;
+  padding: 0.7rem 0.9rem;
+  border-radius: 14px;
+}
+
+/* Let the management grid use a wider panel, but shrink each card significantly. */
+#productsPanel {
+  max-width: 980px;
+}
+
+#productsPanel > .section-heading,
+#productsPanel > .top-action,
+#productsPanel > .products-admin-grid {
+  max-width: none;
+}
+
+#productsPanel .top-action {
+  justify-content: flex-start;
+}
+
+#productsPanel .top-action .admin-button {
+  min-width: 180px;
+}
+
+.products-admin-grid {
+  grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
+  gap: 9px;
+}
+
+.product-grid-card {
+  border-radius: 13px;
+  box-shadow: 0 8px 20px rgba(47, 33, 28, 0.08);
+}
+
+.product-grid-card:hover {
+  box-shadow: 0 10px 24px rgba(47, 33, 28, 0.1);
+}
+
+.product-grid-card-visual {
+  border-radius: 12px 12px 0 0;
+}
+
+.product-grid-card-noimg {
+  font-size: 0.68rem;
+  padding: 6px;
+}
+
+.product-grid-card-meta {
+  padding: 6px 8px 8px;
+  gap: 1px;
+}
+
+.product-grid-card-name {
+  font-size: 0.76rem;
+  line-height: 1.22;
+}
+
+.product-grid-card-price {
+  font-size: 0.68rem;
+}
+
+.product-grid-card-badge {
+  margin-top: 3px;
+  font-size: 0.58rem;
+  padding: 2px 5px;
+}
+
+@media (max-width: 860px) {
+  .editor-card,
+  .login-card,
+  #productsPanel {
+    max-width: 100%;
+  }
+
+  .editor-card > .grid,
+  .editor-card > .image-grid,
+  .editor-card > .section-fields,
+  .editor-card > .actions-row,
+  .editor-card > .subsection-head,
+  .editor-card > .stack-list {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 700px) {
+  .admin-preview-shell,
+  .admin-preview-shell.has-image .preview,
+  .preview,
+  .image-card .preview {
+    width: 100px;
+    max-width: 100px;
+    height: 76px;
+  }
+}
+
+@media (max-width: 560px) {
+  .admin-shell {
+    width: min(100% - 20px, 1120px);
+  }
+
+  .login-card.admin-login-card {
+    padding: 1.15rem 1rem 1.25rem;
+  }
+
+  .editor-card:not(#productsPanel) .actions-row .admin-button {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .products-admin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+}
+
+@media (max-width: 420px) {
+  .products-admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 720px) {
+  .products-admin-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+}
+
+@media (max-width: 420px) {
+  .products-admin-grid {
+    grid-template-columns: 1fr;
+  }
+}
