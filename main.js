@@ -71,29 +71,34 @@ ${productLine}
       return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
     }
 
-    function isExternalImagePath(name) {
-      return /^https?:\/\//i.test(name) || String(name || "").startsWith("/");
-    }
-
     function imagePath(name) {
-      return isExternalImagePath(name) ? name : `prdimages/${name}`;
+      return typeof window.normalizeImagePath === "function"
+        ? window.normalizeImagePath(name)
+        : (function fallbackNormalize(v) {
+          const path = String(v || "").trim();
+          if (!path) return "";
+          if (/^https?:\/\//i.test(path) || path.startsWith("/")) return path;
+          if (path.startsWith("prdimages/")) return path;
+          return `prdimages/${path}`;
+        })(name);
     }
 
     function setImageWithFallback(img, name) {
-      const hasExtension = /\.[a-zA-Z0-9]+$/.test(name);
+      const base = imagePath(name);
+      const hasExtension = /\.[a-zA-Z0-9]+$/.test(base);
       const fullImageName = img.dataset.fullImage || "";
 
       const options = hasExtension
-        ? [imagePath(name)]
+        ? [base]
         : [
-            `${imagePath(name)}.webp`,
-            `${imagePath(name)}.jpg`,
-            `${imagePath(name)}.jpeg`,
-            `${imagePath(name)}.png`,
-            `${imagePath(name)}.JPG`,
-            `${imagePath(name)}.JPEG`,
-            `${imagePath(name)}.PNG`,
-            `${imagePath(name)}.WEBP`
+            `${base}.webp`,
+            `${base}.jpg`,
+            `${base}.jpeg`,
+            `${base}.png`,
+            `${base}.JPG`,
+            `${base}.JPEG`,
+            `${base}.PNG`,
+            `${base}.WEBP`
           ];
 
       if (fullImageName && fullImageName !== name) {
@@ -832,21 +837,34 @@ ${productLine}
     function setupImageLightbox() {
       const lightbox = document.getElementById("imageLightbox");
       const closeBtn = document.getElementById("imageLightboxClose");
-      const lightboxImg = document.getElementById("imageLightboxImg");
 
-      document.querySelectorAll(".product-image img").forEach((img) => {
-        img.addEventListener("click", () => {
-          const fullName = img.dataset.fullImage;
-          const src = fullName ? imagePath(fullName) : (img.currentSrc || img.src);
-          openImageLightbox(src, img.alt || "");
+      if (!window.__liorLightboxDelegated) {
+        window.__liorLightboxDelegated = true;
+        document.addEventListener("click", (event) => {
+          const productImg = event.target.closest(".product-image img");
+          if (productImg) {
+            const fullName = productImg.dataset.fullImage;
+            const src = fullName ? imagePath(fullName) : (productImg.currentSrc || productImg.src);
+            openImageLightbox(src, productImg.alt || "");
+            return;
+          }
+          const galleryThumb = event.target.closest(".gallery-thumb[data-lightbox-src]");
+          if (galleryThumb) {
+            const src = galleryThumb.dataset.lightboxSrc || "";
+            if (!src) return;
+            const img = galleryThumb.querySelector("img");
+            openImageLightbox(src, (img && img.alt) || galleryThumb.getAttribute("aria-label") || "");
+          }
         });
-      });
+      }
 
-      if (closeBtn) {
+      if (closeBtn && !closeBtn.dataset.liorLightboxCloseBound) {
+        closeBtn.dataset.liorLightboxCloseBound = "true";
         closeBtn.addEventListener("click", closeImageLightbox);
       }
 
-      if (lightbox) {
+      if (lightbox && !lightbox.dataset.liorLightboxBackdropBound) {
+        lightbox.dataset.liorLightboxBackdropBound = "true";
         lightbox.addEventListener("click", (event) => {
           if (event.target === lightbox) {
             closeImageLightbox();
@@ -854,11 +872,14 @@ ${productLine}
         });
       }
 
-      document.addEventListener("keydown", (event) => {
-        if (event.key === "Escape") {
-          closeImageLightbox();
-        }
-      });
+      if (!window.__liorLightboxEscapeBound) {
+        window.__liorLightboxEscapeBound = true;
+        document.addEventListener("keydown", (event) => {
+          if (event.key === "Escape") {
+            closeImageLightbox();
+          }
+        });
+      }
     }
 
 
@@ -894,13 +915,9 @@ ${productLine}
     document.addEventListener("DOMContentLoaded", () => {
 
     function setupNavDots() {
-      const sections = Array.from(document.querySelectorAll("main > section"));
-      const dots = Array.from(document.querySelectorAll(".nav-dot"));
-
-      if (!sections.length || !dots.length) return;
-
-      dots.forEach((dot) => {
+      document.querySelectorAll(".nav-dot").forEach((dot) => {
         dot.addEventListener("click", () => {
+          if (dot.hidden) return;
           const target = dot.dataset.target;
           const el = document.querySelector(target);
           if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
@@ -908,6 +925,10 @@ ${productLine}
       });
 
       function updateActive() {
+        const sections = Array.from(document.querySelectorAll("main > section:not([hidden])"));
+        const dots = Array.from(document.querySelectorAll(".nav-dot:not([hidden])"));
+        if (!sections.length || !dots.length) return;
+
         const mid = window.scrollY + window.innerHeight * 0.45;
         let activeIndex = 0;
         sections.forEach((section, i) => {
@@ -918,13 +939,20 @@ ${productLine}
         });
       }
 
+      window.__liorRefreshSectionNav = updateActive;
       window.addEventListener("scroll", updateActive, { passive: true });
       updateActive();
     }
 
       setupHeroUnlock();
       renderSignatureProducts();
-      renderProducts();
+      window.__liorRenderStaticProductsFallback = function renderStaticProductsFallback() {
+        renderProducts();
+      };
+      const supabaseClientReady = typeof window.getLiorSupabaseClient === "function" && window.getLiorSupabaseClient();
+      if (!supabaseClientReady) {
+        renderProducts();
+      }
       setupImages();
       setupWhatsappLinks();
       setupSectionUnlockAnimations();

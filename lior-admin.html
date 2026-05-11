@@ -54,39 +54,40 @@
         <a href="#flavorsPanel">אזור הטעמים</a>
         <a href="#productsPanel">מוצרים וטעמים</a>
         <a href="#handmadePanel">עבודת יד</a>
+        <a href="#galleryPanel">גלריה</a>
         <a href="#contactPanel">פרטי קשר</a>
         <a href="#instagramPanel">אינסטגרם</a>
       </nav>
 
-      <section class=”editor-card” id=”heroPanel”>
-        <div class=”section-heading”>
-          <span class=”section-number”>01</span>
+      <section class="editor-card" id="heroPanel">
+        <div class="section-heading">
+          <span class="section-number">01</span>
           <div>
             <h2>תמונת פתיחה</h2>
             <p>תמונת הרקע ולוגו שמופיעים בחלק העליון של האתר.</p>
           </div>
         </div>
-        <div class=”image-grid”>
-          <label class=”field-label image-card”>תמונת פתיחה
-            <img class=”preview” data-preview=”hero_image” src=”prdimages/A7405559-hero.webp” alt=”תצוגה מקדימה לתמונת פתיחה”>
-            <input data-setting=”hero_image” type=”url” placeholder=”prdimages/A7405559-hero.webp”>
-            <input data-upload=”hero_image” data-folder=”hero” data-max-width=”1600” type=”file” accept=”.png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp”>
-            <span class=”hint”>אם השדה ריק, האתר יציג את תמונת הפתיחה הקבועה.</span>
+        <div class="image-grid">
+          <label class="field-label image-card">תמונת פתיחה
+            <img class="preview" data-preview="hero_image" src="prdimages/A7405559-hero.webp" alt="תצוגה מקדימה לתמונת פתיחה">
+            <input data-setting="hero_image" type="url" placeholder="prdimages/A7405559-hero.webp">
+            <input data-upload="hero_image" data-folder="hero" data-max-width="1600" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+            <span class="hint">אם השדה ריק, האתר יציג את תמונת הפתיחה הקבועה.</span>
           </label>
-          <label class=”field-label image-card”>לוגו
-            <img class=”preview logo-preview” data-preview=”hero_logo_image” src=”assets/logo.png” alt=”תצוגה מקדימה ללוגו”>
-            <input data-setting=”hero_logo_image” type=”url” placeholder=”assets/logo.png”>
-            <input data-upload=”hero_logo_image” data-folder=”logo” data-max-width=”600” type=”file” accept=”.png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp”>
-          </label>
-        </div>
-        <div class=”grid two-columns section-fields”>
-          <label class=”field-label”>כפתור גלילה
-            <input data-setting=”hero_scroll_button_text” type=”text” placeholder=”גללו מטה”>
+          <label class="field-label image-card">לוגו
+            <img class="preview logo-preview" data-preview="hero_logo_image" src="assets/logo.png" alt="תצוגה מקדימה ללוגו">
+            <input data-setting="hero_logo_image" type="url" placeholder="assets/logo.png">
+            <input data-upload="hero_logo_image" data-folder="logo" data-max-width="600" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </label>
         </div>
-        <div class=”actions-row”>
-          <button class=”admin-button” type=”button” data-save-settings=”hero-settings”>שמירה</button>
-          <div class=”notice” data-notice=”hero-settings”></div>
+        <div class="grid two-columns section-fields">
+          <label class="field-label">כפתור גלילה
+            <input data-setting="hero_scroll_button_text" type="text" placeholder="גללו מטה">
+          </label>
+        </div>
+        <div class="actions-row">
+          <button class="admin-button" type="button" data-save-settings="hero-settings">שמירה</button>
+          <div class="notice" data-notice="hero-settings"></div>
         </div>
       </section>
 
@@ -126,7 +127,7 @@
           <span class="section-number">03</span>
           <div>
             <h2>מוצרים וטעמים</h2>
-            <p>הטעמים שמופיעים באתר. ניתן לערוך שם, תיאור, תמונה מלאה, תמונת כרטיס וסדר תצוגה.</p>
+            <p>הטעמים שמופיעים באתר. ניתן לערוך שם, תיאור, מחיר, תמונה מלאה, תמונת כרטיס וסדר תצוגה.</p>
           </div>
         </div>
         <div class="actions-row top-action">
@@ -141,7 +142,7 @@
           <span class="section-number">04</span>
           <div>
             <h2>עבודת יד</h2>
-            <p>הכותרת והטקסט של אזור עבודת היד, ומתחתיהם שלושת היתרונות שמופיעים באתר.</p>
+            <p>הכותרת והטקסט של אזור עבודת היד, ומתחתיהם כרטיסי מידע קצרים שמסבירים מה מיוחד אצלנו.</p>
           </div>
         </div>
         <div class="grid two-columns">
@@ -162,18 +163,33 @@
 
         <div class="subsection-head">
           <div>
-            <h3>שלושת היתרונות</h3>
-            <p class="hint">האייקונים הקבועים באתר יישארו כברירת מחדל. אם מעלים תמונה ליתרון היא תחליף את האייקון הקבוע.</p>
+            <h3>כרטיסי "מה מיוחד אצלנו"</h3>
+            <p class="hint">באתר מוצגים כרטיסי המידע עם תמונה או אייקון ברירת מחדל. ניתן להסתיר כרטיס מהאתר או לשמור שינויים לכל שורה.</p>
           </div>
-          <button id="addFeature" class="admin-button secondary" type="button">הוספת יתרון</button>
+          <button id="addFeature" class="admin-button secondary" type="button">הוספת כרטיס מידע</button>
         </div>
         <div id="featuresAdmin" class="stack-list"></div>
         <div class="notice" data-notice="features"></div>
       </section>
 
-      <section class="editor-card" id="contactPanel">
+      <section class="editor-card" id="galleryPanel">
         <div class="section-heading">
           <span class="section-number">05</span>
+          <div>
+            <h2>גלריה</h2>
+            <p>תמונות שמוצגות באתר בקטע גלריה קומפקטי. העלאה ל־bucket בשם site-images (כמו שאר האתר).</p>
+          </div>
+        </div>
+        <div class="actions-row top-action">
+          <button id="addGalleryImage" class="admin-button" type="button">הוספת תמונה לגלריה</button>
+          <div class="notice" data-notice="gallery"></div>
+        </div>
+        <div id="galleryAdmin" class="stack-list"></div>
+      </section>
+
+      <section class="editor-card" id="contactPanel">
+        <div class="section-heading">
+          <span class="section-number">06</span>
           <div>
             <h2>פרטי קשר</h2>
             <p>פרטי הקשר והטקסטים שמופיעים באזור הסיום באתר.</p>
@@ -210,7 +226,7 @@
 
       <section class="editor-card" id="instagramPanel">
         <div class="section-heading">
-          <span class="section-number">06</span>
+          <span class="section-number">07</span>
           <div>
             <h2>אינסטגרם</h2>
             <p>משפט הסיום בפוטר וקישור לאינסטגרם.</p>

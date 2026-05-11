@@ -34,6 +34,8 @@
     return typeof value === "string" && value.trim().length > 0;
   }
 
+  const FEATURE_ICON_FALLBACK = `<svg class="pastry-icon" viewBox="0 0 48 48" focusable="false" aria-hidden="true"><path d="M16 9 L32 9 L28 33 L20 33 Z" fill="currentColor" opacity="0.88"/><path d="M16 9 Q24 6 32 9" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.5"/><path d="M20 33 L21.5 37 L26.5 37 L28 33" fill="none" stroke="currentColor" stroke-width="1" opacity="0.45"/><path d="M23 37 Q20 40 22 43 Q24 45 26 43 Q28 40 25 37" fill="none" stroke="currentColor" stroke-width="1" opacity="0.45"/></svg>`;
+
   const LEGACY_TEXT_KEY_ALIASES = {
     hero_title: "flavors_title",
     hero_subtitle: "flavors_intro_primary",
@@ -95,13 +97,24 @@
     return match.cardImage || match.image || "";
   }
 
+  function normalizeProductMediaPath(value) {
+    if (!hasText(value)) return "";
+    const trimmed = String(value).trim();
+    if (typeof window.normalizeImagePath === "function") {
+      return window.normalizeImagePath(trimmed);
+    }
+    if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith("//") || trimmed.startsWith("/")) return trimmed;
+    if (trimmed.startsWith("prdimages/")) return trimmed;
+    return `prdimages/${trimmed}`;
+  }
+
   function setRemoteImageWithFallback(img, imageUrl) {
     if (!img || !hasText(imageUrl)) return;
 
     const fallbackSrc = img.getAttribute("src") || "";
     const fallbackDataImg = img.dataset.img || img.dataset.productImage || "";
 
-    const nextSrc = imageUrl.trim();
+    const nextSrc = normalizeProductMediaPath(imageUrl);
     img.onload = function () {
       img.classList.add("is-loaded");
     };
@@ -202,20 +215,21 @@
 
   function productImageValue(product) {
     const localImage = getLocalProductImage(product.name || "");
-    if (hasText(localImage)) return localImage;
-    if (hasText(product.image_url)) return product.image_url.trim();
+    if (hasText(localImage)) return normalizeProductMediaPath(localImage);
+    if (hasText(product.image_url)) return normalizeProductMediaPath(product.image_url);
     return "";
   }
 
   function productCardImageValue(product) {
-    if (hasText(product.card_image_url)) return product.card_image_url.trim();
+    if (hasText(product.card_image_url)) return normalizeProductMediaPath(product.card_image_url);
     const localCardImage = getLocalProductCardImage(product.name || "");
-    if (hasText(localCardImage)) return localCardImage;
+    if (hasText(localCardImage)) return normalizeProductMediaPath(localCardImage);
     return productImageValue(product);
   }
 
   function isRemoteImageValue(value) {
-    return /^https?:\/\//i.test(value) || String(value || "").startsWith("/");
+    const s = String(value || "").trim();
+    return /^https?:\/\//i.test(s) || s.startsWith("//") || s.startsWith("/");
   }
 
   function productSignatureValue(product) {
@@ -223,11 +237,25 @@
       id: product.id || "",
       name: String(product.name || "").trim(),
       description: String(product.description || "").trim(),
+      price: String(product.price != null ? product.price : "").trim(),
       image_url: String(product.image_url || "").trim(),
       card_image_url: String(product.card_image_url || "").trim(),
       display_order: product.display_order || 0,
-      is_active: product.is_active !== false
+      is_active: product.is_active === true
     };
+  }
+
+  function hasDisplayablePrice(product) {
+    const raw = product && product.price != null ? String(product.price).trim() : "";
+    return raw.length > 0;
+  }
+
+  function formatProductPriceLabel(product) {
+    const raw = String(product.price != null ? product.price : "").trim();
+    if (!raw) return "";
+    if (/[₪$€]|שח|ש״ח/i.test(raw)) return raw;
+    if (/^\d+([.,]\d+)?$/.test(raw)) return `₪${raw}`;
+    return raw;
   }
 
   function productsSignature(productsList) {
@@ -245,10 +273,13 @@
   function renderManagedProducts(rows) {
     const grid = document.getElementById("productsGrid");
     if (!grid || !Array.isArray(rows)) return;
-    if (!rows.length) return;
+    if (!rows.length) {
+      clearManagedProducts(grid);
+      return;
+    }
 
     const activeProducts = rows
-      .filter((product) => product && product.is_active !== false && hasText(product.name))
+      .filter((product) => product && product.is_active === true && hasText(product.name))
       .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
 
     if (!activeProducts.length) {
@@ -267,10 +298,16 @@
     const nextHtml = activeProducts.map((product, index) => {
       const fullImageValue = productImageValue(product);
       const cardImageValue = productCardImageValue(product);
+      const fullForLightbox = hasText(fullImageValue) ? fullImageValue : cardImageValue;
       const isRemoteCard = isRemoteImageValue(cardImageValue);
       const srcAttr = isRemoteCard ? `src="${escapeHtml(cardImageValue)}" data-fallback-image="${escapeHtml(fullImageValue)}"` : "";
       const dataAttr = !isRemoteCard && hasText(cardImageValue) ? `data-product-image="${escapeHtml(cardImageValue)}"` : "";
-      const fullAttr = hasText(fullImageValue) ? `data-full-image="${escapeHtml(fullImageValue)}"` : "";
+      const fullAttr = hasText(fullForLightbox) ? `data-full-image="${escapeHtml(fullForLightbox)}"` : "";
+
+      const priceLabel = hasDisplayablePrice(product) ? formatProductPriceLabel(product) : "";
+      const priceBlock = priceLabel
+        ? `<p class="product-price"><span class="product-price-inner">${escapeHtml(priceLabel)}</span></p>`
+        : "";
 
       return `
         <article class="product-card reveal is-visible" data-reveal-ready="true">
@@ -279,6 +316,7 @@
           </div>
           <div class="product-body">
             <h3>${escapeHtml(product.name || "")}</h3>
+            ${priceBlock}
             <p>${escapeHtml(product.description || "")}</p>
             <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${escapeHtml(product.name || "")}" aria-label="הוספה לסל: ${escapeHtml(product.name || "")}">🛒</button>
             <div class="cart-feedback" aria-live="polite"></div>
@@ -305,7 +343,7 @@
       if (!fallback) return;
       img.onerror = function () {
         img.onerror = null;
-        if (/^https?:\/\//i.test(fallback) || fallback.startsWith("/")) {
+        if (/^https?:\/\//i.test(fallback) || fallback.startsWith("//") || fallback.startsWith("/")) {
           img.src = fallback;
           return;
         }
@@ -327,7 +365,12 @@
       .select("id,name,description,price,image_url,card_image_url,is_active,display_order")
       .order("display_order", { ascending: true });
 
-    if (error || !Array.isArray(data)) return [];
+    if (error || !Array.isArray(data)) {
+      if (typeof window.__liorRenderStaticProductsFallback === "function") {
+        window.__liorRenderStaticProductsFallback();
+      }
+      return [];
+    }
     renderManagedProducts(data);
     return data;
   }
@@ -337,7 +380,7 @@
     if (!grid || !Array.isArray(rows) || !rows.length) return;
 
     const activeFeatures = rows
-      .filter((feature) => feature && feature.is_active !== false && hasText(feature.title) && hasText(feature.text))
+      .filter((feature) => feature && feature.is_active === true && hasText(feature.title) && hasText(feature.text))
       .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
 
     if (!activeFeatures.length) return;
@@ -345,7 +388,7 @@
     grid.innerHTML = activeFeatures.map((feature) => {
       const icon = hasText(feature.image_url)
         ? `<img src="${escapeHtml(feature.image_url)}" alt="" loading="lazy" decoding="async">`
-        : "✦";
+        : FEATURE_ICON_FALLBACK;
 
       return `
         <article class="detail-card reveal">
@@ -373,6 +416,75 @@
     return data;
   }
 
+  function setGallerySectionVisible(hasImages) {
+    const section = document.getElementById("gallerySection");
+    const navDot = document.getElementById("galleryNavDot");
+    if (section) section.hidden = !hasImages;
+    if (navDot) navDot.hidden = !hasImages;
+  }
+
+  function renderGallery(rows) {
+    const grid = document.getElementById("galleryGrid");
+    if (!grid || !Array.isArray(rows)) return;
+
+    const activeItems = rows
+      .filter((item) => item && item.is_active === true && hasText(item.image_url))
+      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+
+    if (!activeItems.length) {
+      grid.innerHTML = "";
+      setGallerySectionVisible(false);
+      if (typeof window.__liorRefreshSectionNav === "function") {
+        window.__liorRefreshSectionNav();
+      }
+      return;
+    }
+
+    const labelFor = (item) => {
+      const t = hasText(item.title) ? item.title.trim() : "";
+      const a = hasText(item.alt_text) ? item.alt_text.trim() : "";
+      return t || a || "הגדלת תמונה";
+    };
+
+    grid.innerHTML = activeItems.map((item) => {
+      const url = item.image_url.trim();
+      const alt = hasText(item.alt_text) ? item.alt_text.trim() : (hasText(item.title) ? item.title.trim() : "");
+      return `
+        <button type="button" class="gallery-thumb reveal is-visible" data-reveal-ready="true" role="listitem" data-lightbox-src="${escapeHtml(url)}" aria-label="${escapeHtml(labelFor(item))}">
+          <img src="${escapeHtml(url)}" alt="${escapeHtml(alt)}" width="480" height="360" loading="lazy" decoding="async">
+        </button>
+      `;
+    }).join("");
+
+    setGallerySectionVisible(true);
+    refreshDynamicBehaviors();
+    if (typeof window.__liorRefreshSectionNav === "function") {
+      window.__liorRefreshSectionNav();
+    }
+  }
+
+  async function loadGallery() {
+    const client = window.getLiorSupabaseClient ? window.getLiorSupabaseClient() : null;
+    if (!client) return [];
+
+    const { data, error } = await client
+      .from("gallery_images")
+      .select("id,title,image_url,alt_text,is_active,display_order")
+      .order("display_order", { ascending: true });
+
+    if (error || !Array.isArray(data)) {
+      const grid = document.getElementById("galleryGrid");
+      if (grid) grid.innerHTML = "";
+      setGallerySectionVisible(false);
+      if (typeof window.__liorRefreshSectionNav === "function") {
+        window.__liorRefreshSectionNav();
+      }
+      return [];
+    }
+    renderGallery(data);
+    return data;
+  }
+
   function refreshDynamicBehaviors() {
     if (typeof window.setupImages === "function") window.setupImages();
     if (typeof window.setupRevealAnimations === "function") window.setupRevealAnimations();
@@ -397,7 +509,7 @@
       applyTextSettings(settings);
       applyContactSettings(settings);
       applyImageSettings(settings);
-      await Promise.all([loadProducts(), loadFeatures()]);
+      await Promise.all([loadProducts(), loadFeatures(), loadGallery()]);
     } catch (error) {
       console.warn("Supabase content could not be loaded. Local fallback content remains active.", error);
     }

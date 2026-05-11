@@ -7,6 +7,15 @@ function client() {
   return supabaseClient;
 }
 
+function adminPreviewSrc(url, placeholder = "assets/logo.png") {
+  const raw = String(url || "").trim();
+  if (!raw) return placeholder;
+  if (typeof window.normalizeImagePath === "function") return window.normalizeImagePath(raw);
+  if (/^https?:\/\//i.test(raw) || raw.startsWith("//") || raw.startsWith("/")) return raw;
+  if (raw.startsWith("prdimages/")) return raw;
+  return `prdimages/${raw}`;
+}
+
 function showNotice(scope, message, ok = true) {
   document.querySelectorAll(`[data-notice="${scope}"]`).forEach((el) => {
     el.textContent = message;
@@ -118,7 +127,7 @@ async function loadSettings() {
     const input = document.querySelector(`[data-setting="${row.key}"]`);
     if (input) input.value = row.value || "";
     const preview = document.querySelector(`[data-preview="${row.key}"]`);
-    if (preview && row.value) preview.src = row.value;
+    if (preview && row.value) preview.src = adminPreviewSrc(row.value);
   });
 }
 
@@ -138,27 +147,29 @@ async function saveSettings(scope = "hero-settings", root = document) {
 function productTemplate(product = {}) {
   const id = product.id || crypto.randomUUID();
   const isActive = product.is_active !== false;
+  const priceVal = product.price != null ? String(product.price) : "";
   return `<article class="product-row${isActive ? "" : " product-inactive"}" data-product-id="${id}">
     <div class="grid">
       <label class="field-label">שם הטעם <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
       <label class="field-label">סדר <input data-field="display_order" type="number" value="${product.display_order || 0}"></label>
       <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
+      <label class="field-label">מחיר (אופציונלי) <input data-field="price" type="text" value="${escapeHtml(priceVal)}" placeholder="למשל 28 או ₪28"></label>
       <label class="field-label">תיאור <textarea data-field="description">${escapeHtml(product.description || "")}</textarea></label>
       <label class="field-label wide">תמונה מלאה
         <div class="image-tools">
-          <img class="preview" src="${escapeHtml(product.image_url || "assets/logo.png")}" alt="Preview">
+          <img class="preview" src="${escapeHtml(adminPreviewSrc(product.image_url))}" alt="Preview">
           <div>
             <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה מלאה">
             <input data-product-upload data-folder="products" data-max-width="900" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </div>
         </div>
       </label>
-      <label class="field-label wide">תמונת כרטיס קיימת
+      <label class="field-label wide">תמונת כרטיס
         <div class="image-tools">
-          <img class="preview" src="${escapeHtml(product.card_image_url || product.image_url || "assets/logo.png")}" alt="Preview">
+          <img class="preview" src="${escapeHtml(adminPreviewSrc(product.card_image_url || product.image_url))}" alt="Preview">
           <div>
-            <input data-field="card_image_url" value="${escapeHtml(product.card_image_url || "")}" placeholder="לדוגמה: prdimages/cards/A7404929-card.webp">
-            <p class="hint">אין העלאה או יצירה אוטומטית. יש להשתמש בתמונת כרטיס שכבר קיימת בריפו.</p>
+            <input data-field="card_image_url" value="${escapeHtml(product.card_image_url || "")}" placeholder="כתובת תמונה או העלאה">
+            <input data-product-card-upload data-folder="products" data-max-width="900" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </div>
         </div>
       </label>
@@ -170,26 +181,6 @@ function productTemplate(product = {}) {
   </article>`;
 }
 
-const SITE_PRODUCTS_STATIC = [
-  { name: "אוראו דרים", image: "A7404929.webp", cardImage: "cards/A7404929-card.webp", description: "עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל." },
-  { name: "כריות נוגט", image: "A7404958.webp", cardImage: "cards/A7404958-card.webp", description: "עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן." },
-  { name: "קוקילוטוס", image: "A7404990.webp", cardImage: "cards/A7404990-card.webp", description: "עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל." },
-  { name: "פיסטצ׳יו", image: "A7404980.webp", cardImage: "cards/A7404980-card.webp", description: "עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס." },
-  { name: "במבה רד", image: "A7405005.webp", cardImage: "cards/A7405005-card.webp", description: "עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה." },
-  { name: "קונפטי פאן", image: "A7404978.webp", cardImage: "cards/A7404978-card.webp", description: "עוגייה צבעונית ושמחה עם סוכריות צבעוניות, שוקולד לבן וקרם ורוד." },
-  { name: "ס׳מורשמלו", image: "A7404945.webp", cardImage: "cards/A7404945-card.webp", description: "עוגיית קקאו עשירה עם שוקולד מריר, קרם אגוזי לוז ומרשמלו שרוף מעל." },
-  { name: "קינדר", image: "A7404950.webp", cardImage: "cards/A7404950-card.webp", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם קינדר בואנו ופניני שוקולד קראנץ׳." },
-  { name: "קורנפלקס שוקולד לבן", image: "A7404939.webp", cardImage: "cards/A7404939-card.webp", description: "עוגייה עשירה עם קורנפלקס, שוקולד לבן, קרם שוקולד לבן וקראנץ׳ מפנק." },
-  { name: "קורנפלקס שוקולד חלב", image: "A7404956.webp", cardImage: "cards/A7404956-card.webp", description: "עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי." },
-  { name: "אמסטרדם", image: "A7404918.webp", cardImage: "cards/A7404918-card.webp", description: "עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן." },
-  { name: "שוקוצ׳יפס", image: "A7404900.webp", cardImage: "cards/A7404900-card.webp", description: "עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד." },
-  { name: "חצי-חצי", image: "A7404971.webp", cardImage: "cards/A7404971-card.webp", description: "חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים." },
-  { name: "ברוקי", image: "A7404968.webp", cardImage: "cards/A7404968-card.webp", description: "בראוניז שוקולד עשיר עם חתיכות בצק עוגיות, קרם שוקולד וזילוף אגוזי לוז." },
-  { name: "שוקולד דובאי", image: "A7404987.webp", cardImage: "cards/A7404987-card.webp", description: "עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף." },
-  { name: "מגולגלת קינדר", image: "A7404964.webp", cardImage: "cards/A7404964-card.webp", description: "עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל." },
-  { name: "פתיבר", image: "A7404912.webp", cardImage: "cards/A7404912-card.webp", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם פתיבר, עוגיית פתיבר וסוכריות צבעוניות." }
-];
-
 async function loadProducts() {
   const { data, error } = await client().from("products").select("*").order("display_order", { ascending: true });
   if (error) {
@@ -198,23 +189,13 @@ async function loadProducts() {
   }
 
   const supabaseProducts = data || [];
-  let displayProducts;
-
-  if (supabaseProducts.length === 0) {
-    displayProducts = SITE_PRODUCTS_STATIC.map((sp, index) => ({
-      id: crypto.randomUUID(),
-      name: sp.name,
-      description: sp.description,
-      image_url: "prdimages/" + sp.image,
-      card_image_url: sp.cardImage ? "prdimages/" + sp.cardImage : "",
-      display_order: index,
-      is_active: true
-    }));
-  } else {
-    displayProducts = supabaseProducts;
+  const container = document.getElementById("productsAdmin");
+  if (!supabaseProducts.length) {
+    container.innerHTML = '<p class="hint admin-empty-hint">אין מוצרים במסד הנתונים. אפשר להוסיף מוצרים כאן או להריץ את קובץ seed-content.sql בפרויקט Supabase לנתוני פתיחה בלבד.</p>';
+    return;
   }
 
-  document.getElementById("productsAdmin").innerHTML = displayProducts.map(productTemplate).join("");
+  container.innerHTML = supabaseProducts.map(productTemplate).join("");
 }
 
 async function saveProduct(row) {
@@ -254,15 +235,16 @@ async function toggleProductActive(row) {
 
 function featureTemplate(feature = {}) {
   const id = feature.id || crypto.randomUUID();
-  return `<article class="feature-row" data-feature-id="${id}">
+  const isActive = feature.is_active !== false;
+  return `<article class="feature-row${isActive ? "" : " product-inactive"}" data-feature-id="${id}">
     <div class="grid">
       <label class="field-label">כותרת <input data-field="title" value="${escapeHtml(feature.title || "")}"></label>
       <label class="field-label">סדר <input data-field="display_order" type="number" value="${feature.display_order || 0}"></label>
-      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${feature.is_active !== false ? "selected" : ""}>כן</option><option value="false" ${feature.is_active === false ? "selected" : ""}>לא</option></select></label>
+      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
       <label class="field-label">טקסט <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
       <label class="field-label wide">תמונה (אופציונלי)
         <div class="image-tools">
-          <img class="preview" src="${escapeHtml(feature.image_url || "assets/logo.png")}" alt="Preview">
+          <img class="preview" src="${escapeHtml(adminPreviewSrc(feature.image_url))}" alt="Preview">
           <div>
             <input data-field="image_url" value="${escapeHtml(feature.image_url || "")}" placeholder="כתובת תמונה">
             <input data-feature-upload data-folder="icons" data-max-width="500" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
@@ -270,7 +252,37 @@ function featureTemplate(feature = {}) {
         </div>
       </label>
     </div>
-    <button class="admin-button" type="button" data-save-feature>שמירה</button>
+    <div class="product-actions">
+      <button class="admin-button" type="button" data-save-feature>שמירה</button>
+      <button class="admin-button ${isActive ? "muted" : "secondary"}" type="button" data-toggle-feature data-active="${isActive}">${isActive ? "הסתר מהאתר" : "הצג באתר"}</button>
+    </div>
+  </article>`;
+}
+
+function galleryTemplate(imageRow = {}) {
+  const id = imageRow.id || crypto.randomUUID();
+  const isActive = imageRow.is_active !== false;
+  return `<article class="gallery-row${isActive ? "" : " product-inactive"}" data-gallery-id="${id}">
+    <div class="grid">
+      <label class="field-label">כותרת (פנימית) <input data-field="title" value="${escapeHtml(imageRow.title || "")}" placeholder="כותרת"></label>
+      <label class="field-label">סדר <input data-field="display_order" type="number" value="${imageRow.display_order || 0}"></label>
+      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
+      <label class="field-label wide">טקסט חלופי (alt) <input data-field="alt_text" value="${escapeHtml(imageRow.alt_text || "")}" placeholder="תיאור לנגישות"></label>
+      <label class="field-label wide">תמונה
+        <div class="image-tools">
+          <img class="preview" src="${escapeHtml(adminPreviewSrc(imageRow.image_url))}" alt="Preview">
+          <div>
+            <input data-field="image_url" value="${escapeHtml(imageRow.image_url || "")}" placeholder="כתובת תמונה">
+            <input data-gallery-upload data-folder="gallery" data-max-width="1200" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+          </div>
+        </div>
+      </label>
+    </div>
+    <div class="product-actions">
+      <button class="admin-button" type="button" data-save-gallery>שמירה</button>
+      <button class="admin-button ${isActive ? "muted" : "secondary"}" type="button" data-toggle-gallery data-active="${isActive}">${isActive ? "הסתר מהאתר" : "הצג באתר"}</button>
+      <button class="admin-button danger-outline" type="button" data-delete-gallery>מחיקה מהמסד</button>
+    </div>
   </article>`;
 }
 
@@ -284,12 +296,97 @@ async function saveFeature(row) {
   const payload = rowPayload(row, "feature");
   const { error } = await client().from("site_features").upsert(payload, { onConflict: "id" });
   if (error) throw error;
-  showNotice("features", "היתרון נשמר בהצלחה");
+  row.classList.toggle("product-inactive", !payload.is_active);
+  syncFeatureToggleUi(row, payload.is_active);
+  showNotice("features", "כרטיס המידע נשמר בהצלחה");
+}
+
+async function toggleFeatureActive(row) {
+  const id = row.dataset.featureId;
+  const btn = row.querySelector("[data-toggle-feature]");
+  const select = row.querySelector('[data-field="is_active"]');
+  const currentActive = btn.dataset.active === "true";
+  const newActive = !currentActive;
+
+  const { error } = await client()
+    .from("site_features")
+    .update({ is_active: newActive, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw error;
+
+  syncFeatureToggleUi(row, newActive);
+  if (select) select.value = String(newActive);
+  row.classList.toggle("product-inactive", !newActive);
+  showNotice("features", newActive ? "כרטיס המידע מוצג באתר" : "כרטיס המידע הוסתר מהאתר");
+}
+
+function syncFeatureToggleUi(row, isActive) {
+  const btn = row.querySelector("[data-toggle-feature]");
+  if (!btn) return;
+  btn.dataset.active = String(isActive);
+  btn.textContent = isActive ? "הסתר מהאתר" : "הצג באתר";
+  btn.className = `admin-button ${isActive ? "muted" : "secondary"}`;
+}
+
+async function loadGalleryImages() {
+  const { data, error } = await client().from("gallery_images").select("*").order("display_order", { ascending: true });
+  if (error) {
+    showNotice("gallery", "שגיאה בטעינת הגלריה: " + error.message, false);
+    return;
+  }
+  const el = document.getElementById("galleryAdmin");
+  if (!el) return;
+  el.innerHTML = (data || []).map(galleryTemplate).join("");
+}
+
+async function saveGalleryRow(row) {
+  const payload = rowPayload(row, "gallery");
+  const { error } = await client().from("gallery_images").upsert(payload, { onConflict: "id" });
+  if (error) throw error;
+  row.classList.toggle("product-inactive", !payload.is_active);
+  syncGalleryToggleUi(row, payload.is_active);
+  showNotice("gallery", "תמונת הגלריה נשמרה");
+}
+
+async function toggleGalleryActive(row) {
+  const id = row.dataset.galleryId;
+  const btn = row.querySelector("[data-toggle-gallery]");
+  const select = row.querySelector('[data-field="is_active"]');
+  const currentActive = btn.dataset.active === "true";
+  const newActive = !currentActive;
+
+  const { error } = await client()
+    .from("gallery_images")
+    .update({ is_active: newActive, updated_at: new Date().toISOString() })
+    .eq("id", id);
+  if (error) throw error;
+
+  syncGalleryToggleUi(row, newActive);
+  if (select) select.value = String(newActive);
+  row.classList.toggle("product-inactive", !newActive);
+  showNotice("gallery", newActive ? "התמונה מוצגת באתר" : "התמונה הוסתרה מהאתר");
+}
+
+function syncGalleryToggleUi(row, isActive) {
+  const btn = row.querySelector("[data-toggle-gallery]");
+  if (!btn) return;
+  btn.dataset.active = String(isActive);
+  btn.textContent = isActive ? "הסתר מהאתר" : "הצג באתר";
+  btn.className = `admin-button ${isActive ? "muted" : "secondary"}`;
+}
+
+async function deleteGalleryRow(row) {
+  const id = row.dataset.galleryId;
+  if (!id || !window.confirm("למחוק תמונה זו לצמיתות מהמסד? פעולה זו אינה הפיכה.")) return;
+  const { error } = await client().from("gallery_images").delete().eq("id", id);
+  if (error) throw error;
+  row.remove();
+  showNotice("gallery", "התמונה נמחקה");
 }
 
 function rowPayload(row, type) {
   const payload = {
-    id: row.dataset.productId || row.dataset.featureId,
+    id: row.dataset.productId || row.dataset.featureId || row.dataset.galleryId,
     updated_at: new Date().toISOString()
   };
   row.querySelectorAll("[data-field]").forEach((input) => {
@@ -303,6 +400,13 @@ function rowPayload(row, type) {
     payload.description ||= "";
     payload.image_url ||= "";
     payload.card_image_url ||= "";
+    if (payload.price === undefined || payload.price === null) payload.price = "";
+    else payload.price = String(payload.price).trim();
+  }
+  if (type === "gallery") {
+    payload.title ||= "";
+    payload.alt_text ||= "";
+    payload.image_url ||= "";
   }
   return payload;
 }
@@ -313,7 +417,7 @@ function escapeHtml(value) {
 
 async function initAdmin() {
   await loadSettings();
-  await Promise.all([loadProducts(), loadFeatures()]);
+  await Promise.all([loadProducts(), loadFeatures(), loadGalleryImages()]);
 }
 
 function setupEvents() {
@@ -373,10 +477,16 @@ function setupEvents() {
       try { await saveSettings(scope, settingsRoot); } catch (error) { showNotice(scope, error.message, false); }
     }
     if (event.target.id === "addProduct") {
-      document.getElementById("productsAdmin").insertAdjacentHTML("beforeend", productTemplate({ display_order: 0, is_active: true }));
+      const wrap = document.getElementById("productsAdmin");
+      const emptyHint = wrap.querySelector(".admin-empty-hint");
+      if (emptyHint) wrap.innerHTML = "";
+      wrap.insertAdjacentHTML("beforeend", productTemplate({ display_order: 0, is_active: true }));
     }
     if (event.target.id === "addFeature") {
       document.getElementById("featuresAdmin").insertAdjacentHTML("beforeend", featureTemplate({ display_order: 0, is_active: true }));
+    }
+    if (event.target.id === "addGalleryImage") {
+      document.getElementById("galleryAdmin").insertAdjacentHTML("beforeend", galleryTemplate({ display_order: 0, is_active: true }));
     }
     if (event.target.matches("[data-save-product]")) {
       try { await saveProduct(event.target.closest(".product-row")); } catch (error) { showNotice("products", error.message, false); }
@@ -387,20 +497,37 @@ function setupEvents() {
     if (event.target.matches("[data-save-feature]")) {
       try { await saveFeature(event.target.closest(".feature-row")); } catch (error) { showNotice("features", error.message, false); }
     }
+    if (event.target.matches("[data-toggle-feature]")) {
+      try { await toggleFeatureActive(event.target.closest(".feature-row")); } catch (error) { showNotice("features", error.message, false); }
+    }
+    if (event.target.matches("[data-save-gallery]")) {
+      try { await saveGalleryRow(event.target.closest(".gallery-row")); } catch (error) { showNotice("gallery", error.message, false); }
+    }
+    if (event.target.matches("[data-toggle-gallery]")) {
+      try { await toggleGalleryActive(event.target.closest(".gallery-row")); } catch (error) { showNotice("gallery", error.message, false); }
+    }
+    if (event.target.matches("[data-delete-gallery]")) {
+      try { await deleteGalleryRow(event.target.closest(".gallery-row")); } catch (error) { showNotice("gallery", error.message, false); }
+    }
   });
 
   document.addEventListener("change", async (event) => {
     const fileInput = event.target;
-    if (!fileInput.matches("[data-upload], [data-product-upload], [data-feature-upload]")) return;
+    if (!fileInput.matches("[data-upload], [data-product-upload], [data-product-card-upload], [data-feature-upload], [data-gallery-upload]")) return;
     const file = fileInput.files && fileInput.files[0];
     if (!file) return;
     const preview = fileInput.closest("label, .image-tools").querySelector(".preview") || document.querySelector(`[data-preview="${fileInput.dataset.upload}"]`);
     if (preview) preview.src = URL.createObjectURL(file);
     try {
       const url = await uploadImageAsWebP(file, fileInput.dataset.folder, fileInput.dataset.maxWidth);
-      const targetInput = fileInput.dataset.upload
-        ? document.querySelector(`[data-setting="${fileInput.dataset.upload}"]`)
-        : fileInput.parentElement.querySelector('[data-field="image_url"]');
+      let targetInput = null;
+      if (fileInput.dataset.upload) {
+        targetInput = document.querySelector(`[data-setting="${fileInput.dataset.upload}"]`);
+      } else if (fileInput.matches("[data-product-card-upload]")) {
+        targetInput = fileInput.closest(".image-tools")?.parentElement?.querySelector('[data-field="card_image_url"]');
+      } else {
+        targetInput = fileInput.parentElement.querySelector('[data-field="image_url"]');
+      }
       if (targetInput) targetInput.value = url;
       if (preview) preview.src = url;
     } catch (error) {
