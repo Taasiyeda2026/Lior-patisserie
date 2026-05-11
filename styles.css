@@ -4038,10 +4038,10 @@ html.hero-locked .home-products {
 .home-opening-copy h1 + .products-intro-text {
   max-width: 620px;
   margin: 0 auto;
-  color: var(--color-lilac-muted);
-  font-size: 12px;
-  font-weight: 300;
-  line-height: 1.75;
+  color: #4a3358;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.78;
 }
 
 .trust-badge {
