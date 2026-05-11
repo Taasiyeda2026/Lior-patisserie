@@ -3785,6 +3785,26 @@ body {
   color: var(--color-aubergine);
 }
 
+.nav-links .hero-scroll-link,
+.nav-brand.hero-scroll-link {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  animation: none !important;
+  text-shadow: none !important;
+  backdrop-filter: none !important;
+  min-height: unset !important;
+  line-height: inherit !important;
+  white-space: nowrap;
+}
+
+.nav-links .hero-scroll-link::after,
+.nav-brand.hero-scroll-link::after {
+  content: none !important;
+}
+
 .nav-cta {
   justify-self: end;
   min-height: 30px;
@@ -3909,15 +3929,7 @@ html.hero-locked .home-products {
   line-height: 1.8;
 }
 
-.hero-actions {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-top: 26px;
-}
-
 .btn,
-.hero-actions .btn,
 .final .btn,
 .order-submit,
 .order-continue,
@@ -3935,12 +3947,6 @@ html.hero-locked .home-products {
   color: var(--color-aubergine-dark);
 }
 
-.hero-secondary,
-.home-hero .btn.secondary {
-  background: transparent;
-  border-color: rgba(248, 244, 238, 0.72);
-  color: var(--color-cream);
-}
 
 .btn:hover,
 .final .btn:hover,
@@ -4536,10 +4542,6 @@ html.hero-locked .home-products {
     font-size: 12px;
   }
 
-  .hero-actions {
-    flex-wrap: wrap;
-  }
-
   .home-opening {
     padding-block: 2.1rem 2.35rem;
   }
@@ -4624,14 +4626,6 @@ html.hero-locked .home-products {
     line-height: 1.6;
   }
 
-  .hero-actions {
-    margin-top: 18px;
-  }
-
-  .hero-actions .btn {
-    min-height: 34px;
-    padding: 8px 14px;
-  }
 
   .products-grid,
   .home-opening .products-grid {
