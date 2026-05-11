@@ -2089,15 +2089,15 @@
       bottom: calc(100% + 8px);
       left: 50%;
       z-index: 40;
-      width: max-content;
-      max-width: min(640px, calc(100vw - 28px));
-      padding: 8px 14px;
-      border-radius: 999px;
-      background: rgba(255, 249, 242, 0.94);
-      border: 1px solid rgba(61, 34, 73, 0.12);
+      width: fit-content;
+      max-width: min(620px, calc(100vw - 24px));
+      padding: 5px 10px;
+      border-radius: 14px;
+      background: rgba(248, 243, 236, 0.97);
+      border: 1px solid rgba(61, 22, 80, 0.14);
       box-shadow:
-        0 10px 28px rgba(47, 33, 28, 0.1),
-        0 2px 8px rgba(61, 34, 73, 0.06);
+        0 6px 18px rgba(61, 22, 80, 0.07),
+        0 1px 4px rgba(61, 22, 80, 0.05);
       opacity: 0;
       visibility: hidden;
       transform: translateX(-50%) translateY(6px);
@@ -2120,17 +2120,18 @@
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      gap: 0.2rem 0.15rem;
+      gap: 0.15rem 0.35rem;
       margin: 0;
       padding: 0;
     }
 
     .footer-legal-popnav .footer-legal-doc-link:not(:first-child)::before {
-      content: "·";
+      content: "|";
       display: inline-block;
-      margin-inline-end: 0.5em;
-      color: rgba(47, 33, 28, 0.28);
-      font-weight: 400;
+      margin-inline-end: 0.42em;
+      color: rgba(61, 22, 80, 0.22);
+      font-weight: 300;
+      font-size: 0.72em;
       text-decoration: none;
       pointer-events: none;
     }
@@ -2198,9 +2199,9 @@
     }
 
     .footer-legal-doc-link {
-      font-size: 0.78rem;
-      line-height: 1.45;
-      color: rgba(74, 62, 58, 0.5);
+      font-size: 0.76rem;
+      line-height: 1.4;
+      color: rgba(61, 22, 80, 0.88);
       text-decoration: none;
       text-underline-offset: 2px;
       transition: color 0.18s ease, text-decoration-color 0.18s ease;
@@ -2210,23 +2211,26 @@
     @media (max-width: 520px) {
       .footer-legal-doc-link {
         white-space: normal;
+        text-align: center;
       }
 
       .footer-legal-popover {
-        border-radius: 18px;
-        padding: 10px 12px;
+        border-radius: 12px;
+        padding: 6px 9px;
+        max-width: calc(100vw - 20px);
       }
 
       .footer-legal-popnav {
-        gap: 0.35rem 0.2rem;
+        gap: 0.28rem 0.28rem;
+        max-width: 100%;
       }
     }
 
     .footer-legal-doc-link:hover {
-      color: rgba(74, 62, 58, 0.72);
+      color: rgba(61, 22, 80, 0.98);
       text-decoration: underline;
       text-decoration-thickness: 1px;
-      text-decoration-color: rgba(74, 62, 58, 0.22);
+      text-decoration-color: rgba(184, 148, 58, 0.45);
     }
 
     .footer-legal-doc-link:focus-visible {
