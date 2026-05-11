@@ -1,0 +1,150 @@
+Task:
+Perform a full design & usability refactor of the Admin area.
+Goal: turn the admin into a light, compact, fast management tool, not a marketing UI.
+Core Rule (Critical):
+Admin must feel like ~60% browser zoom at 100% zoom, achieved ONLY via real CSS.
+❌ Do NOT use zoom or transform: scale().
+
+1. Global Admin Scale
+Reduce overall size of:
+
+font-size
+padding
+margin
+gap
+border-radius (if needed)
+card width & height
+image previews
+icons
+buttons (keep click comfort)
+grid density
+
+Result: more content per screen, less scrolling.
+
+2. Admin Cards / Boxes
+
+Significantly reduce width & height
+Reduce internal padding
+Tighten spacing between fields, titles, buttons
+Slightly reduce text sizes if needed
+Smaller icons & image previews
+Buttons must stay accessible
+Show more data per screen
+Clean, light, not crowded
+
+
+3. Admin Grid
+
+Much smaller grid cards
+Reduced padding & gap
+Smaller text, icons, images
+Desktop: more cards per row
+Mobile: don’t shrink aggressively
+Must feel like management UI, not content cards
+
+
+4. “What Makes Us Special” – Admin Cards
+Mandatory layout:
+
+Desktop: 3 cards in one row
+Each card = one item
+Uniform width & height
+Compact padding & gap
+All 3 visible at once (no stacking on desktop)
+
+Each card must allow editing:
+
+Title
+Text
+Icon / image (if exists)
+Order (if exists)
+Active / inactive (if exists)
+Save / edit / delete actions
+
+Mobile: 1–2 cards per row as needed.
+
+5. Forms & Fields
+
+Reduce input height
+Reduce textarea height where possible
+Tighten label ↔ field spacing
+Tighten field ↔ field spacing
+Smaller buttons (still clickable)
+Avoid unnecessarily long forms
+Clear, readable, not cramped
+
+
+6. Images & Previews
+
+Smaller previews
+Maintain aspect ratio
+Never dominate card height
+Compact, clear previews
+Upload / replace / delete buttons stay accessible
+No tall cards due to images
+
+
+7. Buttons & Actions
+
+Reduce button height
+Reduce padding
+Keep text readable
+Keep hit-area usable
+Avoid buttons taking full rows unnecessarily
+Save / edit / delete must not clip
+
+
+8. Hierarchy & Scanability
+
+Subtle section headers
+Reduce oversized headings
+Clear hierarchy: title → field → text → action
+Maximize visible info per screen
+Minimize scrolling
+Avoid large empty spaces
+Avoid bloated cards
+Clean, professional admin feel
+
+
+9. Desktop vs Mobile
+Desktop:
+
+Strong compaction (60% zoom feel via CSS)
+
+Mobile:
+
+Less aggressive scaling
+Maintain readability & touch comfort
+
+Test:
+
+Desktop @100% zoom
+Tablet
+Mobile
+Forms
+Grids
+“What Makes Us Special” section
+Image previews
+Action buttons
+No layout breaks
+
+
+10. Final Validation (Required)
+
+No artificial zoom / scale
+Compact proportions achieved
+Less scrolling
+More info per screen
+“What Makes Us Special” = 3 cards in one row (desktop)
+Buttons still easy to click
+Texts readable
+Images controlled
+No overcrowding
+No excessive empty space
+Admin feels fast, light, efficient
+
+
+Final Requirement:
+Deliver a fully compact, CSS-based Admin redesign that visually matches ~60% browser zoom, without using zoom or scale.
+Reduce sizes of cards, boxes, forms, images, previews, buttons, and spacing.
+Ensure the “What Makes Us Special” admin cards appear 3 in a single row on desktop with fast, clear editing access.

@@ -1313,3 +1313,333 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+
+/* ═══════════════════════════════════════════════
+   COMPACT ADMIN – ~60% zoom feel via real CSS
+   ═══════════════════════════════════════════════ */
+
+body {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+h1 {
+  font-size: clamp(1.1rem, 2.2vw, 1.55rem);
+  margin-bottom: 2px;
+}
+
+h2, .section-heading h2 {
+  font-size: clamp(0.9rem, 1.5vw, 1.12rem);
+  margin-bottom: 1px;
+}
+
+h3 { font-size: 0.88rem; }
+
+p { margin-bottom: 0; }
+
+.admin-shell {
+  width: min(1120px, calc(100% - 24px));
+  padding: clamp(8px, 1.4vw, 14px) 0 24px;
+}
+
+.admin-hero {
+  padding: clamp(8px, 1.4vw, 12px);
+  margin-bottom: 8px;
+  border-radius: 22px;
+  gap: 10px;
+}
+
+.admin-logo {
+  width: clamp(40px, 4vw, 52px);
+}
+
+.eyebrow,
+.section-number {
+  font-size: 0.66rem;
+  margin-bottom: 3px;
+}
+
+.admin-tabs {
+  gap: 4px;
+  margin: 0 0 8px;
+  padding: 5px;
+  border-radius: 999px;
+  box-shadow: 0 6px 18px rgba(47, 33, 28, 0.08);
+}
+
+.admin-tabs a {
+  min-height: 26px;
+  font-size: 0.76rem;
+  padding: 2px 6px;
+}
+
+.ghost-link,
+.admin-button {
+  min-height: 26px;
+  padding: 4px 11px;
+  font-size: 0.76rem;
+  gap: 4px;
+  box-shadow:
+    0 5px 14px rgba(47, 33, 28, 0.16),
+    0 2px 0 rgba(35, 19, 42, 0.60),
+    inset 0 1px 0 rgba(255, 255, 255, 0.16);
+}
+
+.editor-card,
+.login-card {
+  padding: clamp(10px, 1.4vw, 14px);
+  border-radius: 16px;
+  margin-bottom: 8px;
+  max-width: 640px;
+  box-shadow: 0 8px 22px rgba(47, 33, 28, 0.08);
+}
+
+.section-heading {
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.section-number {
+  min-width: 28px;
+  min-height: 28px;
+  font-size: 0.66rem;
+}
+
+.grid,
+.login-form {
+  gap: 7px;
+}
+
+.field-label {
+  gap: 3px;
+  font-size: 0.8rem;
+}
+
+input,
+textarea,
+select {
+  border-radius: 8px;
+  padding: 5px 9px;
+  font-size: 0.82rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="url"],
+input[type="tel"],
+input[type="date"],
+select {
+  height: 32px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+textarea {
+  min-height: 56px;
+  padding-top: 6px;
+  padding-bottom: 6px;
+}
+
+.hint {
+  font-size: 0.74rem;
+}
+
+.actions-row,
+.subsection-head,
+.top-action {
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.subsection-head {
+  margin-top: 12px;
+  padding-top: 10px;
+}
+
+.subsection-head h3 {
+  font-size: 0.92rem;
+}
+
+.stack-list {
+  gap: 7px;
+  margin-top: 8px;
+}
+
+.product-row,
+.feature-row {
+  padding: 9px 10px;
+  border-radius: 12px;
+  box-shadow: 0 6px 16px rgba(47, 33, 28, 0.06);
+}
+
+.product-actions {
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.image-grid {
+  gap: 8px;
+}
+
+.image-card,
+.image-tools {
+  padding: 8px;
+  border-radius: 11px;
+}
+
+.image-tools {
+  grid-template-columns: 80px 1fr;
+  gap: 8px;
+}
+
+.admin-preview-shell {
+  width: 80px;
+  max-width: 80px;
+  min-height: 60px;
+  border-radius: 9px;
+}
+
+.admin-preview-shell.has-image .preview,
+.preview {
+  width: 80px;
+  max-width: 80px;
+  height: 60px;
+  border-radius: 8px;
+}
+
+.admin-preview-placeholder {
+  font-size: 0.62rem;
+  padding: 5px 4px;
+  border-radius: 8px;
+}
+
+.notice {
+  min-height: 28px;
+  padding: 5px 10px;
+  font-size: 0.78rem;
+  border-radius: 9px;
+}
+
+/* ── Features ("What Makes Us Special") – 3 columns on desktop ── */
+#featuresAdmin {
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+}
+
+#featuresAdmin .feature-row {
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+#featuresAdmin .feature-row .grid {
+  grid-template-columns: 1fr;
+  gap: 6px;
+}
+
+#featuresAdmin .feature-row .product-actions {
+  flex-direction: column;
+  gap: 5px;
+  margin-top: 6px;
+}
+
+#featuresAdmin .feature-row .product-actions .admin-button {
+  width: 100%;
+}
+
+#featuresAdmin .feature-row textarea {
+  min-height: 48px;
+}
+
+/* ── Products panel wider ── */
+#productsPanel {
+  max-width: 100%;
+}
+
+#productsPanel > .section-heading,
+#productsPanel > .top-action,
+#productsPanel > .products-admin-grid {
+  max-width: none;
+}
+
+/* ── editor-card inner content width ── */
+.editor-card > .grid,
+.editor-card > .image-grid,
+.editor-card > .section-fields,
+.editor-card > .actions-row,
+.editor-card > .subsection-head,
+.editor-card > .stack-list,
+.editor-card > .notice,
+.editor-card > .hint {
+  max-width: 100%;
+}
+
+/* ── product drawer compact ── */
+.product-drawer-header {
+  padding: 10px 13px;
+}
+
+.product-drawer-title {
+  font-size: 0.92rem;
+}
+
+.product-drawer-body {
+  padding: 10px 13px 18px;
+}
+
+.product-drawer-fields {
+  gap: 8px;
+}
+
+.product-drawer-actions {
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 12px;
+}
+
+.product-drawer-close {
+  width: 32px;
+  height: 32px;
+  font-size: 1.1rem;
+  border-radius: 9px;
+}
+
+.product-drawer .admin-preview-shell {
+  min-height: 130px;
+}
+
+.product-drawer .admin-preview-shell .preview {
+  height: 160px;
+  max-height: 200px;
+}
+
+/* ── Mobile: less aggressive ── */
+@media (max-width: 860px) {
+  #featuresAdmin {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  body {
+    font-size: 13.5px;
+  }
+}
+
+@media (max-width: 560px) {
+  #featuresAdmin {
+    grid-template-columns: 1fr;
+  }
+
+  body {
+    font-size: 14px;
+  }
+
+  .admin-tabs {
+    grid-template-columns: repeat(2, 1fr);
+    border-radius: 16px;
+  }
+}
