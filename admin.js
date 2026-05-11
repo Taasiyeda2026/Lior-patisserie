@@ -101,13 +101,95 @@ function client() {
   return supabaseClient;
 }
 
+/** Same legacy rule as site-content: *-card.webp → *.webp under cards/. */
+function remapLegacyAdminImagePath(path) {
+  return String(path || "").trim().replace(/A(\d+)-card\.webp$/i, "A$1.webp");
+}
+
+/** Resolve admin/public display URL (https, /, prdimages/, assets/, bare filename → prdimages/). */
+function adminMediaPreviewUrl(raw) {
+  const s = remapLegacyAdminImagePath(String(raw || "").trim());
+  if (!s) return "";
+  if (typeof window.normalizeImagePath === "function") return window.normalizeImagePath(s);
+  if (/^https?:\/\//i.test(s) || s.startsWith("//") || s.startsWith("/")) return s;
+  if (/^prdimages\//i.test(s)) return s.replace(/^prdimages\//i, "prdimages/");
+  if (/^(assets|images|attached_assets)\//i.test(s)) return s;
+  return `prdimages/${s}`;
+}
+
 function adminPreviewSrc(url, placeholder = "assets/logo.png") {
   const raw = String(url || "").trim();
   if (!raw) return placeholder;
-  if (typeof window.normalizeImagePath === "function") return window.normalizeImagePath(raw);
-  if (/^https?:\/\//i.test(raw) || raw.startsWith("//") || raw.startsWith("/")) return raw;
-  if (raw.startsWith("prdimages/")) return raw;
-  return `prdimages/${raw}`;
+  return adminMediaPreviewUrl(raw) || placeholder;
+}
+
+function getAdminPreviewShellRaw(shell) {
+  if (!shell) return "";
+  const row = shell.closest(".product-row, .feature-row, .gallery-row");
+  if (shell.dataset.previewField) {
+    const tools = shell.closest(".image-tools");
+    const primary = tools?.querySelector(`[data-field="${shell.dataset.previewField}"]`);
+    let raw = primary ? primary.value.trim() : "";
+    if (!raw && shell.dataset.previewFallbackField) {
+      const fb = row?.querySelector(`[data-field="${shell.dataset.previewFallbackField}"]`);
+      if (fb) raw = fb.value.trim();
+    }
+    return raw;
+  }
+  if (shell.dataset.settingPreview) {
+    const input = shell.closest("label")?.querySelector(`[data-setting="${shell.dataset.settingPreview}"]`);
+    return input ? input.value.trim() : "";
+  }
+  return "";
+}
+
+function syncAdminPreviewShell(shell) {
+  if (!shell) return;
+  const img = shell.querySelector(".preview");
+  const ph = shell.querySelector(".admin-preview-placeholder");
+  if (!img || !ph) return;
+
+  const raw = getAdminPreviewShellRaw(shell);
+  const url = adminMediaPreviewUrl(raw);
+
+  img.onload = null;
+  img.onerror = null;
+
+  if (!url) {
+    img.removeAttribute("src");
+    img.alt = "";
+    shell.classList.remove("has-image");
+    ph.hidden = false;
+    return;
+  }
+
+  img.onload = function () {
+    if (img.naturalWidth > 0) {
+      shell.classList.add("has-image");
+      ph.hidden = true;
+    }
+  };
+  img.onerror = function () {
+    img.removeAttribute("src");
+    shell.classList.remove("has-image");
+    ph.hidden = false;
+  };
+
+  shell.classList.remove("has-image");
+  ph.hidden = true;
+
+  if (img.getAttribute("src") === url && img.complete && img.naturalWidth > 0) {
+    shell.classList.add("has-image");
+    ph.hidden = true;
+    return;
+  }
+
+  img.src = url;
+}
+
+function initAdminPreviewShells(root) {
+  const el = root && root.querySelectorAll ? root : document;
+  el.querySelectorAll(".admin-preview-shell").forEach(syncAdminPreviewShell);
 }
 
 function showNotice(scope, message, ok = true) {
@@ -222,9 +304,8 @@ async function loadSettings() {
   (data || []).forEach((row) => {
     const input = document.querySelector(`[data-setting="${row.key}"]`);
     if (input) input.value = row.value || "";
-    const preview = document.querySelector(`[data-preview="${row.key}"]`);
-    if (preview && row.value) preview.src = adminPreviewSrc(row.value);
   });
+  document.querySelectorAll(".admin-preview-shell[data-setting-preview]").forEach(syncAdminPreviewShell);
 }
 
 async function saveSettings(scope = "hero-settings", root = document) {
@@ -253,7 +334,10 @@ function productTemplate(product = {}) {
       <label class="field-label">תיאור <textarea data-field="description">${escapeHtml(product.description || "")}</textarea></label>
       <label class="field-label wide">תמונה מלאה
         <div class="image-tools">
-          <img class="preview" src="${escapeHtml(adminPreviewSrc(product.image_url))}" alt="Preview">
+          <div class="admin-preview-shell" data-preview-field="image_url">
+            <img class="preview" alt="">
+            <span class="admin-preview-placeholder">אין תמונה זמינה</span>
+          </div>
           <div>
             <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה מלאה">
             <input data-product-upload data-folder="products" data-max-width="900" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
@@ -262,7 +346,10 @@ function productTemplate(product = {}) {
       </label>
       <label class="field-label wide">תמונת כרטיס
         <div class="image-tools">
-          <img class="preview" src="${escapeHtml(adminPreviewSrc(product.card_image_url || product.image_url))}" alt="Preview">
+          <div class="admin-preview-shell" data-preview-field="card_image_url" data-preview-fallback-field="image_url">
+            <img class="preview" alt="">
+            <span class="admin-preview-placeholder">אין תמונה זמינה</span>
+          </div>
           <div>
             <input data-field="card_image_url" value="${escapeHtml(product.card_image_url || "")}" placeholder="כתובת תמונה או העלאה">
             <input data-product-card-upload data-folder="products" data-max-width="900" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
@@ -292,6 +379,7 @@ async function loadProducts() {
   }
 
   container.innerHTML = supabaseProducts.map(productTemplate).join("");
+  initAdminPreviewShells(container);
 }
 
 async function saveProduct(row) {
@@ -340,7 +428,10 @@ function featureTemplate(feature = {}) {
       <label class="field-label">טקסט <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
       <label class="field-label wide">תמונה (אופציונלי)
         <div class="image-tools">
-          <img class="preview" src="${escapeHtml(adminPreviewSrc(feature.image_url))}" alt="Preview">
+          <div class="admin-preview-shell" data-preview-field="image_url">
+            <img class="preview" alt="">
+            <span class="admin-preview-placeholder">אין תמונה זמינה</span>
+          </div>
           <div>
             <input data-field="image_url" value="${escapeHtml(feature.image_url || "")}" placeholder="כתובת תמונה">
             <input data-feature-upload data-folder="icons" data-max-width="500" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
@@ -366,7 +457,10 @@ function galleryTemplate(imageRow = {}) {
       <label class="field-label wide">טקסט חלופי (alt) <input data-field="alt_text" value="${escapeHtml(imageRow.alt_text || "")}" placeholder="תיאור לנגישות"></label>
       <label class="field-label wide">תמונה
         <div class="image-tools">
-          <img class="preview" src="${escapeHtml(adminPreviewSrc(imageRow.image_url))}" alt="Preview">
+          <div class="admin-preview-shell" data-preview-field="image_url">
+            <img class="preview" alt="">
+            <span class="admin-preview-placeholder">אין תמונה זמינה</span>
+          </div>
           <div>
             <input data-field="image_url" value="${escapeHtml(imageRow.image_url || "")}" placeholder="כתובת תמונה">
             <input data-gallery-upload data-folder="gallery" data-max-width="1200" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
@@ -385,7 +479,9 @@ function galleryTemplate(imageRow = {}) {
 async function loadFeatures() {
   const { data, error } = await client().from("site_features").select("*").order("display_order", { ascending: true });
   if (error) throw error;
-  document.getElementById("featuresAdmin").innerHTML = (data || []).map(featureTemplate).join("");
+  const featEl = document.getElementById("featuresAdmin");
+  featEl.innerHTML = (data || []).map(featureTemplate).join("");
+  initAdminPreviewShells(featEl);
 }
 
 async function saveFeature(row) {
@@ -433,6 +529,7 @@ async function loadGalleryImages() {
   const el = document.getElementById("galleryAdmin");
   if (!el) return;
   el.innerHTML = (data || []).map(galleryTemplate).join("");
+  initAdminPreviewShells(el);
 }
 
 async function saveGalleryRow(row) {
@@ -590,12 +687,20 @@ function setupEvents() {
       const emptyHint = wrap.querySelector(".admin-empty-hint");
       if (emptyHint) wrap.innerHTML = "";
       wrap.insertAdjacentHTML("beforeend", productTemplate({ display_order: 0, is_active: true }));
+      const row = wrap.querySelector(".product-row:last-of-type");
+      if (row) initAdminPreviewShells(row);
     }
     if (event.target.id === "addFeature") {
-      document.getElementById("featuresAdmin").insertAdjacentHTML("beforeend", featureTemplate({ display_order: 0, is_active: true }));
+      const wrap = document.getElementById("featuresAdmin");
+      wrap.insertAdjacentHTML("beforeend", featureTemplate({ display_order: 0, is_active: true }));
+      const row = wrap.querySelector(".feature-row:last-of-type");
+      if (row) initAdminPreviewShells(row);
     }
     if (event.target.id === "addGalleryImage") {
-      document.getElementById("galleryAdmin").insertAdjacentHTML("beforeend", galleryTemplate({ display_order: 0, is_active: true }));
+      const wrap = document.getElementById("galleryAdmin");
+      wrap.insertAdjacentHTML("beforeend", galleryTemplate({ display_order: 0, is_active: true }));
+      const row = wrap.querySelector(".gallery-row:last-of-type");
+      if (row) initAdminPreviewShells(row);
     }
     if (event.target.matches("[data-save-product]")) {
       try { await saveProduct(event.target.closest(".product-row")); } catch (error) { showNotice("products", error.message, false); }
@@ -620,27 +725,68 @@ function setupEvents() {
     }
   });
 
+  document.addEventListener("input", (event) => {
+    const input = event.target;
+    if (input.matches("[data-field]") && ["image_url", "card_image_url"].includes(input.dataset.field)) {
+      const row = input.closest(".product-row, .feature-row, .gallery-row");
+      if (row) initAdminPreviewShells(row);
+      return;
+    }
+    if (input.matches("[data-setting]") && (input.dataset.setting === "hero_image" || input.dataset.setting === "hero_logo_image")) {
+      const shell = document.querySelector(`.admin-preview-shell[data-setting-preview="${input.dataset.setting}"]`);
+      if (shell) syncAdminPreviewShell(shell);
+    }
+  });
+
   document.addEventListener("change", async (event) => {
     const fileInput = event.target;
     if (!fileInput.matches("[data-upload], [data-product-upload], [data-product-card-upload], [data-feature-upload], [data-gallery-upload]")) return;
     const file = fileInput.files && fileInput.files[0];
     if (!file) return;
-    const preview = fileInput.closest("label, .image-tools").querySelector(".preview") || document.querySelector(`[data-preview="${fileInput.dataset.upload}"]`);
-    if (preview) preview.src = URL.createObjectURL(file);
+
+    const tools = fileInput.closest(".image-tools");
+    const shellFromRow = tools?.querySelector(".admin-preview-shell");
+    const settingKey = fileInput.dataset.upload;
+    const settingImg = settingKey ? document.querySelector(`[data-preview="${settingKey}"]`) : null;
+    const settingShell = settingImg?.closest(".admin-preview-shell");
+
+    const blobUrl = URL.createObjectURL(file);
+    const previewImg = shellFromRow?.querySelector(".preview") || settingImg;
+    if (previewImg) {
+      previewImg.src = blobUrl;
+      if (shellFromRow) {
+        shellFromRow.classList.add("has-image");
+        const ph = shellFromRow.querySelector(".admin-preview-placeholder");
+        if (ph) ph.hidden = true;
+      }
+    }
+
     try {
       const url = await uploadImageAsWebP(file, fileInput.dataset.folder, fileInput.dataset.maxWidth);
       let targetInput = null;
       if (fileInput.dataset.upload) {
         targetInput = document.querySelector(`[data-setting="${fileInput.dataset.upload}"]`);
       } else if (fileInput.matches("[data-product-card-upload]")) {
-        targetInput = fileInput.closest(".image-tools")?.parentElement?.querySelector('[data-field="card_image_url"]');
+        targetInput = fileInput.closest(".image-tools")?.querySelector('[data-field="card_image_url"]');
       } else {
         targetInput = fileInput.parentElement.querySelector('[data-field="image_url"]');
       }
       if (targetInput) targetInput.value = String(url || "").trim();
-      if (preview) preview.src = String(url || "").trim();
+      if (shellFromRow) syncAdminPreviewShell(shellFromRow);
+      else if (settingShell) syncAdminPreviewShell(settingShell);
+      else if (settingImg && url) {
+        settingImg.src = String(url).trim();
+      }
+      requestAnimationFrame(() => {
+        try {
+          URL.revokeObjectURL(blobUrl);
+        } catch {
+        }
+      });
     } catch (error) {
       showUploadMessage(error.message || "העלאת התמונה נכשלה", false);
+      if (shellFromRow) syncAdminPreviewShell(shellFromRow);
+      else if (settingShell) syncAdminPreviewShell(settingShell);
     }
   });
 }

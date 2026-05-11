@@ -69,13 +69,19 @@
         </div>
         <div class="image-grid">
           <label class="field-label image-card">תמונת פתיחה
-            <img class="preview" data-preview="hero_image" src="prdimages/A7405559-hero.webp" alt="תצוגה מקדימה לתמונת פתיחה">
-            <input data-setting="hero_image" type="url" placeholder="prdimages/A7405559-hero.webp">
+            <div class="admin-preview-shell admin-preview-shell--card" data-setting-preview="hero_image">
+              <img class="preview" data-preview="hero_image" alt="תצוגה מקדימה לתמונת פתיחה">
+              <span class="admin-preview-placeholder">אין תמונה זמינה</span>
+            </div>
+            <input data-setting="hero_image" type="url" placeholder="A7405559-hero.png או כתובת מלאה">
             <input data-upload="hero_image" data-folder="hero" data-max-width="1600" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
             <span class="hint">אם השדה ריק, האתר יציג את תמונת הפתיחה הקבועה.</span>
           </label>
           <label class="field-label image-card">לוגו
-            <img class="preview logo-preview" data-preview="hero_logo_image" src="assets/logo.png" alt="תצוגה מקדימה ללוגו">
+            <div class="admin-preview-shell admin-preview-shell--card" data-setting-preview="hero_logo_image">
+              <img class="preview logo-preview" data-preview="hero_logo_image" alt="תצוגה מקדימה ללוגו">
+              <span class="admin-preview-placeholder">אין תמונה זמינה</span>
+            </div>
             <input data-setting="hero_logo_image" type="url" placeholder="assets/logo.png">
             <input data-upload="hero_logo_image" data-folder="logo" data-max-width="600" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
           </label>
