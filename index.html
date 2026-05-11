@@ -27,7 +27,7 @@
 
   <link rel="preload" as="image" href="prdimages/A7405559-hero.png" fetchpriority="high">
 
-  <link rel="stylesheet" href="styles.css?v=10">
+  <link rel="stylesheet" href="styles.css?v=11">
   <link rel="stylesheet" href="hero-fix.css?v=10">
   <style>
     /* Layout reset — overrides legacy body padding from old CSS layer */
@@ -145,8 +145,14 @@
       <section class="editorial site-section features-section" id="about">
         <div class="container">
           <div class="editorial-card reveal">
-            <div class="editorial-img">
-              <img data-img="A7405048.JPG" data-cms-image="handmade_image" alt="עבודת יד וקינוח בעיצוב אישי" width="1200" height="1800" loading="lazy" decoding="async">
+            <div class="editorial-video">
+              <video
+                src="https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-videos/lior-bakery-video.mp4"
+                controls
+                preload="metadata"
+                playsinline
+                aria-label="סרטון המאפייה של Lior's Pâtisserie"
+              ></video>
             </div>
             <div class="editorial-text">
               <div class="section-label" data-content-key="handmade_label">- עבודת יד -</div>
@@ -202,6 +208,9 @@
                   </div>
                   <h3>חגיגי ומפנק</h3>
                   <p>נראות חגיגית מוקפדת שמתאימת לאירוח, מתנה או פינוק אישי.</p>
+                </article>
+                <article class="detail-card detail-card--image reveal">
+                  <img data-img="A7405048.JPG" data-cms-image="handmade_image" alt="עבודת יד וקינוח בעיצוב אישי" loading="lazy" decoding="async">
                 </article>
               </div>
             </div>
