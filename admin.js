@@ -103,7 +103,7 @@ async function convertImageToWebP(file, maxWidth) {
 
 async function uploadImageAsWebP(file, folder, maxWidth) {
   if (!file) return "";
-  if (!/image\/(png|jpeg|webp)/.test(file.type)) {
+  if (!/^image\/(png|jpe?g|webp)$/i.test(file.type || "")) {
     throw new Error("ניתן להעלות רק PNG, JPG, JPEG או WEBP");
   }
 
@@ -528,8 +528,8 @@ function setupEvents() {
       } else {
         targetInput = fileInput.parentElement.querySelector('[data-field="image_url"]');
       }
-      if (targetInput) targetInput.value = url;
-      if (preview) preview.src = url;
+      if (targetInput) targetInput.value = String(url || "").trim();
+      if (preview) preview.src = String(url || "").trim();
     } catch (error) {
       showUploadMessage(error.message || "העלאת התמונה נכשלה", false);
     }

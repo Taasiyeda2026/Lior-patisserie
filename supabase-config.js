@@ -6,10 +6,16 @@
 
 /** Normalize repo-relative image refs without doubling `prdimages/`. */
 window.normalizeImagePath = function normalizeImagePath(value) {
-  const path = String(value || "").trim();
+  let path = String(value || "").trim().replace(/\\/g, "/");
   if (!path) return "";
+  path = path.replace(/^\.\/+/, "");
+  while (/^prdimages\/prdimages\//i.test(path)) {
+    path = path.replace(/^prdimages\//i, "");
+  }
   if (/^https?:\/\//i.test(path) || path.startsWith("//") || path.startsWith("/")) return path;
-  if (path.startsWith("prdimages/")) return path;
+  if (/^prdimages\//i.test(path)) {
+    return path.replace(/^prdimages\//i, "prdimages/");
+  }
   return `prdimages/${path}`;
 };
 

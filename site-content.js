@@ -103,9 +103,14 @@
     if (typeof window.normalizeImagePath === "function") {
       return window.normalizeImagePath(trimmed);
     }
-    if (/^https?:\/\//i.test(trimmed) || trimmed.startsWith("//") || trimmed.startsWith("/")) return trimmed;
-    if (trimmed.startsWith("prdimages/")) return trimmed;
-    return `prdimages/${trimmed}`;
+    let p = trimmed.replace(/\\/g, "/").replace(/^\.\/+/, "");
+    while (/^prdimages\/prdimages\//i.test(p)) {
+      p = p.replace(/^prdimages\//i, "");
+    }
+    if (!p) return "";
+    if (/^https?:\/\//i.test(p) || p.startsWith("//") || p.startsWith("/")) return p;
+    if (/^prdimages\//i.test(p)) return p.replace(/^prdimages\//i, "prdimages/");
+    return `prdimages/${p}`;
   }
 
   function setRemoteImageWithFallback(img, imageUrl) {
@@ -447,7 +452,7 @@
     };
 
     grid.innerHTML = activeItems.map((item) => {
-      const url = item.image_url.trim();
+      const url = normalizeProductMediaPath(item.image_url.trim());
       const altRaw = hasText(item.alt_text)
         ? item.alt_text.trim()
         : (hasText(item.title) ? item.title.trim() : "");
