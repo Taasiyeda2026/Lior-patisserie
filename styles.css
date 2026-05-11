@@ -3768,8 +3768,9 @@ main {
   font-family: var(--font-display);
   font-size: 16px;
   letter-spacing: 0.02em;
-  color: var(--color-aubergine);
+  color: rgba(248, 244, 238, 0.92);
   white-space: nowrap;
+  direction: ltr;
 }
 
 .nav-brand span:last-child {
@@ -3786,14 +3787,15 @@ main {
 .nav-links a {
   font-size: 12px;
   font-weight: 400;
-  color: var(--color-lilac-soft);
+  color: rgba(248, 244, 238, 0.88);
   letter-spacing: 0.04em;
   transition: color 0.18s ease;
+  text-shadow: 0 1px 4px rgba(0,0,0,0.25);
 }
 
 .nav-links a:hover,
 .nav-links a:focus-visible {
-  color: var(--color-aubergine);
+  color: var(--color-gold);
 }
 
 .nav-links .hero-scroll-link,
@@ -3864,20 +3866,20 @@ html.hero-locked .home-products {
 
 .hero-bg img {
   object-position: center center;
-  filter: saturate(0.95) contrast(1.0) brightness(1.0);
+  filter: saturate(0.97) contrast(1.0) brightness(1.08);
   transform: none;
 }
 
 .hero-bg::after {
   background:
-    radial-gradient(circle at 50% 38%, rgba(201, 160, 220, 0.05), transparent 34%),
-    linear-gradient(180deg, rgba(42, 26, 46, 0.30) 0%, rgba(42, 26, 46, 0.18) 45%, rgba(42, 26, 46, 0.40) 100%);
+    radial-gradient(circle at 50% 38%, rgba(201, 160, 220, 0.03), transparent 34%),
+    linear-gradient(180deg, rgba(42, 26, 46, 0.20) 0%, rgba(42, 26, 46, 0.10) 45%, rgba(42, 26, 46, 0.28) 100%);
 }
 
 .hero-brand-logo {
-  top: 22% !important;
-  width: clamp(116px, 13vw, 150px) !important;
-  opacity: 0.96;
+  top: 20% !important;
+  width: clamp(160px, 18vw, 210px) !important;
+  opacity: 0.98;
 }
 
 .hero-logo {
@@ -5012,12 +5014,12 @@ button[type="submit"]:hover {
 
 .section-nav .footer-legal-toggle {
   border-radius: 999px;
-  padding: 8px 12px;
-  font-size: 13px;
-  font-weight: 700;
+  padding: 5px 7px;
+  font-size: 9px;
+  font-weight: 600;
   color: #35193d;
   background: linear-gradient(135deg, #f1d179, #c99f3f);
-  box-shadow: 0 8px 18px rgba(95, 45, 110, 0.14);
+  box-shadow: 0 4px 10px rgba(95, 45, 110, 0.14);
   writing-mode: vertical-rl;
   text-orientation: mixed;
 }
