@@ -2,8 +2,11 @@
 --
 -- Safe to run on a project that already has edits:
 --   * site_settings: INSERT ... ON CONFLICT (key) DO NOTHING (never overwrites values).
---   * products, site_features, gallery_images: each row is inserted only if no row
---     exists with the same natural key (name / title / image_url). No DELETE.
+--   * products, site_features: each row is inserted only if no row exists with the
+--     same natural key (name / title). No DELETE.
+--
+--   * public.gallery_images: table may still exist in the schema but is not used by
+--     the site or admin; this seed file does not insert gallery rows.
 --
 -- Optional (not applied here): add UNIQUE constraints for stricter idempotent upserts, e.g.
 --   ALTER TABLE public.products ADD CONSTRAINT products_name_unique UNIQUE (name);
@@ -142,20 +145,3 @@ select 'חגיגי ומפנק',
   '', true, 2
 where not exists (select 1 from public.site_features f where f.title = 'חגיגי ומפנק');
 
--- ── gallery_images (paths point at static assets in the repo / CDN) ───────
-
-insert into public.gallery_images (title, image_url, alt_text, is_active, display_order)
-select 'במטבח', 'A7405048.JPG', 'עבודת יד וקינוח בעיצוב אישי', true, 0
-where not exists (select 1 from public.gallery_images g where g.image_url = 'A7405048.JPG');
-
-insert into public.gallery_images (title, image_url, alt_text, is_active, display_order)
-select 'קוקילוטוס', 'A7404990.jpg', 'עוגיית קוקילוטוס', true, 1
-where not exists (select 1 from public.gallery_images g where g.image_url = 'A7404990.jpg');
-
-insert into public.gallery_images (title, image_url, alt_text, is_active, display_order)
-select 'פיסטצ׳יו', 'A7404980.jpg', 'עוגיית פיסטוק', true, 2
-where not exists (select 1 from public.gallery_images g where g.image_url = 'A7404980.jpg');
-
-insert into public.gallery_images (title, image_url, alt_text, is_active, display_order)
-select 'שוקולד דובאי', 'A7404987.JPG', 'עוגיית שוקולד דובאי', true, 3
-where not exists (select 1 from public.gallery_images g where g.image_url = 'A7404987.JPG');

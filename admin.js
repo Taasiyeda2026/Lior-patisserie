@@ -137,7 +137,7 @@ function adminPreviewSrc(url, opts) {
 
 function getAdminPreviewShellRaw(shell) {
   if (!shell) return "";
-  const row = shell.closest(".product-row, .feature-row, .gallery-row, .product-drawer-form");
+  const row = shell.closest(".product-row, .feature-row, .product-drawer-form");
   if (shell.dataset.previewField) {
     const tools = shell.closest(".image-tools");
     const primary = tools?.querySelector(`[data-field="${shell.dataset.previewField}"]`);
@@ -299,7 +299,7 @@ async function uploadImageAsWebP(file, folder, maxWidth) {
 
   const converted = await convertImageToWebP(file, maxWidth);
   const finalName = converted.extension === "webp" ? cleanFileName(file.name) : `${cleanFileName(file.name).replace(/\.webp$/, "")}.${converted.extension}`;
-  const path = `${folder || "gallery"}/${finalName}`;
+  const path = `${folder || "uploads"}/${finalName}`;
   const { error } = await client().storage.from(BUCKET).upload(path, converted.blob, {
     contentType: converted.contentType,
     upsert: false
@@ -598,36 +598,6 @@ function featureTemplate(feature = {}) {
   </article>`;
 }
 
-function galleryTemplate(imageRow = {}) {
-  const id = imageRow.id || crypto.randomUUID();
-  const isActive = imageRow.is_active !== false;
-  return `<article class="gallery-row${isActive ? "" : " product-inactive"}" data-gallery-id="${id}">
-    <div class="grid">
-      <label class="field-label">כותרת (פנימית) <input data-field="title" value="${escapeHtml(imageRow.title || "")}" placeholder="כותרת"></label>
-      <label class="field-label">סדר <input data-field="display_order" type="number" value="${imageRow.display_order || 0}"></label>
-      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
-      <label class="field-label wide">טקסט חלופי (alt) <input data-field="alt_text" value="${escapeHtml(imageRow.alt_text || "")}" placeholder="תיאור לנגישות"></label>
-      <label class="field-label wide">תמונה
-        <div class="image-tools">
-          <div class="admin-preview-shell" data-preview-field="image_url">
-            <img class="preview" alt="">
-            <span class="admin-preview-placeholder">אין תמונה זמינה</span>
-          </div>
-          <div>
-            <input data-field="image_url" value="${escapeHtml(imageRow.image_url || "")}" placeholder="כתובת תמונה">
-            <input data-gallery-upload data-folder="gallery" data-max-width="1200" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
-          </div>
-        </div>
-      </label>
-    </div>
-    <div class="product-actions">
-      <button class="admin-button" type="button" data-save-gallery>שמירה</button>
-      <button class="admin-button ${isActive ? "muted" : "secondary"}" type="button" data-toggle-gallery data-active="${isActive}">${isActive ? "הסתר מהאתר" : "הצג באתר"}</button>
-      <button class="admin-button danger-outline" type="button" data-delete-gallery>מחיקה מהמסד</button>
-    </div>
-  </article>`;
-}
-
 async function loadFeatures() {
   const { data, error } = await client().from("site_features").select("*").order("display_order", { ascending: true });
   if (error) throw error;
@@ -672,66 +642,9 @@ function syncFeatureToggleUi(row, isActive) {
   btn.className = `admin-button ${isActive ? "muted" : "secondary"}`;
 }
 
-async function loadGalleryImages() {
-  const { data, error } = await client().from("gallery_images").select("*").order("display_order", { ascending: true });
-  if (error) {
-    showNotice("gallery", "שגיאה בטעינת הגלריה: " + error.message, false);
-    return;
-  }
-  const el = document.getElementById("galleryAdmin");
-  if (!el) return;
-  el.innerHTML = (data || []).map(galleryTemplate).join("");
-  initAdminPreviewShells(el);
-}
-
-async function saveGalleryRow(row) {
-  const payload = rowPayload(row, "gallery");
-  const { error } = await client().from("gallery_images").upsert(payload, { onConflict: "id" });
-  if (error) throw error;
-  row.classList.toggle("product-inactive", !payload.is_active);
-  syncGalleryToggleUi(row, payload.is_active);
-  showNotice("gallery", "תמונת הגלריה נשמרה");
-}
-
-async function toggleGalleryActive(row) {
-  const id = row.dataset.galleryId;
-  const btn = row.querySelector("[data-toggle-gallery]");
-  const select = row.querySelector('[data-field="is_active"]');
-  const currentActive = btn.dataset.active === "true";
-  const newActive = !currentActive;
-
-  const { error } = await client()
-    .from("gallery_images")
-    .update({ is_active: newActive, updated_at: new Date().toISOString() })
-    .eq("id", id);
-  if (error) throw error;
-
-  syncGalleryToggleUi(row, newActive);
-  if (select) select.value = String(newActive);
-  row.classList.toggle("product-inactive", !newActive);
-  showNotice("gallery", newActive ? "התמונה מוצגת באתר" : "התמונה הוסתרה מהאתר");
-}
-
-function syncGalleryToggleUi(row, isActive) {
-  const btn = row.querySelector("[data-toggle-gallery]");
-  if (!btn) return;
-  btn.dataset.active = String(isActive);
-  btn.textContent = isActive ? "הסתר מהאתר" : "הצג באתר";
-  btn.className = `admin-button ${isActive ? "muted" : "secondary"}`;
-}
-
-async function deleteGalleryRow(row) {
-  const id = row.dataset.galleryId;
-  if (!id || !window.confirm("למחוק תמונה זו לצמיתות מהמסד? פעולה זו אינה הפיכה.")) return;
-  const { error } = await client().from("gallery_images").delete().eq("id", id);
-  if (error) throw error;
-  row.remove();
-  showNotice("gallery", "התמונה נמחקה");
-}
-
 function rowPayload(row, type) {
   const payload = {
-    id: row.dataset.productId || row.dataset.featureId || row.dataset.galleryId,
+    id: row.dataset.productId || row.dataset.featureId,
     updated_at: new Date().toISOString()
   };
   row.querySelectorAll("[data-field]").forEach((input) => {
@@ -748,11 +661,6 @@ function rowPayload(row, type) {
     if (payload.price === undefined || payload.price === null) payload.price = "";
     else payload.price = String(payload.price).trim();
   }
-  if (type === "gallery") {
-    payload.title ||= "";
-    payload.alt_text ||= "";
-    payload.image_url ||= "";
-  }
   return payload;
 }
 
@@ -762,7 +670,7 @@ function escapeHtml(value) {
 
 async function initAdmin() {
   await loadSettings();
-  await Promise.all([loadProducts(), loadFeatures(), loadGalleryImages()]);
+  await Promise.all([loadProducts(), loadFeatures()]);
 }
 
 function setupEvents() {
@@ -866,12 +774,6 @@ function setupEvents() {
       const row = wrap.querySelector(".feature-row:last-of-type");
       if (row) initAdminPreviewShells(row);
     }
-    if (event.target.id === "addGalleryImage") {
-      const wrap = document.getElementById("galleryAdmin");
-      wrap.insertAdjacentHTML("beforeend", galleryTemplate({ display_order: 0, is_active: true }));
-      const row = wrap.querySelector(".gallery-row:last-of-type");
-      if (row) initAdminPreviewShells(row);
-    }
     if (event.target.matches("[data-save-product-drawer]")) {
       const form = document.getElementById("productDrawerForm");
       if (form) {
@@ -898,21 +800,12 @@ function setupEvents() {
     if (event.target.matches("[data-toggle-feature]")) {
       try { await toggleFeatureActive(event.target.closest(".feature-row")); } catch (error) { showNotice("features", error.message, false); }
     }
-    if (event.target.matches("[data-save-gallery]")) {
-      try { await saveGalleryRow(event.target.closest(".gallery-row")); } catch (error) { showNotice("gallery", error.message, false); }
-    }
-    if (event.target.matches("[data-toggle-gallery]")) {
-      try { await toggleGalleryActive(event.target.closest(".gallery-row")); } catch (error) { showNotice("gallery", error.message, false); }
-    }
-    if (event.target.matches("[data-delete-gallery]")) {
-      try { await deleteGalleryRow(event.target.closest(".gallery-row")); } catch (error) { showNotice("gallery", error.message, false); }
-    }
   });
 
   document.addEventListener("input", (event) => {
     const input = event.target;
     if (input.matches("[data-field]") && ["image_url", "card_image_url"].includes(input.dataset.field)) {
-      const row = input.closest(".product-row, .feature-row, .gallery-row, .product-drawer-form");
+      const row = input.closest(".product-row, .feature-row, .product-drawer-form");
       if (row) initAdminPreviewShells(row);
       return;
     }
@@ -924,7 +817,7 @@ function setupEvents() {
 
   document.addEventListener("change", async (event) => {
     const fileInput = event.target;
-    if (!fileInput.matches("[data-upload], [data-product-upload], [data-product-card-upload], [data-feature-upload], [data-gallery-upload]")) return;
+    if (!fileInput.matches("[data-upload], [data-product-upload], [data-product-card-upload], [data-feature-upload]")) return;
     const file = fileInput.files && fileInput.files[0];
     if (!file) return;
 
