@@ -71,6 +71,16 @@ ${productLine}
       return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
     }
 
+    /** General inquiry from the contact section (no cart / no product line). */
+    function buildGeneralWhatsAppUrl() {
+      const message = `שלום ליאור, אשמח להתייעץ לגבי הזמנה מ־Lior’s Pâtisserie.
+
+שם:
+טלפון:
+פרטים / שאלה:`;
+      return `https://wa.me/${normalizeWhatsappPhone(WHATSAPP_PHONE)}?text=${encodeURIComponent(message)}`;
+    }
+
     function imagePath(name) {
       return typeof window.normalizeImagePath === "function"
         ? window.normalizeImagePath(name)
@@ -305,6 +315,11 @@ ${productLine}
       document.querySelectorAll("[data-whatsapp]").forEach((link) => {
         if (link.hasAttribute("data-order")) return;
         link.href = getWhatsAppUrl();
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+      });
+      document.querySelectorAll("[data-contact-whatsapp]").forEach((link) => {
+        link.href = buildGeneralWhatsAppUrl();
         link.target = "_blank";
         link.rel = "noopener noreferrer";
       });
@@ -959,9 +974,11 @@ ${productLine}
       if (settings.whatsappNumber) {
         WHATSAPP_PHONE = String(settings.whatsappNumber).replace(/[^0-9]/g, "") || WHATSAPP_PHONE;
       }
+      setupWhatsappLinks();
     }
 
     window.setLiorContactSettings = setLiorContactSettings;
+    window.buildGeneralWhatsAppUrl = buildGeneralWhatsAppUrl;
     window.setImageWithFallback = setImageWithFallback;
     window.setupImages = setupImages;
     window.setupWhatsappLinks = setupWhatsappLinks;

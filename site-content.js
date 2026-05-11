@@ -166,12 +166,11 @@
         link.textContent = formatPhoneForDisplay(phone);
       });
 
-      document.querySelectorAll("[data-whatsapp], [data-order]").forEach((link) => {
-        if (!link.hasAttribute("data-order")) {
-          link.href = buildWhatsAppUrl(phone);
-          link.target = "_blank";
-          link.rel = "noopener noreferrer";
-        }
+      document.querySelectorAll("[data-whatsapp]").forEach((link) => {
+        if (link.hasAttribute("data-order")) return;
+        link.href = buildWhatsAppUrl(phone);
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
       });
     }
 
