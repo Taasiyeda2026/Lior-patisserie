@@ -1205,46 +1205,46 @@ textarea {
 }
 
 .products-admin-grid {
-  grid-template-columns: repeat(auto-fill, minmax(142px, 1fr));
-  gap: 9px;
+  grid-template-columns: repeat(auto-fill, minmax(108px, 1fr));
+  gap: 8px;
 }
 
 .product-grid-card {
-  border-radius: 13px;
-  box-shadow: 0 8px 20px rgba(47, 33, 28, 0.08);
+  border-radius: 11px;
+  box-shadow: 0 6px 16px rgba(47, 33, 28, 0.07);
 }
 
 .product-grid-card:hover {
-  box-shadow: 0 10px 24px rgba(47, 33, 28, 0.1);
+  box-shadow: 0 8px 20px rgba(47, 33, 28, 0.09);
 }
 
 .product-grid-card-visual {
-  border-radius: 12px 12px 0 0;
+  border-radius: 10px 10px 0 0;
 }
 
 .product-grid-card-noimg {
-  font-size: 0.68rem;
-  padding: 6px;
+  font-size: 0.62rem;
+  padding: 5px;
 }
 
 .product-grid-card-meta {
-  padding: 6px 8px 8px;
+  padding: 5px 7px 7px;
   gap: 1px;
 }
 
 .product-grid-card-name {
-  font-size: 0.76rem;
-  line-height: 1.22;
+  font-size: 0.70rem;
+  line-height: 1.2;
 }
 
 .product-grid-card-price {
-  font-size: 0.68rem;
+  font-size: 0.62rem;
 }
 
 .product-grid-card-badge {
-  margin-top: 3px;
-  font-size: 0.58rem;
-  padding: 2px 5px;
+  margin-top: 2px;
+  font-size: 0.54rem;
+  padding: 1px 4px;
 }
 
 @media (max-width: 860px) {

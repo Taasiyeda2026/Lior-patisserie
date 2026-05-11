@@ -1,0 +1,143 @@
+Task:
+Perform a full proportional CSS refactor for Lior’s Pâtisserie website, focusing on the “Our Flavors” page, continuation sections, and Admin grid.
+Core Goal (Mandatory):
+At desktop 100% zoom, the site must visually feel like the current design at 65–70% browser zoom, achieved only via proper CSS.
+❌ Do NOT use zoom, scale, or global transforms.
+
+1. Global Scale – “Our Flavors” Page
+
+Reduce product card width & height
+Reduce image height
+Reduce titles, descriptions, cart button
+Reduce internal padding
+Reduce spacing between image / title / text / button
+Reduce grid gap
+Desktop: compact catalog, more cards per row
+Mobile: keep usability, no aggressive shrinking
+Maintain readability and equal card heights per row
+
+
+2. Page Header (“Our Flavors”)
+
+Reduce vertical height
+Reduce spacing above/below title
+Tighten spacing between title, text, kosher badge, CTA
+Pull product grid upward
+Keep clean, premium look (no empty space blocks)
+
+
+3. Header CTA Button (“Order”)
+
+Slightly reduce height
+Soften border & shadow
+Balance vertical spacing
+Must integrate naturally, not act as a separator block
+
+
+4. Product Cards
+
+Smaller cards overall
+Smaller images (no aggressive cropping)
+Smaller text block under image
+Smaller flavor titles & descriptions
+Smaller cart button
+Reduced padding
+Equal height across grid rows
+
+
+5. Flavor Name Line Breaking (Critical)
+
+Titles max 2 lines
+If exceeds → ellipsis
+Consistent title height across cards
+Refine font-size + line-height (desktop)
+Prevent tall cards from long names
+Mobile: allow 2 balanced lines
+
+Guideline CSS example allowed
+
+6. Floating Cart (Right Side)
+
+Reposition so it never touches or covers content
+Add safe spacing from cards
+Adjust for mobile (no button obstruction)
+Keep usable but less intrusive
+
+
+7. Left Vertical Dots Navigation
+
+Reduce size and opacity OR
+Move further from content OR
+Hide on desktop if not valuable
+Hide completely on mobile
+
+
+8. “The Little Details That Make the Difference” Section
+
+Restore missing image on the right
+Left: title + 3 benefit cards
+No empty right space allowed
+Image: rounded corners, soft shadow, integrated look
+Desktop: content left / image right
+Mobile: image above or below
+If admin image missing → use fallback
+Set width, height, loading="lazy", decoding="async"
+Prevent CLS
+
+
+9. “Want to Order a Flavor You Liked?” Section
+
+Reduce section height
+Tighten spacing between title, text, contact card, CTA
+Slightly reduce contact card size
+Elegant, focused, compact
+Reduce gap before footer
+
+
+10. Footer
+
+Reduce height and internal padding
+Maintain readability
+Visually connect to order section
+
+
+11. Admin Grid (Mandatory)
+
+Reduce admin cards to ~75% of current size
+Smaller width, height, padding
+Slightly smaller text/icons if needed
+Reduce grid gap (still clear)
+Desktop: more cards per row
+Mobile: not overcrowded
+Must feel like management UI, not marketing cards
+
+
+12. Global Design Consistency
+
+Soft colors
+Light shadows
+Rounded corners
+Clear hierarchy
+Compact layout
+Fewer empty spaces
+Boutique, premium, organized feel
+
+
+13. Required Final Checks
+
+Desktop full width @100% zoom
+Mobile & tablet
+Our Flavors page
+Details section image present
+Order section
+Floating cart
+Long product names
+Equal card heights
+No missing images
+No large empty areas
+No CLS
+No broken buttons or ordering flow
+
+
+Final Requirement:
+Deliver a compact, premium, CSS-based proportional fix so the entire experience feels like the current site at 65–70% zoom, without using artificial zoom or scaling.
