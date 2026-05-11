@@ -201,7 +201,7 @@ ${productLine}
           <div class="signature-body">
             <h3>${product.name}</h3>
             <p>${product.description}</p>
-            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${product.name}" aria-label="הוספה לסל: ${product.name}">🛒</button>
+            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${product.name}" aria-label="הוספה לסל: ${product.name}">+</button>
             <div class="cart-feedback" aria-live="polite"></div>
           </div>
         </article>
@@ -228,7 +228,7 @@ ${productLine}
           <div class="product-body">
             <h3>${product.name}</h3>
             <p>${product.description}</p>
-            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${product.name}" aria-label="הוספה לסל: ${product.name}">🛒</button>
+            <button class="product-link add-to-cart-btn" type="button" data-add-to-cart data-product="${product.name}" aria-label="הוספה לסל: ${product.name}">+</button>
             <div class="cart-feedback" aria-live="polite"></div>
           </div>
         </article>
@@ -287,11 +287,11 @@ ${productLine}
               window.__liorImageObserver.unobserve(entry.target);
             }
           });
-        }, { rootMargin: "650px 0px", threshold: 0.01 });
+        }, { rootMargin: "1200px 0px", threshold: 0.01 });
       }
 
       images.forEach((img) => {
-        const shouldLoadImmediately = img.loading === "eager" || img.fetchPriority === "high";
+        const shouldLoadImmediately = img.loading === "eager" || img.getAttribute("fetchpriority") === "high" || img.fetchPriority === "high";
 
         if (img.dataset.imageReady === "true") {
           markReady(img);
@@ -948,13 +948,15 @@ ${productLine}
         statusEl.hidden = true;
         statusEl.textContent = "";
       }
+      const sameImageAlreadyLoaded = image.getAttribute("src") === url && image.complete && image.naturalWidth;
+
       lightbox.classList.remove("is-error");
-      lightbox.classList.add("is-loading");
+      lightbox.classList.toggle("is-loading", !sameImageAlreadyLoaded);
       lightbox.classList.add("is-open");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.classList.add("has-lightbox");
       image.alt = alt || "תמונה מהאתר";
-      image.classList.remove("is-loaded");
+      image.classList.toggle("is-loaded", sameImageAlreadyLoaded);
 
       image.onload = function () {
         lightbox.classList.remove("is-loading");
@@ -970,7 +972,9 @@ ${productLine}
         }
       };
 
-      image.src = url;
+      if (image.getAttribute("src") !== url) {
+        image.src = url;
+      }
 
       requestAnimationFrame(() => {
         if (closeBtn && typeof closeBtn.focus === "function") closeBtn.focus();
@@ -999,11 +1003,7 @@ ${productLine}
         statusEl.textContent = "";
       }
 
-      requestAnimationFrame(() => {
-        image.removeAttribute("src");
-        image.alt = "";
-        image.classList.remove("is-loaded");
-      });
+      image.alt = "";
 
       if (lightboxOpener && typeof lightboxOpener.focus === "function") {
         lightboxOpener.focus();
@@ -1024,8 +1024,7 @@ ${productLine}
         document.addEventListener("click", (event) => {
           const productImg = event.target.closest(".product-image img");
           if (productImg) {
-            const fullName = productImg.dataset.fullImage;
-            const src = fullName ? imagePath(fullName) : (productImg.currentSrc || productImg.src);
+            const src = productImg.currentSrc || productImg.src || imagePath(productImg.dataset.productImage || productImg.dataset.fullImage || "");
             openImageLightbox(src, productImg.alt || "");
           }
         });
