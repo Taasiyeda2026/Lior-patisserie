@@ -4325,6 +4325,10 @@ html.hero-locked .home-products {
 
 .final .section-label {
   color: var(--color-gold);
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  width: 100%;
 }
 
 .final h2 {
@@ -4910,6 +4914,8 @@ html.hero-locked .home-products {
   gap: 6px;
   direction: ltr;
   width: 100%;
+  border-bottom: none;
+  padding: 0;
 }
 
 .contact-icon {
