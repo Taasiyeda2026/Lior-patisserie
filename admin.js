@@ -120,10 +120,19 @@ function adminMediaPreviewUrl(raw) {
   return `prdimages/${s}`;
 }
 
-function adminPreviewSrc(url, placeholder = "assets/logo.png") {
+/**
+ * Resolve image refs for admin previews (normalizeImagePath via adminMediaPreviewUrl).
+ * Full Supabase/https URLs pass through; local filenames and paths are normalized.
+ * @param {string} url - raw DB value
+ * @param {{ whenEmpty?: string }} [opts] - default whenEmpty is assets/logo.png (settings); use "" for product/grid shells (text placeholder only).
+ */
+function adminPreviewSrc(url, opts) {
+  const whenEmpty =
+    opts && typeof opts === "object" && opts.whenEmpty !== undefined ? opts.whenEmpty : "assets/logo.png";
   const raw = String(url || "").trim();
-  if (!raw) return placeholder;
-  return adminMediaPreviewUrl(raw) || placeholder;
+  if (!raw) return whenEmpty;
+  const resolved = adminMediaPreviewUrl(raw);
+  return resolved || whenEmpty;
 }
 
 function getAdminPreviewShellRaw(shell) {
@@ -153,7 +162,7 @@ function syncAdminPreviewShell(shell) {
   if (!img || !ph) return;
 
   const raw = getAdminPreviewShellRaw(shell);
-  const url = adminMediaPreviewUrl(raw);
+  const url = adminPreviewSrc(raw, { whenEmpty: "" });
 
   img.onload = null;
   img.onerror = null;
@@ -359,7 +368,7 @@ function hydrateProductGridCards(container) {
       return;
     }
     const raw = String(product.card_image_url || "").trim() || String(product.image_url || "").trim();
-    const url = adminMediaPreviewUrl(raw);
+    const url = adminPreviewSrc(raw, { whenEmpty: "" });
     img.onload = null;
     img.onerror = null;
     if (!url) {
@@ -474,7 +483,7 @@ function productDrawerFormTemplate(product = {}) {
         <div class="image-tools product-drawer-image-tools">
           <div class="admin-preview-shell" data-preview-field="image_url">
             <img class="preview" alt="">
-            <span class="admin-preview-placeholder">אין תמונה זמינה</span>
+            <span class="admin-preview-placeholder">אין תמונה</span>
           </div>
           <div>
             <input data-field="image_url" value="${escapeHtml(product.image_url || "")}" placeholder="כתובת תמונה מלאה או העלאה">
@@ -486,7 +495,7 @@ function productDrawerFormTemplate(product = {}) {
         <div class="image-tools product-drawer-image-tools">
           <div class="admin-preview-shell" data-preview-field="card_image_url" data-preview-fallback-field="image_url">
             <img class="preview" alt="">
-            <span class="admin-preview-placeholder">אין תמונה זמינה</span>
+            <span class="admin-preview-placeholder">אין תמונה</span>
           </div>
           <div>
             <input data-field="card_image_url" value="${escapeHtml(product.card_image_url || "")}" placeholder="כתובת תמונה או העלאה">
