@@ -27,18 +27,18 @@
 
   <link rel="preload" as="image" href="prdimages/A7405559-hero.png" fetchpriority="high">
 
-  <link rel="stylesheet" href="styles.css?v=4">
-  <link rel="stylesheet" href="hero-fix.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=5">
+  <link rel="stylesheet" href="hero-fix.css?v=5">
   <style>
     /* Layout reset — overrides legacy body padding from old CSS layer */
     html, body { margin: 0 !important; padding: 0 !important; }
     .page { margin: 0 !important; padding: 0 !important; overflow: hidden !important; border-radius: 0 !important; box-shadow: none !important; }
     main { margin: 0 !important; padding: 0 !important; }
     .home-products { margin: 0 !important; padding: 0 !important; }
-    .site-header { height: 46px !important; }
+    .site-header { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; height: 46px !important; }
     .site-nav { height: 46px !important; }
-    .home-hero { margin: 0 !important; height: calc(100svh - 46px) !important; min-height: calc(100svh - 46px) !important; background: #2A1A2E !important; }
-    html.hero-locked .home-products { height: calc(100svh - 46px) !important; max-height: calc(100svh - 46px) !important; }
+    .home-hero { margin: 0 !important; height: 100svh !important; min-height: 100svh !important; background: #2A1A2E !important; }
+    html.hero-locked .home-products { height: 100svh !important; max-height: 100svh !important; }
   </style>
 </head>
 
@@ -81,7 +81,7 @@
           </a>
 
           <div class="hero-copy" aria-label="פתיח האתר">
-            <div class="hero-eyebrow"><span>ARTISAN COOKIES · עוגיות בוטיק</span></div>
+
             <p class="hero-title">מאפייה<br><em>בוטיק של ממש</em></p>
             <p class="hero-subtitle">עוגיות Crumble בעבודת יד, במראה מוקפד ובטעמים עשירים שנאפים לרגעים קטנים של חגיגה.</p>
           </div>
