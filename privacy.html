@@ -8,149 +8,57 @@
   <link rel="icon" type="image/png" sizes="32x32" href="assets/icons/favicon-32x32.png">
   <meta name="theme-color" content="#3D2249">
   <link rel="preload" href="assets/fonts/IBMPlexSansHebrew-Regular.ttf" as="font" type="font/ttf" crossorigin>
-  <style>
-    @font-face {
-      font-family: "IBM Plex Sans Hebrew";
-      src: url("assets/fonts/IBMPlexSansHebrew-Regular.ttf") format("truetype");
-      font-weight: 400;
-      font-display: swap;
-    }
-    @font-face {
-      font-family: "IBM Plex Sans Hebrew";
-      src: url("assets/fonts/IBMPlexSansHebrew-Bold.ttf") format("truetype");
-      font-weight: 700;
-      font-display: swap;
-    }
-
-    :root {
-      --cream: #f7f0e6;
-      --espresso: #2f211c;
-      --plum: #3d2249;
-      --muted: #7a665c;
-    }
-
-    * { box-sizing: border-box; }
-
-    :focus-visible {
-      outline: 2px solid rgba(61, 34, 73, 0.70);
-      outline-offset: 3px;
-      border-radius: 4px;
-    }
-
-    body {
-      margin: 0;
-      font-family: "IBM Plex Sans Hebrew", "Assistant", sans-serif;
-      direction: rtl;
-      color: var(--espresso);
-      background: #f7f0e6;
-      line-height: 1.75;
-    }
-
-    .page-wrap {
-      max-width: 720px;
-      margin: 0 auto;
-      padding: clamp(28px, 5vw, 64px) clamp(20px, 4vw, 40px);
-    }
-
-    .back-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      margin-bottom: 28px;
-      color: var(--plum);
-      font-weight: 700;
-      font-size: 0.88rem;
-      text-decoration: none;
-    }
-
-    .back-link:hover { text-decoration: underline; }
-
-    h1 {
-      margin: 0 0 8px;
-      font-size: clamp(1.6rem, 4vw, 2.2rem);
-      font-weight: 700;
-      color: var(--plum);
-    }
-
-    .sub {
-      margin: 0 0 32px;
-      color: var(--muted);
-      font-size: 0.9rem;
-    }
-
-    h2 {
-      margin: 32px 0 10px;
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--espresso);
-    }
-
-    p, li { color: #3a2a24; font-size: 0.95rem; }
-
-    ul { padding-right: 1.4em; margin: 8px 0; }
-    li { margin-bottom: 6px; }
-
-    .contact-box {
-      margin-top: 32px;
-      padding: 20px 24px;
-      background: rgba(61, 34, 73, 0.06);
-      border-right: 3px solid var(--plum);
-      border-radius: 12px;
-    }
-
-    .contact-box p { margin: 4px 0; }
-
-    a { color: var(--plum); }
-    a:hover { text-decoration: none; }
-
-    footer {
-      margin-top: 48px;
-      padding-top: 16px;
-      border-top: 1px solid rgba(200, 194, 184, 0.40);
-      font-size: 0.80rem;
-      color: var(--muted);
-      text-align: center;
-    }
-  </style>
+  <link rel="stylesheet" href="policy-pages.css">
 </head>
 <body>
-  <main class="page-wrap" id="main-content">
-    <a class="back-link" href="index.html">&#8592; חזרה לאתר</a>
+  <div class="policy-page">
+    <main class="policy-document" id="main-content">
+      <a class="policy-back-link" href="index.html">&#8592; חזרה לאתר</a>
 
-    <h1>מדיניות פרטיות ועוגיות</h1>
-    <p class="sub">עדכון אחרון: מאי 2026</p>
+      <h1>מדיניות פרטיות ועוגיות</h1>
+      <p class="policy-updated">עדכון אחרון: מאי 2026</p>
 
-    <p>אתר <strong>Lior's Pâtisserie</strong> משתמש באחסון מקומי בדפדפן כדי לאפשר סל הזמנה זמני ולשפר את חוויית השימוש באתר.</p>
+      <p>אתר <strong>Lior's Pâtisserie</strong> משתמש באחסון מקומי בדפדפן כדי לאפשר סל הזמנה זמני ולשפר את חוויית השימוש באתר.</p>
 
-    <h2>אחסון מקומי (localStorage / sessionStorage)</h2>
-    <ul>
-      <li>האתר שומר את תוכן סל ההזמנה ב-localStorage כדי לשמור עליו בין ריענונים.</li>
-      <li>האתר עשוי להשתמש ב-sessionStorage לזכירת מצב תצוגה בתוך הביקור.</li>
-      <li>הנתונים נשארים על המכשיר שלכם בלבד ולא מועברים לשרתים חיצוניים.</li>
-    </ul>
+      <h2>אחסון מקומי (localStorage / sessionStorage)</h2>
+      <ul>
+        <li>האתר שומר את תוכן סל ההזמנה ב-localStorage כדי לשמור עליו בין ריענונים.</li>
+        <li>האתר עשוי להשתמש ב-sessionStorage לזכירת מצב תצוגה בתוך הביקור.</li>
+        <li>הנתונים נשארים על המכשיר שלכם בלבד ולא מועברים לשרתים חיצוניים.</li>
+      </ul>
 
-    <h2>מה לא נאסף</h2>
-    <ul>
-      <li>האתר אינו משתמש ב-Google Analytics, Meta Pixel או כלי מעקב פרסומי.</li>
-      <li>האתר אינו מבצע תשלום ואינו שומר פרטי אשראי.</li>
-      <li>אין "עוגיות" (Cookies) מעקב בשימוש.</li>
-    </ul>
+      <h2>מה לא נאסף</h2>
+      <ul>
+        <li>האתר אינו משתמש ב-Google Analytics, Meta Pixel או כלי מעקב פרסומי.</li>
+        <li>האתר אינו מבצע תשלום ואינו שומר פרטי אשראי.</li>
+        <li>אין "עוגיות" (Cookies) מעקב בשימוש.</li>
+      </ul>
 
-    <h2>פרטי ההזמנה</h2>
-    <p>פרטי ההזמנה (שם, טלפון, הזמנה) נשלחים ל-WhatsApp של ליאור <strong>רק לאחר לחיצה יזומה</strong> על כפתור השליחה. הפרטים אינם נשמרים בשרת האתר.</p>
+      <h2>פרטי ההזמנה</h2>
+      <p>פרטי ההזמנה (שם, טלפון, הזמנה) נשלחים ל-WhatsApp של ליאור <strong>רק לאחר לחיצה יזומה</strong> על כפתור השליחה. הפרטים אינם נשמרים בשרת האתר.</p>
 
-    <h2>שינויים עתידיים</h2>
-    <p>אם בעתיד יתווספו כלי Analytics, Pixel או מעקב שיווקי - תתווסף הודעת Cookies והסכמה מתאימה.</p>
+      <h2>שינויים עתידיים</h2>
+      <p>אם בעתיד יתווספו כלי Analytics, Pixel או מעקב שיווקי - תתווסף הודעת Cookies והסכמה מתאימה.</p>
 
-    <h2>יצירת קשר בנושא פרטיות</h2>
-    <div class="contact-box" aria-label="פרטי יצירת קשר לנושאי פרטיות">
-      <p><strong>טלפון:</strong> <a href="tel:+972506422900">050-642-2900</a></p>
-      <p><strong>מייל:</strong> <a href="mailto:liornahum1911@gmail.com">liornahum1911@gmail.com</a></p>
-    </div>
+      <h2>יצירת קשר בנושא פרטיות</h2>
+      <div class="contact-box" aria-label="פרטי יצירת קשר לנושאי פרטיות">
+        <p><strong>טלפון:</strong> <a href="tel:+972506422900">050-642-2900</a></p>
+        <p><strong>מייל:</strong> <a href="mailto:liornahum1911@gmail.com">liornahum1911@gmail.com</a></p>
+      </div>
 
-    <footer>
-      <p>&copy; Lior's Pâtisserie &nbsp;·&nbsp; <a href="index.html">חזרה לאתר</a> &nbsp;·&nbsp; <a href="accessibility.html">הצהרת נגישות</a> &nbsp;·&nbsp; <a href="terms.html">תנאי שימוש</a></p>
-    </footer>
-  </main>
+      <footer class="policy-footer">
+        <nav class="policy-footer-nav" aria-label="מסמכים משפטיים וחזרה לאתר">
+          <a href="accessibility.html">הצהרת נגישות</a>
+          <span class="policy-footer-sep" aria-hidden="true">·</span>
+          <a href="privacy.html">מדיניות פרטיות</a>
+          <span class="policy-footer-sep" aria-hidden="true">·</span>
+          <a href="terms.html">תנאי שימוש</a>
+          <span class="policy-footer-sep" aria-hidden="true">·</span>
+          <a href="index.html">חזרה לאתר</a>
+        </nav>
+        <p class="policy-footer-copy">&copy; Lior's Pâtisserie</p>
+      </footer>
+    </main>
+  </div>
 </body>
 </html>
