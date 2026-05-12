@@ -14,7 +14,7 @@
 -- ── site_settings (keys used by the public site + admin) ───────────────────
 
 insert into public.site_settings (key, value, updated_at) values
-  ('hero_image', 'A7405559-hero.png', now()),
+  ('hero_image', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/hero/A7405559-hero.png', now()),
   ('hero_logo_image', 'assets/logo.png', now()),
   ('hero_scroll_button_text', 'גללו מטה', now()),
   ('flavors_title', 'הטעמים שלנו', now()),
@@ -41,87 +41,87 @@ on conflict (key) do nothing;
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'אוראו דרים', 'עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל.', null,
-  'A7404929.JPG', 'cards/A7404929.webp', true, 0
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404929.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404929.jpg', true, 0
 where not exists (select 1 from public.products p where p.name = 'אוראו דרים');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'כריות נוגט', 'עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן.', null,
-  'A7404958.JPG', 'cards/A7404958.webp', true, 1
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404958.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404958.jpg', true, 1
 where not exists (select 1 from public.products p where p.name = 'כריות נוגט');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'קוקילוטוס', 'עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל.', null,
-  'A7404990.jpg', 'cards/A7404990.webp', true, 2
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404990.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404990.jpg', true, 2
 where not exists (select 1 from public.products p where p.name = 'קוקילוטוס');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'פיסטצ׳יו', 'עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס.', null,
-  'A7404980.jpg', 'cards/A7404980.webp', true, 3
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404980.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404980.jpg', true, 3
 where not exists (select 1 from public.products p where p.name = 'פיסטצ׳יו');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'במבה רד', 'עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה.', null,
-  'A7405005.jpg', 'cards/A7405005.webp', true, 4
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7405005.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7405005.jpg', true, 4
 where not exists (select 1 from public.products p where p.name = 'במבה רד');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'קונפטי פאן', 'עוגייה צבעונית ושמחה עם סוכריות צבעוניות, שוקולד לבן וקרם ורוד.', null,
-  'A7404978.JPG', 'cards/A7404978.webp', true, 5
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404978.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404978.jpg', true, 5
 where not exists (select 1 from public.products p where p.name = 'קונפטי פאן');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'ס׳מורשמלו', 'עוגיית קקאו עשירה עם שוקולד מריר, קרם אגוזי לוז ומרשמלו שרוף מעל.', null,
-  'A7404945.JPG', 'cards/A7404945.webp', true, 6
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404945.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404945.jpg', true, 6
 where not exists (select 1 from public.products p where p.name = 'ס׳מורשמלו');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'קינדר', 'עוגייה עשירה עם שוקולד חלב, מילוי קרם קינדר בואנו ופניני שוקולד קראנץ׳.', null,
-  'A7404950.jpg', 'cards/A7404950.webp', true, 7
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404950.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404950.jpg', true, 7
 where not exists (select 1 from public.products p where p.name = 'קינדר');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'קורנפלקס שוקולד לבן', 'עוגייה עשירה עם קורנפלקס, שוקולד לבן, קרם שוקולד לבן וקראנץ׳ מפנק.', null,
-  'A7404939.JPG', 'cards/A7404939.webp', true, 8
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404939.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404939.jpg', true, 8
 where not exists (select 1 from public.products p where p.name = 'קורנפלקס שוקולד לבן');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'קורנפלקס שוקולד חלב', 'עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי.', null,
-  'A7404956.jpg', 'cards/A7404956.webp', true, 9
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404956.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404956.jpg', true, 9
 where not exists (select 1 from public.products p where p.name = 'קורנפלקס שוקולד חלב');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'אמסטרדם', 'עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן.', null,
-  'A7404918.jpg', 'cards/A7404918.webp', true, 10
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404918.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404918.jpg', true, 10
 where not exists (select 1 from public.products p where p.name = 'אמסטרדם');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'שוקוצ׳יפס', 'עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד.', null,
-  'A7404900.jpg', 'cards/A7404900.webp', true, 11
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404900.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404900.jpg', true, 11
 where not exists (select 1 from public.products p where p.name = 'שוקוצ׳יפס');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'חצי־חצי', 'חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים.', null,
-  'A7404971.jpg', 'cards/A7404971.webp', true, 12
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404971.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404971.jpg', true, 12
 where not exists (select 1 from public.products p where p.name = 'חצי־חצי');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'ברוקי', 'בראוניז שוקולד עשיר עם חתיכות בצק עוגיות, קרם שוקולד וזילוף אגוזי לוז.', null,
-  'A7404968.jpg', 'cards/A7404968.webp', true, 13
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404968.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404968.jpg', true, 13
 where not exists (select 1 from public.products p where p.name = 'ברוקי');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'שוקולד דובאי', 'עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף.', null,
-  'A7404987.JPG', 'cards/A7404987.webp', true, 14
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404987.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404987.jpg', true, 14
 where not exists (select 1 from public.products p where p.name = 'שוקולד דובאי');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'מגולגלת קינדר', 'עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל.', null,
-  'A7404964.JPG', 'cards/A7404964.webp', true, 15
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404964.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404964.jpg', true, 15
 where not exists (select 1 from public.products p where p.name = 'מגולגלת קינדר');
 
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select 'פתיבר', 'עוגייה עשירה עם שוקולד חלב, מילוי קרם פתיבר, עוגיית פתיבר וסוכריות צבעוניות.', null,
-  'A7404912.JPG', 'cards/A7404912.webp', true, 16
+  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404912.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404912.jpg', true, 16
 where not exists (select 1 from public.products p where p.name = 'פתיבר');
 
 -- ── site_features ───────────────────────────────────────────────────────────
