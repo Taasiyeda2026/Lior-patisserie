@@ -387,12 +387,6 @@
   <script src="supabase-config.js" defer></script>
   <script src="main.js" defer></script>
   <script src="site-content.js" defer></script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch((error) => console.warn("Service worker registration failed", error));
-      });
-    }
-  </script>
+  <script src="./pwa-register.js" defer></script>
 </body>
 </html>
