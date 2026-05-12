@@ -269,6 +269,27 @@ function showNotice(scope, message, ok = true) {
   });
 }
 
+const PRODUCT_DUPLICATE_NAME_MESSAGE = "כבר קיים מוצר בשם הזה";
+
+function isDuplicateProductNameError(error) {
+  if (!error) return false;
+  const code = String(error.code || "");
+  const message = String(error.message || "").toLowerCase();
+  const details = String(error.details || "").toLowerCase();
+  const hint = String(error.hint || "").toLowerCase();
+  const combined = `${message} ${details} ${hint}`;
+  return (
+    code === "23505" ||
+    (combined.includes("duplicate key") &&
+      (combined.includes("products_name_unique") || combined.includes("products_name_key") || combined.includes("name")))
+  );
+}
+
+function friendlyProductSaveError(error) {
+  if (isDuplicateProductNameError(error)) return new Error(PRODUCT_DUPLICATE_NAME_MESSAGE);
+  return error;
+}
+
 function showUploadMessage(message, ok = false) {
   const visibleNotice = Array.from(document.querySelectorAll(".notice")).find((el) => el.classList.contains("is-visible"));
   if (visibleNotice) {
@@ -804,10 +825,33 @@ function tryUpdateProductCardInPlace(productId) {
   return true;
 }
 
+async function ensureUniqueProductName(payload) {
+  const name = String(payload.name || "").trim();
+  if (!name) return;
+
+  const cachedDuplicate = adminProductsCache.some(
+    (product) => String(product.id) !== String(payload.id) && String(product.name || "").trim() === name
+  );
+  if (cachedDuplicate) throw new Error(PRODUCT_DUPLICATE_NAME_MESSAGE);
+
+  const { data, error } = await client()
+    .from("products")
+    .select("id")
+    .eq("name", name)
+    .neq("id", payload.id)
+    .limit(1);
+
+  if (error) throw friendlyProductSaveError(error);
+  if (Array.isArray(data) && data.length > 0) throw new Error(PRODUCT_DUPLICATE_NAME_MESSAGE);
+}
+
 async function saveProduct(root) {
   const payload = rowPayload(root, "product");
+  payload.name = String(payload.name || "").trim();
+  await ensureUniqueProductName(payload);
+
   const { error } = await client().from("products").upsert(payload, { onConflict: "id" });
-  if (error) throw error;
+  if (error) throw friendlyProductSaveError(error);
   updateProductInCache(payload);
   // Update only the changed card without rebuilding the entire grid; fall back
   // to a full rebuild only when the product is new (not yet in the DOM)
@@ -1060,7 +1104,7 @@ function setupEvents() {
         try {
           await saveProduct(form);
         } catch (error) {
-          showNotice("products", error.message, false);
+          showNotice("products", friendlyProductSaveError(error).message, false);
         }
       }
     }

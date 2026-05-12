@@ -6,7 +6,7 @@
 --   * site_settings: INSERT ... ON CONFLICT (key) DO NOTHING (never overwrites values).
 --   * site_features: each row is inserted only if no row exists with the same title.
 --   * products: all existing products are deactivated, then the final 27-product
---     catalog is updated/inserted by name with the current Supabase Storage URLs.
+--     catalog is upserted by unique name with the current Supabase Storage URLs.
 --
 -- Product image paths intentionally use only:
 --   * site-images/products/cards/*.jpg
@@ -73,46 +73,6 @@ with final_products (name, description, filename, display_order) as (
     ('חצי־חצי', 'חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים.', 'A7404971', 26),
     ('ברוקי בייגלה', 'עוגיית ברוקי עשירה עם שוקולד, בייגלה מלוח וקראנץ׳ מתוק־מלוח ממכר.', 'A7404968', 27)
 )
-update public.products p
-set description = fp.description,
-    price = null,
-    image_url = 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/' || fp.filename || '.jpg',
-    card_image_url = 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/' || fp.filename || '.jpg',
-    is_active = true,
-    display_order = fp.display_order
-from final_products fp
-where p.name = fp.name;
-
-with final_products (name, description, filename, display_order) as (
-  values
-    ('אוראו דרים', 'עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל.', 'A7404929', 1),
-    ('אמסטרדם', 'עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן.', 'A7404918', 2),
-    ('קונפטי וניל', 'עוגיית וניל חגיגית עם סוכריות קונפטי צבעוניות, שוקולד לבן וקרם וניל מפנק.', 'A7404912', 3),
-    ('שוקוצ׳יפס', 'עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד.', 'A7404900', 4),
-    ('וניל קלאסי', 'עוגיית וניל קלאסית, רכה ומפנקת, עם שוקולד לבן ונגיעה עדינה של קרם וניל.', 'A9708282', 5),
-    ('בראוניז שוקולד', 'בראוניז שוקולד עשירים במיוחד עם מרקם פאדג׳י וטעם קקאו עמוק.', 'A7405042', 6),
-    ('מגש וניל חגיגי', 'מגש עוגיות וניל חגיגי ומעוצב, מושלם לאירוח, מתנה או שולחן מתוקים.', 'A7405027', 7),
-    ('אוראו קראנץ׳', 'עוגיית אוראו קראנצ׳ית עם שברי אוראו, שוקולד לבן ומילוי קרמי עשיר.', 'A7404927', 8),
-    ('אוראו לבן', 'עוגיית אוראו לבן עם שוקולד לבן, קרם אוראו עדין ושברי עוגיות מעל.', 'A7404925', 9),
-    ('מגולגלת קינדר', 'עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל.', 'A7404964', 10),
-    ('כריות נוגט', 'עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן.', 'A7404958', 11),
-    ('קורנפלקס שוקולד חלב', 'עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי.', 'A7404956', 12),
-    ('שוקולד פנינים', 'עוגיית שוקולד עשירה עם פניני שוקולד, קרם קקאו ושכבות מתוקות של קראנץ׳.', 'A7404955', 13),
-    ('פניני שוקולד לבן', 'עוגייה מתוקה עם פניני שוקולד לבן, קרם וניל ושוקולד לבן במרקם מפנק.', 'A7404952', 14),
-    ('קינדר', 'עוגיית קינדר מפנקת עם שוקולד חלב, קרם קינדר ושברי קינדר מעל.', 'A7404950', 15),
-    ('ס׳מורשמלו', 'עוגיית ס׳מורס עם מרשמלו רך, שוקולד עשיר וקראנץ׳ ביסקוויטים מתוק.', 'A7404945', 16),
-    ('קורנפלקס שוקולד לבן', 'עוגייה קראנצ׳ית עם קורנפלקס, שוקולד לבן וקרם וניל עשיר.', 'A7404939', 17),
-    ('שוקוצ׳יפס קלאסי', 'עוגיית שוקוצ׳יפס קלאסית עם בצק וניל עשיר ושפע מטבעות שוקולד.', 'A7404936', 18),
-    ('מארז וניל חגיגי', 'מארז וניל חגיגי ומעוצב עם עוגיות מפנקות שמתאימות למתנה מתוקה.', 'A7405026', 19),
-    ('במבה רד', 'עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה.', 'A7405005', 20),
-    ('קוקילוטוס', 'עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל.', 'A7404990', 21),
-    ('שוקולד דובאי', 'עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף.', 'A7404987', 22),
-    ('פיסטצ׳יו', 'עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס.', 'A7404980', 23),
-    ('קונפטי פאן', 'עוגיית קונפטי צבעונית ושמחה עם שוקולד לבן, קרם וניל וסוכריות צבעוניות.', 'A7404978', 24),
-    ('חצי־חצי וניל שוקולד', 'עוגיית חצי־חצי עם בצק וניל ובצק שוקולד, שוקולדים מפנקים ושני מרקמים בביס אחד.', 'A7404973', 25),
-    ('חצי־חצי', 'חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים.', 'A7404971', 26),
-    ('ברוקי בייגלה', 'עוגיית ברוקי עשירה עם שוקולד, בייגלה מלוח וקראנץ׳ מתוק־מלוח ממכר.', 'A7404968', 27)
-)
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
 select fp.name,
        fp.description,
@@ -122,11 +82,14 @@ select fp.name,
        true,
        fp.display_order
 from final_products fp
-where not exists (
-  select 1
-  from public.products p
-  where p.name = fp.name
-);
+where true
+on conflict (name) do update
+set description = excluded.description,
+    price = excluded.price,
+    image_url = excluded.image_url,
+    card_image_url = excluded.card_image_url,
+    is_active = excluded.is_active,
+    display_order = excluded.display_order;
 
 -- ── site_features ───────────────────────────────────────────────────────────
 
