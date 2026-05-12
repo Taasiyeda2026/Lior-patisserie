@@ -38,6 +38,8 @@
       });
     }
 
+    const PRODUCTS_PER_CATEGORY = 9;
+
     const signatureProductNames = ["אוראו דרים", "קוקילוטוס", "פיסטצ׳יו", "שוקולד דובאי"];
 
     const products = [
@@ -230,9 +232,9 @@ ${productLine}
 
     function renderProducts() {
       const groups = [
-        { id: "productsGrid1", items: products.slice(0, 6) },
-        { id: "productsGrid2", items: products.slice(6, 12) },
-        { id: "productsGrid3", items: products.slice(12, 18) }
+        { id: "productsGrid1", items: products.slice(0, PRODUCTS_PER_CATEGORY) },
+        { id: "productsGrid2", items: products.slice(PRODUCTS_PER_CATEGORY, PRODUCTS_PER_CATEGORY * 2) },
+        { id: "productsGrid3", items: products.slice(PRODUCTS_PER_CATEGORY * 2, PRODUCTS_PER_CATEGORY * 3) }
       ];
 
       groups.forEach(({ id, items }, groupIndex) => {
@@ -246,7 +248,7 @@ ${productLine}
         }
         if (section) section.hidden = false;
         grid.innerHTML = items.map((product, i) => {
-          const globalIndex = groupIndex * 6 + i;
+          const globalIndex = groupIndex * PRODUCTS_PER_CATEGORY + i;
           return `
             <article class="product-card reveal">
               <div class="product-image">
