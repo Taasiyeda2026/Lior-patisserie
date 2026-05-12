@@ -166,10 +166,6 @@ values ('site-images', 'site-images', true)
 on conflict (id) do update set public = excluded.public;
 
 drop policy if exists "Public read site-images" on storage.objects;
-create policy "Public read site-images"
-on storage.objects for select
-to anon, authenticated
-using (bucket_id = 'site-images');
 
 drop policy if exists "Temporary anon upload site-images" on storage.objects;
 drop policy if exists "Temporary anon update site-images" on storage.objects;
