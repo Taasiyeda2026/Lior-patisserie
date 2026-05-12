@@ -93,7 +93,7 @@
 
 
           <div class="home-hero-panel">
-            <a class="hero-scroll-link" href="#products" aria-label="גלילה לאזור הטעמים">גללו מטה</a>
+            <a class="hero-scroll-link" href="#products" aria-label="כניסה לאזור הטעמים">גללו כאן</a>
           </div>
         </div>
 
@@ -215,17 +215,17 @@
                 </article>
               </div>
               <div class="features-media editorial-video bakery-video-wrapper">
-                <video
-                  class="bakery-video"
-                  src="https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-videos/lior-bakery-video.mp4"
-                  poster="https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/video-opening.png"
-                  preload="metadata"
-                  playsinline
-                  aria-label="סרטון המאפייה של Lior's Pâtisserie"
-                ></video>
-                <button class="bakery-video-play" type="button" aria-label="הפעלת הסרטון">
-                  <span aria-hidden="true">▶</span>
-                </button>
+              <video
+                class="bakery-video"
+                src="https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-videos/lior-bakery-video.mp4"
+                poster="https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/video-opening.png"
+                preload="metadata"
+                playsinline
+                aria-label="סרטון המאפייה של Lior's Pâtisserie"
+              ></video>
+              <button class="bakery-video-play" type="button" aria-label="הפעלת הסרטון">
+                <span aria-hidden="true">▶</span>
+              </button>
               </div>
             </div>
           </div>
@@ -387,12 +387,6 @@
   <script src="supabase-config.js" defer></script>
   <script src="main.js" defer></script>
   <script src="site-content.js" defer></script>
-  <script>
-    if ("serviceWorker" in navigator) {
-      window.addEventListener("load", () => {
-        navigator.serviceWorker.register("./sw.js").catch((error) => console.warn("Service worker registration failed", error));
-      });
-    }
-  </script>
+  <script src="./pwa-register.js" defer></script>
 </body>
 </html>

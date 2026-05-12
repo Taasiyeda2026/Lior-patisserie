@@ -27,15 +27,73 @@
       }
     }
 
+    function getAnchorTarget(link) {
+      const href = link ? link.getAttribute("href") : "";
+      if (!href || !href.startsWith("#") || href === "#") return null;
+      try {
+        return document.getElementById(decodeURIComponent(href.slice(1)));
+      } catch (error) {
+        return document.querySelector(href);
+      }
+    }
+
+    function scrollToSection(target, { replaceHash = true } = {}) {
+      if (!target) return;
+
+      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      target.scrollIntoView({
+        behavior: reduceMotion ? "auto" : "smooth",
+        block: "start"
+      });
+
+      if (replaceHash && target.id && window.history && window.history.replaceState) {
+        window.history.replaceState(null, "", `#${target.id}`);
+      }
+    }
+
+    function enterContentArea(target) {
+      const destination = target || document.getElementById("products");
+      if (!destination) return;
+
+      sessionStorage.setItem(HERO_UNLOCK_STORAGE_KEY, "true");
+      document.documentElement.classList.add("hero-transitioning");
+      if (document.body) document.body.classList.add("hero-transitioning");
+      applyHeroLockState();
+
+      requestAnimationFrame(() => {
+        scrollToSection(destination);
+
+        window.setTimeout(() => {
+          document.documentElement.classList.remove("hero-transitioning");
+          if (document.body) document.body.classList.remove("hero-transitioning");
+        }, 520);
+      });
+    }
+
     function setupHeroUnlock() {
       applyHeroLockState();
 
       document.querySelectorAll(".hero-scroll-link").forEach((link) => {
-        link.addEventListener("click", () => {
-          sessionStorage.setItem(HERO_UNLOCK_STORAGE_KEY, "true");
-          applyHeroLockState();
+        link.addEventListener("click", (event) => {
+          const target = getAnchorTarget(link);
+          if (!target || target.id === "home") return;
+
+          event.preventDefault();
+          enterContentArea(target);
         });
       });
+
+      if (window.location.hash && window.location.hash !== "#home") {
+        let initialTarget = null;
+        try {
+          initialTarget = document.getElementById(decodeURIComponent(window.location.hash.slice(1)));
+        } catch (error) {
+          initialTarget = null;
+        }
+        if (initialTarget) {
+          window.setTimeout(() => enterContentArea(initialTarget), 0);
+        }
+      }
     }
 
     const PRODUCTS_PER_CATEGORY = 9;
