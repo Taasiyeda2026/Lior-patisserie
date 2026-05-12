@@ -29,7 +29,7 @@ insert into public.site_settings (key, value, updated_at) values
   ('contact_label', '- בואו נדבר -', now()),
   ('contact_title', 'רוצים להזמין טעם שאהבתם?', now()),
   ('contact_text', 'ספרו לליאור איזה טעם אהבתם ונמשיך משם בצורה פשוטה ונעימה.', now()),
-  ('contact_email', 'liornahum1911@gmail.com', now()),
+  ('contact_email', 'lior.patisserie@outlook.com', now()),
   ('whatsapp_number', '972506422900', now()),
   ('order_button_text', 'שליחת הזמנה', now()),
   ('contact_signature_text', 'באהבה, ליאור', now()),

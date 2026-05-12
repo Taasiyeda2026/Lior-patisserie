@@ -5026,6 +5026,7 @@ html.hero-locked .home-products {
 
 .contact-section,
 .final.contact-section {
+  padding-top: clamp(40px, 4.5vw, 56px);
   background:
     radial-gradient(circle at top, rgba(213, 180, 90, 0.16), transparent 36%),
     radial-gradient(circle at 16% 92%, rgba(95, 45, 110, 0.11), transparent 34%),
@@ -5702,6 +5703,16 @@ html {
   line-height: 1.54;
 }
 
+.contact-section p,
+.final.contact-section p,
+.contact-section [data-email-link],
+.contact-section [data-phone-link],
+.final.contact-section [data-email-link],
+.final.contact-section [data-phone-link] {
+  font-size: 0.93rem;
+  line-height: 1.45;
+}
+
 .order-modal-card {
   width: min(90vw, 560px);
   max-height: min(84vh, 640px);
@@ -5725,6 +5736,11 @@ html {
 
   .site-section {
     padding-block: 34px 38px;
+  }
+
+  .contact-section,
+  .final.contact-section {
+    padding-top: 34px;
   }
 
   .home-opening {
