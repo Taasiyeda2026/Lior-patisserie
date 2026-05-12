@@ -158,6 +158,35 @@ function getAdminPreviewShellRaw(shell) {
   return "";
 }
 
+
+function productStorageSegmentForField(field) {
+  if (field === "image_url") return "products/full/";
+  if (field === "card_image_url") return "products/cards/";
+  return "";
+}
+
+function isAllowedProductStorageUrl(value, field) {
+  const raw = String(value || "").trim().replace(/\\/g, "/");
+  if (!raw) return true;
+  const segment = productStorageSegmentForField(field);
+  if (!segment) return true;
+  const lower = raw.toLowerCase();
+  const normalizedSegment = segment.toLowerCase();
+  if (lower.startsWith(normalizedSegment)) return true;
+  if (/^https?:\/\//i.test(raw) || raw.startsWith("//")) {
+    return lower.includes(`/storage/v1/object/public/${BUCKET.toLowerCase()}/${normalizedSegment}`);
+  }
+  return false;
+}
+
+function sanitizeProductImagePayload(payload) {
+  ["image_url", "card_image_url"].forEach((field) => {
+    const value = String(payload[field] || "").trim();
+    payload[field] = isAllowedProductStorageUrl(value, field) ? value : "";
+  });
+  return payload;
+}
+
 function syncImageToolState(tools) {
   if (!tools) return;
   const hasImage = Boolean(
@@ -905,6 +934,7 @@ function rowPayload(row, type) {
     payload.description ||= "";
     payload.image_url ||= "";
     payload.card_image_url ||= "";
+    sanitizeProductImagePayload(payload);
     if (payload.price === undefined || payload.price === null) payload.price = "";
     else payload.price = String(payload.price).trim();
   }
@@ -1076,7 +1106,7 @@ function setupEvents() {
 
   document.addEventListener("change", async (event) => {
     const fileInput = event.target;
-    if (!fileInput.matches("[data-upload], [data-product-upload], [data-product-card-upload], [data-feature-upload]")) return;
+    if (!fileInput.matches("[data-upload], [data-product-upload], [data-feature-upload]")) return;
     const file = fileInput.files && fileInput.files[0];
     if (!file) return;
 
@@ -1113,24 +1143,18 @@ function setupEvents() {
       let targetInput = null;
       if (fileInput.dataset.upload) {
         targetInput = document.querySelector(`[data-setting="${fileInput.dataset.upload}"]`);
-      } else if (fileInput.matches("[data-product-card-upload]")) {
-        targetInput = fileInput.closest(".image-tools")?.querySelector('[data-field="card_image_url"]');
       } else if (fileInput.matches("[data-product-upload]")) {
-        targetInput = fileInput.closest(".image-tools")?.querySelector('[data-field="image_url"]');
+        const form = fileInput.closest("#productDrawerForm");
+        const fullField = form?.querySelector('[data-field="image_url"]');
+        const cardField = form?.querySelector('[data-field="card_image_url"]');
+        if (fullField) fullField.value = String(url || "").trim();
+        if (cardField) cardField.value = String(cardUrlExtra || "").trim();
+        const cardShell = form?.querySelector('.admin-preview-shell[data-preview-field="card_image_url"]');
+        if (cardShell) syncAdminPreviewShell(cardShell);
       } else {
         targetInput = fileInput.parentElement.querySelector('[data-field="image_url"]');
       }
       if (targetInput) targetInput.value = String(url || "").trim();
-
-      if (fileInput.matches("[data-product-upload]") && cardUrlExtra) {
-        const form = fileInput.closest("#productDrawerForm");
-        const cardField = form?.querySelector('[data-field="card_image_url"]');
-        const cardShell = form?.querySelector('.admin-preview-shell[data-preview-field="card_image_url"]');
-        if (cardField) {
-          cardField.value = String(cardUrlExtra).trim();
-          if (cardShell) syncAdminPreviewShell(cardShell);
-        }
-      }
 
       if (shellFromRow) {
         syncAdminPreviewShell(shellFromRow);
