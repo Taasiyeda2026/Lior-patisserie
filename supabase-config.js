@@ -5,25 +5,26 @@
 */
 
 /**
- * Normalize repo-relative image refs without doubling `prdimages/`.
- * - Full URLs (http/https), protocol-relative, and root-absolute paths stay as-is.
- * - Paths already under prdimages/ stay as-is (after collapsing duplicates).
- * - Other site-root paths (assets/, images/, attached_assets/) stay as-is.
- * - Bare filenames and paths like cards/*.webp get a single prdimages/ prefix.
+ * Normalize image refs without reviving deleted product folders.
+ * - Full URLs (including Supabase Storage), protocol-relative, and root-absolute paths stay as-is.
+ * - Site assets stay repo-relative.
+ * - Storage-relative paths such as products/cards/name.jpg resolve to the public Supabase bucket.
+ * - Unknown bare filenames intentionally return an empty string.
  */
 window.normalizeImagePath = function normalizeImagePath(value) {
-  let path = String(value || "").trim().replace(/\\/g, "/");
+  let path = String(value || "").trim().replace(/\\/g, "/").replace(/^\.\/+/, "");
   if (!path) return "";
-  path = path.replace(/^\.\/+/, "");
-  while (/^prdimages\/prdimages\//i.test(path)) {
-    path = path.replace(/^prdimages\//i, "");
-  }
   if (/^https?:\/\//i.test(path) || path.startsWith("//") || path.startsWith("/")) return path;
-  if (/^prdimages\//i.test(path)) {
-    return path.replace(/^prdimages\//i, "prdimages/");
-  }
   if (/^(assets|images|attached_assets)\//i.test(path)) return path;
-  return `prdimages/${path}`;
+
+  const config = window.LIOR_SUPABASE_CONFIG || {};
+  const baseUrl = String(config.SUPABASE_URL || "").replace(/\/+$/, "");
+  const bucket = String(config.STORAGE_BUCKET || "site-images").replace(/^\/+|\/+$/g, "");
+  if (baseUrl && bucket && /^(products|icons|uploads|hero|site)\//i.test(path)) {
+    return `${baseUrl}/storage/v1/object/public/${bucket}/${path}`;
+  }
+
+  return "";
 };
 
 /** Shown when a product image has no working URL (data URI SVG). */

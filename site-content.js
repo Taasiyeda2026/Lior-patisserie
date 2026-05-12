@@ -1,5 +1,4 @@
 (function () {
-  const LOCAL_PRODUCT_DIR = "prdimages/";
   const IMAGE_SETTINGS = [
     "hero_image",
     "hero_logo_image",
@@ -63,13 +62,9 @@
   }
 
   function fallbackProducts() {
-    try {
-      if (Array.isArray(products)) return products;
-    } catch (error) {
-      return [];
-    }
     return [];
   }
+
 
   function normalizePhone(value) {
     return String(value || "").replace(/[^0-9]/g, "");
@@ -95,42 +90,33 @@
     return value;
   }
 
-  function getLocalProductImage(productName) {
-    const match = fallbackProducts().find((item) => item.name === productName);
-    return match ? match.image : "";
-  }
-
-  function getLocalProductCardImage(productName) {
-    const match = fallbackProducts().find((item) => item.name === productName);
-    if (!match) return "";
-    return match.cardImage || match.image || "";
-  }
-
   function normalizeProductMediaPath(value) {
     if (!hasText(value)) return "";
     const trimmed = String(value).trim();
     if (typeof window.normalizeImagePath === "function") {
       return window.normalizeImagePath(trimmed);
     }
-    let p = trimmed.replace(/\\/g, "/").replace(/^\.\/+/, "");
-    while (/^prdimages\/prdimages\//i.test(p)) {
-      p = p.replace(/^prdimages\//i, "");
-    }
+    const p = trimmed.replace(/\\/g, "/").replace(/^\.\/+/, "");
     if (!p) return "";
     if (/^https?:\/\//i.test(p) || p.startsWith("//") || p.startsWith("/")) return p;
-    if (/^prdimages\//i.test(p)) return p.replace(/^prdimages\//i, "prdimages/");
     if (/^(assets|images|attached_assets)\//i.test(p)) return p;
-    return `prdimages/${p}`;
+    return "";
   }
 
   function setRemoteImageWithFallback(img, imageUrl) {
     if (!img || !hasText(imageUrl)) return;
 
     const fallbackSrc = img.getAttribute("src") || "";
-    const fallbackDataImg = img.dataset.img || img.dataset.productImage || "";
     const placeholder = window.LIOR_IMAGE_PLACEHOLDER || "";
 
     const nextSrc = normalizeProductMediaPath(imageUrl);
+    if (!nextSrc) {
+      if (placeholder) {
+        img.src = placeholder;
+        img.classList.add("is-loaded");
+      }
+      return;
+    }
     img.onload = function () {
       img.classList.add("is-loaded");
     };
@@ -141,14 +127,6 @@
     }
     img.onerror = function () {
       img.onerror = null;
-      if (fallbackDataImg && typeof window.setImageWithFallback === "function") {
-        window.setImageWithFallback(img, fallbackDataImg);
-        return;
-      }
-      if (fallbackSrc) {
-        img.src = fallbackSrc;
-        return;
-      }
       if (placeholder) {
         img.src = placeholder;
         img.classList.add("is-loaded");
@@ -236,34 +214,22 @@
   }
 
   function productImageValue(product) {
-    const localImage = getLocalProductImage(product.name || "");
-    if (hasText(localImage)) return normalizeProductMediaPath(localImage);
     if (hasText(product.image_url)) return normalizeProductMediaPath(product.image_url);
-    return "";
-  }
-
-  function remapLegacyCardFilename(path) {
-    return String(path || "")
-      .trim()
-      .replace(/A(\d+)-card\.webp/gi, "A$1.webp");
+    return window.LIOR_IMAGE_PLACEHOLDER || "";
   }
 
   function productCardImageValue(product) {
-    if (hasText(product.card_image_url)) {
-      const c = remapLegacyCardFilename(String(product.card_image_url).trim());
-      return normalizeProductMediaPath(c);
-    }
-    const localCardImage = getLocalProductCardImage(product.name || "");
-    if (hasText(localCardImage)) return normalizeProductMediaPath(localCardImage);
-    return productImageValue(product);
+    if (hasText(product.card_image_url)) return normalizeProductMediaPath(product.card_image_url);
+    if (hasText(product.image_url)) return normalizeProductMediaPath(product.image_url);
+    return window.LIOR_IMAGE_PLACEHOLDER || "";
   }
+
 
   /** True when a dedicated card file exists (not only falling back to full image_url). */
   function hasExplicitCardSource(product) {
-    if (hasText(product.card_image_url)) return true;
-    const match = fallbackProducts().find((item) => item.name === product.name);
-    return !!(match && hasText(match.cardImage));
+    return hasText(product.card_image_url);
   }
+
 
   function isRemoteImageValue(value) {
     const s = String(value || "").trim();
@@ -311,22 +277,9 @@
   function buildProductCardHtml(product, globalIndex) {
     const fullImageValue = productImageValue(product);
     const cardImageValue = productCardImageValue(product);
-    const fullForLightbox = hasText(fullImageValue) ? fullImageValue : cardImageValue;
-    const explicitCard = hasExplicitCardSource(product);
-    const isRemoteGrid = isRemoteImageValue(cardImageValue);
-
-    let srcAttr = "";
-    let dataAttr = "";
-    if (hasText(cardImageValue)) {
-      if (explicitCard && isRemoteGrid) {
-        srcAttr = `src="${escapeHtml(cardImageValue)}"`;
-      } else {
-        dataAttr = `data-product-image="${escapeHtml(cardImageValue)}"`;
-      }
-    }
-
-    const fullAttr = hasText(fullForLightbox) ? `data-full-image="${escapeHtml(fullForLightbox)}"` : "";
-    const eagerFirst = explicitCard && isRemoteGrid && globalIndex < 4;
+    const srcAttr = hasText(cardImageValue) ? `src="${escapeHtml(cardImageValue)}" data-product-image="${escapeHtml(cardImageValue)}"` : "";
+    const fullAttr = hasText(fullImageValue) ? `data-full-image="${escapeHtml(fullImageValue)}"` : "";
+    const eagerFirst = hasText(product.card_image_url) && isRemoteImageValue(cardImageValue) && globalIndex < 4;
     const loadingAttr = eagerFirst ? "eager" : "lazy";
     const fetchPri = eagerFirst ? "high" : "low";
 
@@ -338,7 +291,7 @@
     return `
       <article class="product-card reveal is-visible" data-reveal-ready="true">
         <div class="product-image">
-          <img ${srcAttr} ${dataAttr} ${fullAttr} alt="${escapeHtml(product.name || "")}" width="800" height="688" loading="${loadingAttr}" fetchpriority="${fetchPri}" decoding="async">
+          <img ${srcAttr} ${fullAttr} alt="${escapeHtml(product.name || "")}" width="800" height="688" loading="${loadingAttr}" fetchpriority="${fetchPri}" decoding="async">
         </div>
         <div class="product-body">
           <h3>${escapeHtml(product.name || "")}</h3>
@@ -507,7 +460,9 @@
     renderManagedProducts(data);
 
     const activeForPreload = data.filter((p) => p && p.is_active === true && hasText(p.name || ""));
-    const preloadUrls = activeForPreload.map((p) => productCardImageValue(p)).filter(Boolean);
+    const preloadUrls = activeForPreload
+      .map((p) => hasText(p.card_image_url) ? normalizeProductMediaPath(p.card_image_url) : "")
+      .filter(Boolean);
     const preloadSignature = JSON.stringify(preloadUrls);
     if (window.__liorLastPreloadSignature !== preloadSignature) {
       window.__liorLastPreloadSignature = preloadSignature;

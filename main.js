@@ -41,23 +41,23 @@
     const signatureProductNames = ["אוראו דרים", "קוקילוטוס", "פיסטצ׳יו", "שוקולד דובאי"];
 
     const products = [
-      { name: "אוראו דרים",           image: "A7404929.JPG", cardImage: "cards/A7404929.webp", description: "עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל." },
-      { name: "כריות נוגט",           image: "A7404958.JPG", cardImage: "cards/A7404958.webp", description: "עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן." },
-      { name: "קוקילוטוס",            image: "A7404990.jpg", cardImage: "cards/A7404990.webp", description: "עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל." },
-      { name: "פיסטצ׳יו",             image: "A7404980.jpg", cardImage: "cards/A7404980.webp", description: "עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס." },
-      { name: "במבה רד",              image: "A7405005.jpg", cardImage: "cards/A7405005.webp", description: "עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה." },
-      { name: "קונפטי פאן",           image: "A7404978.JPG", cardImage: "cards/A7404978.webp", description: "עוגייה צבעונית ושמחה עם סוכריות צבעוניות, שוקולד לבן וקרם ורוד." },
-      { name: "ס׳מורשמלו",            image: "A7404945.JPG", cardImage: "cards/A7404945.webp", description: "עוגיית קקאו עשירה עם שוקולד מריר, קרם אגוזי לוז ומרשמלו שרוף מעל." },
-      { name: "קינדר",                image: "A7404950.jpg", cardImage: "cards/A7404950.webp", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם קינדר בואנו ופניני שוקולד קראנץ׳." },
-      { name: "קורנפלקס שוקולד לבן",  image: "A7404939.JPG", cardImage: "cards/A7404939.webp", description: "עוגייה עשירה עם קורנפלקס, שוקולד לבן, קרם שוקולד לבן וקראנץ׳ מפנק." },
-      { name: "קורנפלקס שוקולד חלב",  image: "A7404956.jpg", cardImage: "cards/A7404956.webp", description: "עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי." },
-      { name: "אמסטרדם",              image: "A7404918.jpg", cardImage: "cards/A7404918.webp", description: "עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן." },
-      { name: "שוקוצ׳יפס",            image: "A7404900.jpg", cardImage: "cards/A7404900.webp", description: "עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד." },
-      { name: "חצי־חצי",              image: "A7404971.jpg", cardImage: "cards/A7404971.webp", description: "חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים." },
-      { name: "ברוקי",                image: "A7404968.jpg", cardImage: "cards/A7404968.webp", description: "בראוניז שוקולד עשיר עם חתיכות בצק עוגיות, קרם שוקולד וזילוף אגוזי לוז." },
-      { name: "שוקולד דובאי",         image: "A7404987.JPG", cardImage: "cards/A7404987.webp", description: "עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף." },
-      { name: "מגולגלת קינדר",        image: "A7404964.JPG", cardImage: "cards/A7404964.webp", description: "עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל." },
-      { name: "פתיבר",                image: "A7404912.JPG", cardImage: "cards/A7404912.webp", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם פתיבר, עוגיית פתיבר וסוכריות צבעוניות." }
+      { name: "אוראו דרים", description: "עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל." },
+      { name: "כריות נוגט", description: "עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן." },
+      { name: "קוקילוטוס", description: "עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל." },
+      { name: "פיסטצ׳יו", description: "עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס." },
+      { name: "במבה רד", description: "עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה." },
+      { name: "קונפטי פאן", description: "עוגייה צבעונית ושמחה עם סוכריות צבעוניות, שוקולד לבן וקרם ורוד." },
+      { name: "ס׳מורשמלו", description: "עוגיית קקאו עשירה עם שוקולד מריר, קרם אגוזי לוז ומרשמלו שרוף מעל." },
+      { name: "קינדר", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם קינדר בואנו ופניני שוקולד קראנץ׳." },
+      { name: "קורנפלקס שוקולד לבן", description: "עוגייה עשירה עם קורנפלקס, שוקולד לבן, קרם שוקולד לבן וקראנץ׳ מפנק." },
+      { name: "קורנפלקס שוקולד חלב", description: "עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי." },
+      { name: "אמסטרדם", description: "עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן." },
+      { name: "שוקוצ׳יפס", description: "עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד." },
+      { name: "חצי־חצי", description: "חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים." },
+      { name: "ברוקי", description: "בראוניז שוקולד עשיר עם חתיכות בצק עוגיות, קרם שוקולד וזילוף אגוזי לוז." },
+      { name: "שוקולד דובאי", description: "עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף." },
+      { name: "מגולגלת קינדר", description: "עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל." },
+      { name: "פתיבר", description: "עוגייה עשירה עם שוקולד חלב, מילוי קרם פתיבר, עוגיית פתיבר וסוכריות צבעוניות." }
     ];
 
     function getWhatsAppUrl(productName = "") {
@@ -87,16 +87,12 @@ ${productLine}
     }
 
     function imagePath(name) {
-      return typeof window.normalizeImagePath === "function"
-        ? window.normalizeImagePath(name)
-        : (function fallbackNormalize(v) {
-          const path = String(v || "").trim().replace(/\\/g, "/");
-          if (!path) return "";
-          if (/^https?:\/\//i.test(path) || path.startsWith("//") || path.startsWith("/")) return path;
-          if (/^prdimages\//i.test(path)) return path.replace(/^prdimages\//i, "prdimages/");
-          if (/^(assets|images|attached_assets)\//i.test(path)) return path;
-          return `prdimages/${path}`;
-        })(name);
+      const raw = String(name || "").trim();
+      if (!raw) return "";
+      if (typeof window.normalizeImagePath === "function") return window.normalizeImagePath(raw);
+      if (/^https?:\/\//i.test(raw) || raw.startsWith("//") || raw.startsWith("/")) return raw;
+      if (/^(assets|images|attached_assets)\//i.test(raw)) return raw;
+      return "";
     }
 
     function setImageWithFallback(img, name) {
@@ -117,25 +113,13 @@ ${productLine}
       const base = typeof window.normalizeImagePath === "function"
         ? window.normalizeImagePath(primaryRaw)
         : imagePath(primaryRaw);
-      const hasExtension = /\.[a-zA-Z0-9]+$/.test(base);
       const fullNormalized = raw && fullImageRaw
         ? (typeof window.normalizeImagePath === "function"
           ? window.normalizeImagePath(fullImageRaw)
           : imagePath(fullImageRaw))
         : "";
 
-      let options = hasExtension
-        ? [base]
-        : [
-            `${base}.webp`,
-            `${base}.jpg`,
-            `${base}.jpeg`,
-            `${base}.png`,
-            `${base}.JPG`,
-            `${base}.JPEG`,
-            `${base}.PNG`,
-            `${base}.WEBP`
-          ];
+      let options = [base];
 
       if (fullNormalized && fullNormalized !== base && fullImageRaw !== primaryRaw) {
         options.push(fullNormalized);
@@ -231,7 +215,7 @@ ${productLine}
       grid.innerHTML = signatureProducts.map((product) => `
         <article class="signature-card reveal">
           <div class="signature-image">
-            <img data-product-image="${product.image}" alt="${product.name}" width="1200" height="1032" loading="lazy" decoding="async">
+            <img src="${window.LIOR_IMAGE_PLACEHOLDER || ""}" alt="${product.name}" width="1200" height="1032" loading="lazy" decoding="async">
           </div>
           <div class="signature-body">
             <h3>${product.name}</h3>
@@ -267,8 +251,8 @@ ${productLine}
             <article class="product-card reveal">
               <div class="product-image">
                 <img
-                  data-product-image="${product.cardImage || product.image}"
-                  data-full-image="${product.image}"
+                  src="${window.LIOR_IMAGE_PLACEHOLDER || ""}"
+                  data-full-image=""
                   alt="${product.name}"
                   width="800"
                   height="688"
@@ -1080,7 +1064,8 @@ ${productLine}
         document.addEventListener("click", (event) => {
           const productImg = event.target.closest(".product-image img");
           if (productImg) {
-            const src = productImg.currentSrc || productImg.src || imagePath(productImg.dataset.productImage || productImg.dataset.fullImage || "");
+            const fullImage = imagePath(productImg.dataset.fullImage || "");
+            const src = fullImage || productImg.currentSrc || productImg.src || imagePath(productImg.dataset.productImage || "");
             openImageLightbox(src, productImg.alt || "");
           }
         });

@@ -1,4 +1,5 @@
 const WEBP_QUALITY = 0.8;
+const JPEG_QUALITY = 0.88;
 const PRODUCT_CARD_RESIZE_MAX = 768;
 const BUCKET = (window.LIOR_SUPABASE_CONFIG && window.LIOR_SUPABASE_CONFIG.STORAGE_BUCKET) || "site-images";
 
@@ -112,22 +113,14 @@ function client() {
   return supabaseClient;
 }
 
-/** Same legacy rule as site-content: *-card.webp → *.webp (any path segment). */
-function remapLegacyAdminImagePath(path) {
-  return String(path || "")
-    .trim()
-    .replace(/A(\d+)-card\.webp/gi, "A$1.webp");
-}
-
-/** Resolve admin/public display URL (https, /, prdimages/, assets/, bare filename → prdimages/). */
+/** Resolve admin/public display URL without falling back to deleted local product folders. */
 function adminMediaPreviewUrl(raw) {
-  const s = remapLegacyAdminImagePath(String(raw || "").trim());
+  const s = String(raw || "").trim();
   if (!s) return "";
   if (typeof window.normalizeImagePath === "function") return window.normalizeImagePath(s);
   if (/^https?:\/\//i.test(s) || s.startsWith("//") || s.startsWith("/")) return s;
-  if (/^prdimages\//i.test(s)) return s.replace(/^prdimages\//i, "prdimages/");
   if (/^(assets|images|attached_assets)\//i.test(s)) return s;
-  return `prdimages/${s}`;
+  return "";
 }
 
 /**
@@ -323,6 +316,23 @@ async function imageToWebPBlob(image, maxWidth) {
   return webpBlob;
 }
 
+async function imageToJpegBlob(image, maxWidth) {
+  const naturalW = image.naturalWidth || image.width;
+  const naturalH = image.naturalHeight || image.height;
+  if (!naturalW) return null;
+  const w = Math.min(naturalW, Number(maxWidth) || naturalW);
+  const h = Math.round(naturalH * (w / naturalW));
+  const canvas = document.createElement("canvas");
+  canvas.width = w;
+  canvas.height = h;
+  const ctx = canvas.getContext("2d");
+  ctx.fillStyle = "#ffffff";
+  ctx.fillRect(0, 0, w, h);
+  ctx.drawImage(image, 0, 0, w, h);
+  return canvasToBlob(canvas, "image/jpeg", JPEG_QUALITY);
+}
+
+
 async function convertImageToWebP(file, maxWidth) {
   const image = await readImage(file);
   const webpBlob = await imageToWebPBlob(image, maxWidth);
@@ -347,8 +357,8 @@ async function uploadBlobToBucket(path, blob, contentType) {
   return data.publicUrl;
 }
 
-/** Full-size product image plus a lighter card WebP when the card field is still empty. */
-async function uploadProductFullImageWithOptionalCard(file, folder, fullMaxWidth) {
+/** Full-size and card product JPGs saved in the Supabase product folders. */
+async function uploadProductImagesToSupabase(file, fullMaxWidth) {
   if (!file) return { fullUrl: "", cardUrl: "" };
   if (!/^image\/(png|jpe?g|webp)$/i.test(file.type || "")) {
     throw new Error("ניתן להעלות רק PNG, JPG, JPEG או WEBP");
@@ -356,36 +366,23 @@ async function uploadProductFullImageWithOptionalCard(file, folder, fullMaxWidth
 
   const image = await readImage(file);
   const maxFull = Number(fullMaxWidth) || 1280;
-  const fullBlob = await imageToWebPBlob(image, maxFull);
-
-  if (!fullBlob) {
-    URL.revokeObjectURL(image.src);
-    const converted = await convertImageToWebP(file, maxFull);
-    const finalName = converted.extension === "webp" ? cleanFileName(file.name) : `${cleanFileName(file.name).replace(/\.webp$/, "")}.${converted.extension}`;
-    const path = `${folder || "uploads"}/${finalName}`;
-    const { error } = await client().storage.from(BUCKET).upload(path, converted.blob, {
-      contentType: converted.contentType,
-      cacheControl: "31536000",
-      upsert: false
-    });
-    if (error) throw error;
-    const { data } = client().storage.from(BUCKET).getPublicUrl(path);
-    return { fullUrl: data.publicUrl, cardUrl: "" };
-  }
-
-  const cardBlob = await imageToWebPBlob(image, PRODUCT_CARD_RESIZE_MAX);
+  const fullBlob = await imageToJpegBlob(image, maxFull);
+  const cardBlob = await imageToJpegBlob(image, PRODUCT_CARD_RESIZE_MAX);
   URL.revokeObjectURL(image.src);
 
-  const base = cleanFileName(file.name).replace(/\.[^.]+$/i, "").replace(/\.webp$/i, "") || "product";
-  const stamp = Date.now();
-  const fullPath = `${folder || "products"}/${base}-${stamp}.webp`;
-  const cardPath = `${folder || "products"}/${base}-${stamp}-card.webp`;
+  if (!fullBlob || !cardBlob) throw new Error("לא ניתן לעבד את קובץ התמונה");
 
-  const fullUrl = await uploadBlobToBucket(fullPath, fullBlob, "image/webp");
-  let cardUrl = "";
-  if (cardBlob) {
-    cardUrl = await uploadBlobToBucket(cardPath, cardBlob, "image/webp");
-  }
+  const base = String(file.name || "product")
+    .toLowerCase()
+    .replace(/\.[^.]+$/i, "")
+    .normalize("NFKD")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "") || "product";
+  const stamp = Date.now();
+  const fileName = `${base}-${stamp}.jpg`;
+
+  const fullUrl = await uploadBlobToBucket(`products/full/${fileName}`, fullBlob, "image/jpeg");
+  const cardUrl = await uploadBlobToBucket(`products/cards/${fileName}`, cardBlob, "image/jpeg");
   return { fullUrl, cardUrl };
 }
 
@@ -609,7 +606,7 @@ function productDrawerFormTemplate(product = {}) {
           <div class="admin-image-controls">
             <div class="admin-image-actions">
               <label class="admin-button secondary admin-file-button">העלאת תמונה
-                <input data-product-upload data-folder="products" data-max-width="1280" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
+                <input data-product-upload data-max-width="1280" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
               </label>
               <button class="admin-button muted admin-remove-image" type="button" data-remove-product-image hidden>הסרת תמונה</button>
             </div>
@@ -1106,7 +1103,7 @@ function setupEvents() {
       let url = "";
       let cardUrlExtra = "";
       if (fileInput.matches("[data-product-upload]")) {
-        const pair = await uploadProductFullImageWithOptionalCard(file, fileInput.dataset.folder, fileInput.dataset.maxWidth);
+        const pair = await uploadProductImagesToSupabase(file, fileInput.dataset.maxWidth);
         url = pair.fullUrl || "";
         cardUrlExtra = pair.cardUrl || "";
       } else {
