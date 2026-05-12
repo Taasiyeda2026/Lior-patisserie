@@ -56,18 +56,27 @@
       if (!destination) return;
 
       sessionStorage.setItem(HERO_UNLOCK_STORAGE_KEY, "true");
+
+      // Step 1: fade hero out
       document.documentElement.classList.add("hero-transitioning");
       if (document.body) document.body.classList.add("hero-transitioning");
-      applyHeroLockState();
 
-      requestAnimationFrame(() => {
-        scrollToSection(destination);
+      window.setTimeout(() => {
+        // Step 2: unlock scroll + collapse hero
+        applyHeroLockState();
+        document.documentElement.classList.add("site-entered");
+        if (document.body) document.body.classList.add("site-entered");
 
-        window.setTimeout(() => {
-          document.documentElement.classList.remove("hero-transitioning");
-          if (document.body) document.body.classList.remove("hero-transitioning");
-        }, 520);
-      });
+        requestAnimationFrame(() => {
+          // Step 3: hero is gone — scroll to top (products is now at position 0)
+          window.scrollTo({ top: 0, behavior: "instant" });
+
+          window.setTimeout(() => {
+            document.documentElement.classList.remove("hero-transitioning");
+            if (document.body) document.body.classList.remove("hero-transitioning");
+          }, 200);
+        });
+      }, 240);
     }
 
     function setupHeroUnlock() {

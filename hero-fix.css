@@ -31,6 +31,26 @@
   box-shadow: none !important;
 }
 
+/* ── Hero entrance transition & site-entered state ──────────────────────── */
+
+/* Fade hero out while transitioning */
+html.hero-transitioning .home-hero {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transition: opacity 0.22s ease !important;
+}
+
+/* After entering: hero is fully gone — no scroll-back possible */
+html.site-entered .home-hero {
+  display: none !important;
+}
+
+/* Ensure no empty space above products after hero is removed */
+html.site-entered .home-opening {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
 /* ── Floating UI offset relative to page frame ──────────────────────────── */
 /*
   --shell-gutter is defined on html in index.html:
