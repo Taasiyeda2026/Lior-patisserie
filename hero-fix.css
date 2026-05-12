@@ -31,6 +31,61 @@
   box-shadow: none !important;
 }
 
+/* ── Floating UI offset relative to page frame ──────────────────────────── */
+/*
+  --shell-gutter is defined on html in index.html:
+  clamp(8px, 1.2vw, 18px)
+  --float-inset = gutter + 10px inner gap from the frame border
+*/
+:root {
+  --float-inset: calc(var(--shell-gutter, 12px) + 10px);
+  --float-bottom: calc(var(--shell-gutter, 12px) + 72px);
+}
+
+/* Desktop — floating cart */
+.floating-cart {
+  right: var(--float-inset) !important;
+  bottom: var(--float-bottom) !important;
+}
+
+/* Desktop — more-info button (boutique moves it to right side on mobile,
+   but on desktop it stays on the left — keep left aligned with frame) */
+@media (min-width: 769px) {
+  [data-more-info-button] {
+    left: var(--float-inset) !important;
+    bottom: var(--float-bottom) !important;
+  }
+
+  .section-nav .footer-legal-popover,
+  [data-more-info-panel] {
+    left: var(--float-inset) !important;
+    right: var(--float-inset) !important;
+    bottom: calc(var(--shell-gutter, 12px) + 132px) !important;
+  }
+}
+
+/* Mobile ≤ 768px — both elements sit on the RIGHT side, near frame */
+@media (max-width: 768px) {
+  .floating-cart {
+    right: var(--float-inset) !important;
+    bottom: calc(var(--shell-gutter, 12px) + 64px) !important;
+  }
+
+  .section-nav .footer-legal-toggle,
+  [data-more-info-button] {
+    right: var(--float-inset) !important;
+    left: auto !important;
+    bottom: calc(var(--shell-gutter, 12px) + 12px) !important;
+  }
+
+  .section-nav .footer-legal-popover,
+  [data-more-info-panel] {
+    right: var(--float-inset) !important;
+    left: var(--float-inset) !important;
+    bottom: calc(var(--shell-gutter, 12px) + 122px) !important;
+  }
+}
+
 /* Contact section centering */
 .final .section-label,
 .contact-section .section-label {
