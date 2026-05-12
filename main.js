@@ -1188,7 +1188,42 @@ ${productLine}
       setupHiddenAdminEntry();
       setupHeaderColorSwitch();
       setupOrderActionsVisibility();
+      setupMobileFloatingInfoVisibility();
     });
+
+
+    function setupMobileFloatingInfoVisibility() {
+      const btn = document.getElementById("footerLegalToggle");
+      if (!btn) return;
+
+      const productsSection = document.getElementById("products") || document.querySelector(".categories-container");
+      const footer = document.querySelector(".footer");
+      let showThreshold = productsSection ? productsSection.offsetTop - 80 : 420;
+      let footerThreshold = Infinity;
+
+      function recacheFloatingInfoThresholds() {
+        showThreshold = productsSection ? productsSection.offsetTop - 80 : 420;
+        footerThreshold = footer ? footer.offsetTop - window.innerHeight + 96 : Infinity;
+      }
+
+      window.addEventListener("resize", recacheFloatingInfoThresholds, { passive: true });
+      window.addEventListener("load", recacheFloatingInfoThresholds, { once: true });
+
+      let ticking = false;
+      function update() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(() => {
+          const y = window.scrollY || window.pageYOffset || 0;
+          document.body.classList.toggle("show-mobile-more-info", y >= showThreshold);
+          document.body.classList.toggle("mobile-info-near-footer", y >= footerThreshold);
+          ticking = false;
+        });
+      }
+
+      window.addEventListener("scroll", update, { passive: true });
+      update();
+    }
 
     function setupOrderActionsVisibility() {
       const hero = document.querySelector(".home-hero");

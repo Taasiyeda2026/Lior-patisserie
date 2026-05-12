@@ -35,7 +35,19 @@
     return typeof value === "string" && value.trim().length > 0;
   }
 
-  const FEATURE_ICON_FALLBACK = `<svg class="pastry-icon" viewBox="0 0 48 48" focusable="false" aria-hidden="true"><path d="M16 9 L32 9 L28 33 L20 33 Z" fill="currentColor" opacity="0.88"/><path d="M16 9 Q24 6 32 9" fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.5"/><path d="M20 33 L21.5 37 L26.5 37 L28 33" fill="none" stroke="currentColor" stroke-width="1" opacity="0.45"/><path d="M23 37 Q20 40 22 43 Q24 45 26 43 Q28 40 25 37" fill="none" stroke="currentColor" stroke-width="1" opacity="0.45"/></svg>`;
+  const FEATURE_ICON_FALLBACKS = [
+    `<svg class="pastry-icon" viewBox="0 0 48 48" focusable="false" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 34 L34 16"/><path d="M13 37 L18 32"/><path d="M31 13 L36 18"/><path d="M29 18 C24 13 18 12 14 16 C10 20 11 26 16 31"/><path d="M18 29 C15 25 15 21 17 19 C20 16 24 17 27 20"/></svg>`,
+    `<svg class="pastry-icon" viewBox="0 0 48 48" focusable="false" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="12" y="14" width="24" height="20" rx="3"/><path d="M12 22 H36"/><path d="M20 14 V34"/><path d="M28 14 V34"/><path d="M16 28 H20"/><path d="M28 28 H32"/></svg>`,
+    `<svg class="pastry-icon" viewBox="0 0 48 48" focusable="false" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="11" y="20" width="26" height="17" rx="3"/><path d="M10 20 H38"/><path d="M24 20 V37"/><path d="M14 20 C12 16 14 12 18 13 C21 14 23 17 24 20"/><path d="M34 20 C36 16 34 12 30 13 C27 14 25 17 24 20"/><path d="M15 37 H33"/></svg>`
+  ];
+
+  function featureIconFallback(feature, index) {
+    const title = String((feature && feature.title) || "").trim();
+    if (/טעמים|שוקולד|קרם/.test(title)) return FEATURE_ICON_FALLBACKS[1];
+    if (/חגיגי|מפנק|מתנה|אירוח/.test(title)) return FEATURE_ICON_FALLBACKS[2];
+    if (/עבודת|יד|אישי/.test(title)) return FEATURE_ICON_FALLBACKS[0];
+    return FEATURE_ICON_FALLBACKS[index % FEATURE_ICON_FALLBACKS.length];
+  }
 
   const LEGACY_TEXT_KEY_ALIASES = {
     hero_title: "flavors_title",
@@ -314,14 +326,32 @@
       const isRemoteSrc = /^https?:\/\//i.test(srcAttr) || srcAttr.startsWith("//");
 
       if (isRemoteSrc) {
+        const fullFb = (img.dataset.fullImage || "").trim();
+        const normalizedFull = hasText(fullFb) ? normalizeProductMediaPath(fullFb) : "";
+        const placeholder = window.LIOR_IMAGE_PLACEHOLDER || "";
+        const fallbackOptions = [normalizedFull, placeholder].filter((url) => url && url !== srcAttr);
+        let fallbackIndex = 0;
+
+        img.onload = function () {
+          img.dataset.imageReady = "true";
+          img.dataset.loadedSrc = img.currentSrc || img.src || "";
+          img.classList.add("is-loaded");
+        };
+
+        img.onerror = function () {
+          if (fallbackIndex < fallbackOptions.length) {
+            img.classList.remove("is-loaded");
+            img.src = fallbackOptions[fallbackIndex];
+            fallbackIndex += 1;
+            return;
+          }
+          img.onerror = null;
+        };
+
         if (img.complete && img.naturalWidth > 0) {
           img.dataset.imageReady = "true";
+          img.dataset.loadedSrc = img.currentSrc || srcAttr;
           img.classList.add("is-loaded");
-        } else if (!img.onload) {
-          img.onload = function () {
-            img.dataset.imageReady = "true";
-            img.classList.add("is-loaded");
-          };
         }
         img.dataset.imageQueued = "loaded";
         img.dataset.imageObserved = "true";
@@ -482,14 +512,14 @@
 
     if (!activeFeatures.length) return;
 
-    grid.innerHTML = activeFeatures.map((feature) => {
+    grid.innerHTML = activeFeatures.map((feature, index) => {
       const icon = hasText(feature.image_url)
         ? (() => {
             const fu = String(feature.image_url).trim();
             const src = isRemoteImageValue(fu) ? fu : normalizeProductMediaPath(fu);
             return `<img src="${escapeHtml(src)}" alt="${escapeHtml(feature.title || "")}" loading="lazy" decoding="async">`;
           })()
-        : FEATURE_ICON_FALLBACK;
+        : featureIconFallback(feature, index);
 
       return `
         <article class="detail-card reveal">
