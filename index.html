@@ -246,7 +246,7 @@
       </section>
 
     <nav class="section-nav" aria-label="ניווט לפי קטע">
-      <button type="button" class="nav-dot" data-target="#home" data-label="הטעמים שלנו" aria-label="הטעמים שלנו"></button>
+      <button type="button" class="nav-dot" data-target="#products" data-label="הטעמים שלנו" aria-label="הטעמים שלנו"></button>
       <button type="button" class="nav-dot" data-target=".editorial" data-label="עבודת יד" aria-label="עבודת יד"></button>
       <button type="button" class="nav-dot" data-target="#contact" data-label="צור קשר" aria-label="צור קשר"></button>
       <div class="footer-legal-wrap">
@@ -363,9 +363,10 @@
     <span class="floating-cart-count" id="floatingCartCount" hidden>0</span>
   </button>
 
-  <div class="image-lightbox" id="imageLightbox" role="dialog" aria-modal="true" aria-label="תצוגת תמונה מוגדלת" aria-hidden="true">
+  <div class="image-lightbox" id="imageLightbox" data-image-lightbox role="dialog" aria-modal="true" aria-label="תצוגת תמונה מוגדלת" aria-hidden="true">
     <button class="image-lightbox-close" id="imageLightboxClose" type="button" aria-label="סגירת תצוגת התמונה">×</button>
-    <img id="imageLightboxImg" src="" alt="" width="920" height="690" decoding="async">
+    <div class="image-lightbox-loader" data-lightbox-loader aria-hidden="true" hidden></div>
+    <img id="imageLightboxImg" data-lightbox-image alt="" width="920" height="690" decoding="async" hidden>
     <p class="image-lightbox-status" id="imageLightboxStatus" role="status" aria-live="polite" hidden></p>
   </div>
 
