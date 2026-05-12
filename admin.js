@@ -314,9 +314,38 @@ function showLoginError(message) {
 function showAdminApp() {
   document.getElementById("loginCard").classList.add("hidden");
   document.getElementById("adminApp").classList.remove("hidden");
+  closeAdminSectionPanels();
+}
+
+
+function closeAdminSectionPanels() {
+  document.querySelectorAll(".admin-section-panel").forEach((panel) => {
+    panel.hidden = true;
+    panel.classList.remove("is-active");
+  });
+  document.querySelectorAll("[data-admin-section-card]").forEach((card) => {
+    card.setAttribute("aria-expanded", "false");
+  });
+}
+
+function openAdminSectionPanel(panelId) {
+  const panel = document.getElementById(panelId);
+  if (!panel) return;
+  closeProductDrawer();
+  closeAdminSectionPanels();
+  panel.hidden = false;
+  panel.classList.add("is-active");
+  document.querySelector(`[data-admin-section-card="${CSS.escape(panelId)}"]`)?.setAttribute("aria-expanded", "true");
+  panel.scrollIntoView({ block: "start", behavior: "smooth" });
+}
+
+function resetAdminSectionMenu() {
+  closeAdminSectionPanels();
+  document.querySelector(".admin-domain-menu")?.scrollIntoView({ block: "start", behavior: "smooth" });
 }
 
 function showLoginScreen() {
+  closeAdminSectionPanels();
   document.getElementById("adminApp").classList.add("hidden");
   document.getElementById("loginCard").classList.remove("hidden");
   const logoutBtn = document.getElementById("logoutButton");
@@ -492,6 +521,44 @@ async function saveSettings(scope = "hero-settings", root = document) {
   showNotice(scope, "ההגדרות נשמרו בהצלחה");
 }
 
+
+function seriesRange(seriesIndex) {
+  const index = Number(seriesIndex) || 1;
+  const start = index === 1 ? 1 : index === 2 ? 10 : 19;
+  const end = index === 1 ? 9 : index === 2 ? 18 : 27;
+  return { start, end };
+}
+
+function getProductSeriesIndex(product) {
+  const order = Number(product && product.display_order) || 0;
+  if (order >= 10 && order <= 18) return 2;
+  if (order >= 19) return 3;
+  return 1;
+}
+
+function productsForSeries(seriesIndex) {
+  const { start, end } = seriesRange(seriesIndex);
+  return adminProductsCache
+    .filter((product) => {
+      const order = Number(product.display_order) || 0;
+      return order >= start && order <= end;
+    })
+    .sort((a, b) => (Number(a.display_order) || 0) - (Number(b.display_order) || 0));
+}
+
+function nextDisplayOrderForSeries(seriesIndex) {
+  const { start, end } = seriesRange(seriesIndex);
+  const orders = productsForSeries(seriesIndex).map((product) => Number(product.display_order) || 0);
+  if (!orders.length) return start;
+  const nextOrder = Math.max(...orders) + 1;
+  return seriesIndex === 3 ? nextOrder : Math.min(nextOrder, end);
+}
+
+function productNoticeScopeForRoot(root) {
+  const seriesIndex = root?.dataset?.seriesIndex || getProductSeriesIndex({ display_order: root?.dataset?.displayOrder });
+  return `series-${seriesIndex}-settings`;
+}
+
 function productGridCardTemplate(product) {
   const id = product.id;
   const isActive = product.is_active !== false;
@@ -574,7 +641,7 @@ function refreshProductDrawerFormIfOpen() {
   }
 }
 
-function openProductDrawer(product) {
+function openProductDrawer(product, seriesIndex) {
   const drawer = document.getElementById("productDrawer");
   const backdrop = document.getElementById("productDrawerBackdrop");
   const title = document.getElementById("productDrawerTitle");
@@ -584,9 +651,8 @@ function openProductDrawer(product) {
   let p;
   let heading;
   if (!product) {
-    const nextOrder = adminProductsCache.length
-      ? Math.max(...adminProductsCache.map((x) => Number(x.display_order) || 0)) + 1
-      : 0;
+    const targetSeries = Number(seriesIndex) || 1;
+    const nextOrder = nextDisplayOrderForSeries(targetSeries);
     p = {
       id: crypto.randomUUID(),
       name: "",
@@ -595,11 +661,12 @@ function openProductDrawer(product) {
       image_url: "",
       card_image_url: "",
       display_order: nextOrder,
-      is_active: true
+      is_active: true,
+      __seriesIndex: targetSeries
     };
     heading = "מוצר חדש";
   } else {
-    p = { ...product };
+    p = { ...product, __seriesIndex: getProductSeriesIndex(product) };
     heading = adminProductsCache.some((x) => String(x.id) === String(product.id)) ? "עריכת מוצר" : "מוצר חדש";
   }
 
@@ -641,10 +708,11 @@ function productDrawerFormTemplate(product = {}) {
   const id = product.id || crypto.randomUUID();
   const isActive = product.is_active !== false;
   const priceVal = product.price != null ? String(product.price) : "";
-  return `<form id="productDrawerForm" class="product-drawer-form" data-product-id="${escapeHtml(String(id))}" data-display-order="${Number(product.display_order) || 0}" data-is-active="${isActive}">
+  return `<form id="productDrawerForm" class="product-drawer-form" data-product-id="${escapeHtml(String(id))}" data-display-order="${Number(product.display_order) || 0}" data-series-index="${Number(product.__seriesIndex) || getProductSeriesIndex(product)}" data-is-active="${isActive}">
     <div class="product-drawer-fields">
       <label class="field-label">שם הטעם <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
       <label class="field-label">מחיר (אופציונלי) <input data-field="price" type="text" value="${escapeHtml(priceVal)}" placeholder="למשל 28 או ₪28"></label>
+      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
       <label class="field-label wide">תיאור <textarea data-field="description" rows="4">${escapeHtml(product.description || "")}</textarea></label>
       <div class="field-label wide product-image-manager">
         <span class="field-title">תמונת מוצר</span>
@@ -673,24 +741,30 @@ function productDrawerFormTemplate(product = {}) {
   </form>`;
 }
 
-function buildAdminCategoryHtml(sorted) {
-  const CATEGORY_LABELS = ["סדרה ראשונה", "סדרה שניה", "סדרה שלישית"];
-  const groups = [
-    sorted.slice(0, 6),
-    sorted.slice(6, 12),
-    sorted.slice(12)
-  ];
-  return groups.map((products, i) => `
-    <div class="admin-category-group" data-category-index="${i + 1}">
+function buildAdminSeriesProductsHtml(products, seriesIndex) {
+  const label = ["", "סדרה ראשונה", "סדרה שנייה", "סדרה שלישית"][Number(seriesIndex)] || "סדרה";
+  return `
+    <div class="admin-category-group" data-category-index="${Number(seriesIndex)}">
       <div class="admin-category-group-head">
-        <span class="admin-category-group-label">${CATEGORY_LABELS[i]}</span>
+        <span class="admin-category-group-label">${label}</span>
         <span class="admin-category-group-count">${products.length} מוצרים</span>
       </div>
       <div class="products-admin-grid admin-category-cards">
         ${products.length ? products.map(productGridCardTemplate).join("") : '<p class="hint admin-empty-hint">אין מוצרים בסדרה זו.</p>'}
       </div>
     </div>
-  `).join("");
+  `;
+}
+
+function renderProductsBySeries() {
+  [1, 2, 3].forEach((seriesIndex) => {
+    const container = document.getElementById(`productsAdmin${seriesIndex}`);
+    if (!container) return;
+    const products = productsForSeries(seriesIndex);
+    container.innerHTML = buildAdminSeriesProductsHtml(products, seriesIndex);
+    container.querySelectorAll(".admin-category-cards").forEach(hydrateProductGridCards);
+  });
+  refreshProductDrawerFormIfOpen();
 }
 
 async function loadProducts() {
@@ -701,19 +775,8 @@ async function loadProducts() {
   }
 
   const supabaseProducts = data || [];
-  const container = document.getElementById("productsAdmin");
   adminProductsCache = supabaseProducts;
-
-  if (!supabaseProducts.length) {
-    container.innerHTML =
-      '<p class="hint admin-empty-hint">אין מוצרים במסד הנתונים. אפשר להוסיף מוצרים כאן או להריץ את קובץ seed-content.sql בפרויקט Supabase לנתוני פתיחה בלבד.</p>';
-    refreshProductDrawerFormIfOpen();
-    return;
-  }
-
-  container.innerHTML = buildAdminCategoryHtml(supabaseProducts);
-  container.querySelectorAll(".admin-category-cards").forEach(hydrateProductGridCards);
-  refreshProductDrawerFormIfOpen();
+  renderProductsBySeries();
 }
 
 function updateProductInCache(payload) {
@@ -726,19 +789,7 @@ function updateProductInCache(payload) {
 }
 
 function rerenderProductGrid() {
-  const container = document.getElementById("productsAdmin");
-  if (!container) return;
-  if (!adminProductsCache.length) {
-    container.innerHTML =
-      '<p class="hint admin-empty-hint">אין מוצרים במסד הנתונים. אפשר להוסיף מוצרים כאן או להריץ את קובץ seed-content.sql בפרויקט Supabase לנתוני פתיחה בלבד.</p>';
-    return;
-  }
-  const sorted = [...adminProductsCache].sort(
-    (a, b) => (Number(a.display_order) || 0) - (Number(b.display_order) || 0)
-  );
-  container.innerHTML = buildAdminCategoryHtml(sorted);
-  container.querySelectorAll(".admin-category-cards").forEach(hydrateProductGridCards);
-  refreshProductDrawerFormIfOpen();
+  renderProductsBySeries();
 }
 
 /**
@@ -858,7 +909,7 @@ async function saveProduct(root) {
   if (!tryUpdateProductCardInPlace(payload.id)) {
     rerenderProductGrid();
   }
-  showNotice("products", "המוצר נשמר בהצלחה");
+  showNotice(productNoticeScopeForRoot(root), "המוצר נשמר בהצלחה");
 }
 
 async function toggleProductActive(root) {
@@ -883,30 +934,17 @@ async function toggleProductActive(root) {
   if (!tryUpdateProductCardInPlace(id)) {
     rerenderProductGrid();
   }
-  showNotice("products", newActive ? "המוצר מוצג באתר" : "המוצר הוסתר מהאתר");
+  showNotice(productNoticeScopeForRoot(root), newActive ? "המוצר מוצג באתר" : "המוצר הוסתר מהאתר");
 }
 
 function featureTemplate(feature = {}) {
   const id = feature.id || crypto.randomUUID();
   const isActive = feature.is_active !== false;
-  const hasImg = Boolean(String(feature.image_url || "").trim());
   return `<article class="feature-row${isActive ? "" : " product-inactive"}" data-feature-id="${id}" data-display-order="${Number(feature.display_order) || 0}">
     <div class="grid">
       <label class="field-label">כותרת <input data-field="title" value="${escapeHtml(feature.title || "")}"></label>
       <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
-      <label class="field-label">טקסט <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
-      <label class="field-label wide">תמונה (אופציונלי)
-        <div class="image-tools">
-          <div class="admin-preview-shell${hasImg ? " has-image" : ""}" data-preview-field="image_url">
-            <img class="preview" alt="">
-            <span class="admin-preview-placeholder"${hasImg ? " hidden" : ""}>אין תמונה זמינה</span>
-          </div>
-          <div>
-            <input data-field="image_url" value="${escapeHtml(feature.image_url || "")}" placeholder="כתובת תמונה">
-            <input data-feature-upload data-folder="icons" data-max-width="500" type="file" accept=".png,.jpg,.jpeg,.webp,image/png,image/jpeg,image/webp">
-          </div>
-        </div>
-      </label>
+      <label class="field-label wide">טקסט <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
     </div>
     <div class="product-actions">
       <button class="admin-button" type="button" data-save-feature>שמירה</button>
@@ -919,7 +957,6 @@ async function loadFeatures() {
   if (error) throw error;
   const featEl = document.getElementById("featuresAdmin");
   featEl.innerHTML = (data || []).map(featureTemplate).join("");
-  initAdminPreviewShells(featEl);
 }
 
 async function saveFeature(row) {
@@ -1073,20 +1110,33 @@ function setupEvents() {
   if (productDrawerClose) productDrawerClose.addEventListener("click", closeProductDrawer);
 
   document.addEventListener("click", async (event) => {
+    const sectionCard = event.target.closest("[data-admin-section-card]");
+    if (sectionCard) {
+      openAdminSectionPanel(sectionCard.dataset.adminSectionCard);
+      return;
+    }
+    if (event.target.matches("[data-close-admin-section]")) {
+      resetAdminSectionMenu();
+      return;
+    }
     if (event.target.matches("[data-save-settings]")) {
       const scope = event.target.dataset.saveSettings || "home-settings";
       const settingsRoot = event.target.closest(".editor-card") || document;
       try { await saveSettings(scope, settingsRoot); } catch (error) { showNotice(scope, error.message, false); }
     }
+    if (event.target.matches("[data-add-product-series]")) {
+      openProductDrawer(null, Number(event.target.dataset.addProductSeries) || 1);
+      return;
+    }
     if (event.target.id === "addProduct") {
-      openProductDrawer(null);
+      openProductDrawer(null, 1);
       return;
     }
     const gridCard = event.target.closest(".product-grid-card");
     if (gridCard) {
       const id = gridCard.dataset.productId;
       const product = adminProductsCache.find((p) => String(p.id) === String(id));
-      if (product) openProductDrawer(product);
+      if (product) openProductDrawer(product, getProductSeriesIndex(product));
       return;
     }
     if (event.target.id === "addFeature") {
@@ -1104,7 +1154,7 @@ function setupEvents() {
         try {
           await saveProduct(form);
         } catch (error) {
-          showNotice("products", friendlyProductSaveError(error).message, false);
+          showNotice(productNoticeScopeForRoot(form), friendlyProductSaveError(error).message, false);
         }
       }
     }
@@ -1114,7 +1164,7 @@ function setupEvents() {
         try {
           await toggleProductActive(form);
         } catch (error) {
-          showNotice("products", error.message, false);
+          showNotice(productNoticeScopeForRoot(form), error.message, false);
         }
       }
     }
