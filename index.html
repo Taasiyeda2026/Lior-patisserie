@@ -28,15 +28,24 @@
   <link rel="stylesheet" href="styles.css?v=14">
   <link rel="stylesheet" href="hero-fix.css?v=10">
   <style>
-    /* Layout reset — overrides legacy body padding from old CSS layer */
-    html, body { margin: 0 !important; padding: 0 !important; }
-    .page { margin: 0 !important; padding: 0 !important; overflow: hidden !important; border-radius: 0 !important; box-shadow: none !important; }
+    /* Boutique shell — keeps the aubergine frame visible around the scaled site. */
+    html { --shell-gutter: clamp(8px, 1.2vw, 18px); }
+    html, body { margin: 0 !important; }
+    body { padding: var(--shell-gutter) !important; background: #2B1738 !important; }
+    .page {
+      margin: 0 auto !important;
+      padding: 0 !important;
+      overflow: hidden !important;
+      border: 1px solid rgba(200, 169, 106, 0.22) !important;
+      border-radius: clamp(16px, 2vw, 26px) !important;
+      box-shadow: 0 24px 66px rgba(18, 8, 26, 0.36), 0 0 0 1px rgba(255, 249, 242, 0.08) !important;
+    }
     main { margin: 0 !important; padding: 0 !important; }
     .home-products { margin: 0 !important; padding: 0 !important; }
-    .site-header { position: fixed !important; top: 0 !important; left: 0 !important; right: 0 !important; height: 46px !important; }
+    .site-header { position: fixed !important; top: var(--shell-gutter) !important; left: var(--shell-gutter) !important; right: var(--shell-gutter) !important; height: 46px !important; }
     .site-nav { height: 46px !important; }
-    .home-hero { margin: 0 !important; height: 100svh !important; min-height: 100svh !important; background: #2A1A2E !important; }
-    html.hero-locked .home-products { height: 100svh !important; max-height: 100svh !important; }
+    .home-hero { margin: 0 !important; height: calc(100svh - (var(--shell-gutter) * 2)) !important; min-height: calc(100svh - (var(--shell-gutter) * 2)) !important; background: #2A1A2E !important; }
+    html.hero-locked .home-products { height: calc(100svh - (var(--shell-gutter) * 2)) !important; max-height: calc(100svh - (var(--shell-gutter) * 2)) !important; }
     /* Nav text — force light colors over dark transparent header */
     .nav-brand, .nav-brand span:first-child { color: rgba(248,244,238,0.95) !important; direction: ltr !important; }
     .nav-brand span:last-child { color: #C4A844 !important; }
@@ -101,7 +110,6 @@
                 קולקציה עשירה ובלתי נשכחת,<br class="intro-line-break">
                 שלכל טעם בה יש אופי, מרקם וחוויה משלו.
               </p>
-              <div class="trust-badge" aria-label="תגית אמון">כשר למהדרין</div>
               <div class="cta-row flavors-actions">
                 <a class="btn" href="#" data-order>להזמנה</a>
               </div>
@@ -141,14 +149,16 @@
 
       <section class="editorial site-section features-section" id="about">
         <div class="container">
-          <div class="editorial-card reveal">
-            <div class="editorial-text">
+          <div class="editorial-card features-card reveal">
+            <header class="editorial-text features-intro">
               <div class="section-label" data-content-key="handmade_label">- עבודת יד -</div>
               <h2 data-content-key="handmade_title">הפרטים הקטנים שעושים את ההבדל</h2>
               <p data-content-key="handmade_text">
                 מהבצק ועד הקרם, מהקישוט ועד האריזה - כל פרט נבחר כדי ליצור קינוח שנראה חגיגי, מרגיש אישי ובעיקר עושה חשק.
               </p>
-              <div class="details-grid" id="featuresGrid" aria-label="מה מיוחד אצלנו">
+            </header>
+            <div class="features-content">
+              <div class="features-cards details-grid" id="featuresGrid" aria-label="מה מיוחד אצלנו">
                 <article class="detail-card reveal">
                   <div class="icon-circle" aria-hidden="true">
                     <svg class="pastry-icon" viewBox="0 0 48 48" focusable="false" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
@@ -162,8 +172,10 @@
                       <line x1="29" y1="20.5" x2="29" y2="27.5" />
                     </svg>
                   </div>
-                  <h3>עבודת יד</h3>
-                  <p>כל עוגייה נאפית ומעוצבת בעבודת יד, עם טאץ׳ אישי ומוקפד.</p>
+                  <div class="detail-card-copy">
+                    <h3>עבודת יד</h3>
+                    <p>כל עוגייה נאפית ומעוצבת בעבודת יד, עם טאץ׳ אישי ומוקפד.</p>
+                  </div>
                 </article>
                 <article class="detail-card reveal">
                   <div class="icon-circle" aria-hidden="true">
@@ -176,8 +188,10 @@
                       <ellipse cx="24" cy="37" rx="11" ry="2.5" />
                     </svg>
                   </div>
-                  <h3>טעמים עשירים</h3>
-                  <p>קרמים ושוקולדים מפנקים משתלבים לביס עשיר, רך ומלא אופי.</p>
+                  <div class="detail-card-copy">
+                    <h3>טעמים עשירים</h3>
+                    <p>קרמים ושוקולדים מפנקים משתלבים לביס עשיר, רך ומלא אופי.</p>
+                  </div>
                 </article>
                 <article class="detail-card reveal">
                   <div class="icon-circle" aria-hidden="true">
@@ -194,15 +208,13 @@
                       <line x1="8" y1="39" x2="40" y2="39" />
                     </svg>
                   </div>
-                  <h3>חגיגי ומפנק</h3>
-                  <p>נראות חגיגית מוקפדת שמתאימת לאירוח, מתנה או פינוק אישי.</p>
-                </article>
-                <article class="detail-card detail-card--image reveal">
-                  <img src="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%221%22 height=%221%22%3E%3C/svg%3E" data-cms-image="handmade_image" alt="עבודת יד וקינוח בעיצוב אישי" loading="lazy" decoding="async">
+                  <div class="detail-card-copy">
+                    <h3>חגיגי ומפנק</h3>
+                    <p>נראות חגיגית מוקפדת שמתאימת לאירוח, מתנה או פינוק אישי.</p>
+                  </div>
                 </article>
               </div>
-            </div>
-            <div class="editorial-video bakery-video-wrapper">
+              <div class="features-media editorial-video bakery-video-wrapper">
               <video
                 class="bakery-video"
                 src="https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-videos/lior-bakery-video.mp4"
@@ -214,6 +226,7 @@
               <button class="bakery-video-play" type="button" aria-label="הפעלת הסרטון">
                 <span aria-hidden="true">▶</span>
               </button>
+              </div>
             </div>
           </div>
         </div>
@@ -374,5 +387,12 @@
   <script src="supabase-config.js" defer></script>
   <script src="main.js" defer></script>
   <script src="site-content.js" defer></script>
+  <script>
+    if ("serviceWorker" in navigator) {
+      window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js").catch((error) => console.warn("Service worker registration failed", error));
+      });
+    }
+  </script>
 </body>
 </html>
