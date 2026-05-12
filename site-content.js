@@ -4,6 +4,8 @@
     "hero_logo_image",
     "handmade_image"
   ];
+  const PRODUCTS_PER_CATEGORY = 9;
+
   const TEXT_SETTINGS = [
     "flavors_title",
     "flavors_intro_primary",
@@ -449,14 +451,14 @@
 
     const activeProducts = rows
       .filter((product) => product && product.is_active === true && hasText(product.name))
-      .sort((a, b) => (a.display_order || 0) - (b.display_order || 0));
+      .sort((a, b) => (Number(a.display_order) || 0) - (Number(b.display_order) || 0));
 
     const hasNewLayout = !!document.getElementById("productsGrid1");
 
     if (hasNewLayout) {
-      renderCategoryGrid("productsGrid1", activeProducts.slice(0, 6), 0);
-      renderCategoryGrid("productsGrid2", activeProducts.slice(6, 12), 6);
-      renderCategoryGrid("productsGrid3", activeProducts.slice(12, 18), 12);
+      renderCategoryGrid("productsGrid1", activeProducts.slice(0, PRODUCTS_PER_CATEGORY), 0);
+      renderCategoryGrid("productsGrid2", activeProducts.slice(PRODUCTS_PER_CATEGORY, PRODUCTS_PER_CATEGORY * 2), PRODUCTS_PER_CATEGORY);
+      renderCategoryGrid("productsGrid3", activeProducts.slice(PRODUCTS_PER_CATEGORY * 2, PRODUCTS_PER_CATEGORY * 3), PRODUCTS_PER_CATEGORY * 2);
       refreshDynamicBehaviors();
       return;
     }
