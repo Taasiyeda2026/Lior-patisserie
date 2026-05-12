@@ -914,12 +914,11 @@ ${productLine}
     }
 
     function setupRevealAnimations() {
-      const reveals = Array.from(document.querySelectorAll(".reveal"));
+      const reveals = Array.from(document.querySelectorAll(".reveal, .category-section"));
 
       if (!reveals.length) return;
 
-      const revealImmediately = window.matchMedia("(max-width: 768px)").matches ||
-        window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      const revealImmediately = window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
         !("IntersectionObserver" in window);
 
       if (revealImmediately) {
@@ -939,7 +938,7 @@ ${productLine}
               window.__liorRevealObserver.unobserve(entry.target);
             }
           });
-        }, { threshold: 0.14 });
+        }, { threshold: 0.08, rootMargin: "0px 0px -8% 0px" });
       }
 
       reveals.forEach((el) => {
