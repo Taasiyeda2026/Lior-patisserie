@@ -1,15 +1,16 @@
--- seed-content.sql — initial content for Lior's Pâtisserie (Supabase / Postgres)
+-- seed-content.sql — current content for Lior's Pâtisserie (Supabase / Postgres)
 --
 -- Gallery was removed from the site and admin. No seed data is inserted for gallery_images.
 --
 -- Safe to run on a project that already has edits:
 --   * site_settings: INSERT ... ON CONFLICT (key) DO NOTHING (never overwrites values).
---   * products, site_features: each row is inserted only if no row exists with the
---     same natural key (name / title). No DELETE.
+--   * site_features: each row is inserted only if no row exists with the same title.
+--   * products: all existing products are deactivated, then the final 27-product
+--     catalog is updated/inserted by name with the current Supabase Storage URLs.
 --
--- Optional (not applied here): add UNIQUE constraints for stricter idempotent upserts, e.g.
---   ALTER TABLE public.products ADD CONSTRAINT products_name_unique UNIQUE (name);
--- Only add such constraints if you are sure there will never be duplicate display names.
+-- Product image paths intentionally use only:
+--   * site-images/products/cards/*.jpg
+--   * site-images/products/full/*.jpg
 
 -- ── site_settings (keys used by the public site + admin) ───────────────────
 
@@ -37,92 +38,95 @@ insert into public.site_settings (key, value, updated_at) values
   ('instagram_url', 'https://www.instagram.com/_liornahum_/', now())
 on conflict (key) do nothing;
 
--- ── products (one insert per name, only if missing) ─────────────────────────
+-- ── products (final 27-product catalog) ────────────────────────────────────
 
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'אוראו דרים', 'עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404929.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404929.jpg', true, 0
-where not exists (select 1 from public.products p where p.name = 'אוראו דרים');
+update public.products
+set is_active = false;
 
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'כריות נוגט', 'עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404958.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404958.jpg', true, 1
-where not exists (select 1 from public.products p where p.name = 'כריות נוגט');
+with final_products (name, description, filename, display_order) as (
+  values
+    ('אוראו דרים', 'עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל.', 'A7404929', 1),
+    ('אמסטרדם', 'עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן.', 'A7404918', 2),
+    ('קונפטי וניל', 'עוגיית וניל חגיגית עם סוכריות קונפטי צבעוניות, שוקולד לבן וקרם וניל מפנק.', 'A7404912', 3),
+    ('שוקוצ׳יפס', 'עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד.', 'A7404900', 4),
+    ('וניל קלאסי', 'עוגיית וניל קלאסית, רכה ומפנקת, עם שוקולד לבן ונגיעה עדינה של קרם וניל.', 'A9708282', 5),
+    ('בראוניז שוקולד', 'בראוניז שוקולד עשירים במיוחד עם מרקם פאדג׳י וטעם קקאו עמוק.', 'A7405042', 6),
+    ('מגש וניל חגיגי', 'מגש עוגיות וניל חגיגי ומעוצב, מושלם לאירוח, מתנה או שולחן מתוקים.', 'A7405027', 7),
+    ('אוראו קראנץ׳', 'עוגיית אוראו קראנצ׳ית עם שברי אוראו, שוקולד לבן ומילוי קרמי עשיר.', 'A7404927', 8),
+    ('אוראו לבן', 'עוגיית אוראו לבן עם שוקולד לבן, קרם אוראו עדין ושברי עוגיות מעל.', 'A7404925', 9),
+    ('מגולגלת קינדר', 'עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל.', 'A7404964', 10),
+    ('כריות נוגט', 'עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן.', 'A7404958', 11),
+    ('קורנפלקס שוקולד חלב', 'עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי.', 'A7404956', 12),
+    ('שוקולד פנינים', 'עוגיית שוקולד עשירה עם פניני שוקולד, קרם קקאו ושכבות מתוקות של קראנץ׳.', 'A7404955', 13),
+    ('פניני שוקולד לבן', 'עוגייה מתוקה עם פניני שוקולד לבן, קרם וניל ושוקולד לבן במרקם מפנק.', 'A7404952', 14),
+    ('קינדר', 'עוגיית קינדר מפנקת עם שוקולד חלב, קרם קינדר ושברי קינדר מעל.', 'A7404950', 15),
+    ('ס׳מורשמלו', 'עוגיית ס׳מורס עם מרשמלו רך, שוקולד עשיר וקראנץ׳ ביסקוויטים מתוק.', 'A7404945', 16),
+    ('קורנפלקס שוקולד לבן', 'עוגייה קראנצ׳ית עם קורנפלקס, שוקולד לבן וקרם וניל עשיר.', 'A7404939', 17),
+    ('שוקוצ׳יפס קלאסי', 'עוגיית שוקוצ׳יפס קלאסית עם בצק וניל עשיר ושפע מטבעות שוקולד.', 'A7404936', 18),
+    ('מארז וניל חגיגי', 'מארז וניל חגיגי ומעוצב עם עוגיות מפנקות שמתאימות למתנה מתוקה.', 'A7405026', 19),
+    ('במבה רד', 'עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה.', 'A7405005', 20),
+    ('קוקילוטוס', 'עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל.', 'A7404990', 21),
+    ('שוקולד דובאי', 'עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף.', 'A7404987', 22),
+    ('פיסטצ׳יו', 'עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס.', 'A7404980', 23),
+    ('קונפטי פאן', 'עוגיית קונפטי צבעונית ושמחה עם שוקולד לבן, קרם וניל וסוכריות צבעוניות.', 'A7404978', 24),
+    ('חצי־חצי וניל שוקולד', 'עוגיית חצי־חצי עם בצק וניל ובצק שוקולד, שוקולדים מפנקים ושני מרקמים בביס אחד.', 'A7404973', 25),
+    ('חצי־חצי', 'חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים.', 'A7404971', 26),
+    ('ברוקי בייגלה', 'עוגיית ברוקי עשירה עם שוקולד, בייגלה מלוח וקראנץ׳ מתוק־מלוח ממכר.', 'A7404968', 27)
+)
+update public.products p
+set description = fp.description,
+    price = null,
+    image_url = 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/' || fp.filename || '.jpg',
+    card_image_url = 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/' || fp.filename || '.jpg',
+    is_active = true,
+    display_order = fp.display_order
+from final_products fp
+where p.name = fp.name;
 
+with final_products (name, description, filename, display_order) as (
+  values
+    ('אוראו דרים', 'עוגיית אוראו עשירה עם מטבעות שוקולד חלב, מילוי קרם אוראו ושברי אוראו מעל.', 'A7404929', 1),
+    ('אמסטרדם', 'עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן.', 'A7404918', 2),
+    ('קונפטי וניל', 'עוגיית וניל חגיגית עם סוכריות קונפטי צבעוניות, שוקולד לבן וקרם וניל מפנק.', 'A7404912', 3),
+    ('שוקוצ׳יפס', 'עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד.', 'A7404900', 4),
+    ('וניל קלאסי', 'עוגיית וניל קלאסית, רכה ומפנקת, עם שוקולד לבן ונגיעה עדינה של קרם וניל.', 'A9708282', 5),
+    ('בראוניז שוקולד', 'בראוניז שוקולד עשירים במיוחד עם מרקם פאדג׳י וטעם קקאו עמוק.', 'A7405042', 6),
+    ('מגש וניל חגיגי', 'מגש עוגיות וניל חגיגי ומעוצב, מושלם לאירוח, מתנה או שולחן מתוקים.', 'A7405027', 7),
+    ('אוראו קראנץ׳', 'עוגיית אוראו קראנצ׳ית עם שברי אוראו, שוקולד לבן ומילוי קרמי עשיר.', 'A7404927', 8),
+    ('אוראו לבן', 'עוגיית אוראו לבן עם שוקולד לבן, קרם אוראו עדין ושברי עוגיות מעל.', 'A7404925', 9),
+    ('מגולגלת קינדר', 'עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל.', 'A7404964', 10),
+    ('כריות נוגט', 'עוגייה מפנקת עם כריות נוגט, שוקולד חלב, קרם אגוזי לוז ושוקולד לבן.', 'A7404958', 11),
+    ('קורנפלקס שוקולד חלב', 'עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי.', 'A7404956', 12),
+    ('שוקולד פנינים', 'עוגיית שוקולד עשירה עם פניני שוקולד, קרם קקאו ושכבות מתוקות של קראנץ׳.', 'A7404955', 13),
+    ('פניני שוקולד לבן', 'עוגייה מתוקה עם פניני שוקולד לבן, קרם וניל ושוקולד לבן במרקם מפנק.', 'A7404952', 14),
+    ('קינדר', 'עוגיית קינדר מפנקת עם שוקולד חלב, קרם קינדר ושברי קינדר מעל.', 'A7404950', 15),
+    ('ס׳מורשמלו', 'עוגיית ס׳מורס עם מרשמלו רך, שוקולד עשיר וקראנץ׳ ביסקוויטים מתוק.', 'A7404945', 16),
+    ('קורנפלקס שוקולד לבן', 'עוגייה קראנצ׳ית עם קורנפלקס, שוקולד לבן וקרם וניל עשיר.', 'A7404939', 17),
+    ('שוקוצ׳יפס קלאסי', 'עוגיית שוקוצ׳יפס קלאסית עם בצק וניל עשיר ושפע מטבעות שוקולד.', 'A7404936', 18),
+    ('מארז וניל חגיגי', 'מארז וניל חגיגי ומעוצב עם עוגיות מפנקות שמתאימות למתנה מתוקה.', 'A7405026', 19),
+    ('במבה רד', 'עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה.', 'A7405005', 20),
+    ('קוקילוטוס', 'עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל.', 'A7404990', 21),
+    ('שוקולד דובאי', 'עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף.', 'A7404987', 22),
+    ('פיסטצ׳יו', 'עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס.', 'A7404980', 23),
+    ('קונפטי פאן', 'עוגיית קונפטי צבעונית ושמחה עם שוקולד לבן, קרם וניל וסוכריות צבעוניות.', 'A7404978', 24),
+    ('חצי־חצי וניל שוקולד', 'עוגיית חצי־חצי עם בצק וניל ובצק שוקולד, שוקולדים מפנקים ושני מרקמים בביס אחד.', 'A7404973', 25),
+    ('חצי־חצי', 'חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים.', 'A7404971', 26),
+    ('ברוקי בייגלה', 'עוגיית ברוקי עשירה עם שוקולד, בייגלה מלוח וקראנץ׳ מתוק־מלוח ממכר.', 'A7404968', 27)
+)
 insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'קוקילוטוס', 'עוגיית לוטוס עשירה עם שוקולד לבן, מילוי קרם לוטוס ועוגיית לוטוס מעל.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404990.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404990.jpg', true, 2
-where not exists (select 1 from public.products p where p.name = 'קוקילוטוס');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'פיסטצ׳יו', 'עוגיית פיסטוק עם שוקולד לבן, קרם פיסטוק, קרם שוקולד לבן ופיסטוק גרוס.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404980.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404980.jpg', true, 3
-where not exists (select 1 from public.products p where p.name = 'פיסטצ׳יו');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'במבה רד', 'עוגייה מתוקה ומיוחדת עם במבה אדומה, שוקולד לבן ומילוי קרם במבה אדומה.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7405005.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7405005.jpg', true, 4
-where not exists (select 1 from public.products p where p.name = 'במבה רד');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'קונפטי פאן', 'עוגייה צבעונית ושמחה עם סוכריות צבעוניות, שוקולד לבן וקרם ורוד.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404978.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404978.jpg', true, 5
-where not exists (select 1 from public.products p where p.name = 'קונפטי פאן');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'ס׳מורשמלו', 'עוגיית קקאו עשירה עם שוקולד מריר, קרם אגוזי לוז ומרשמלו שרוף מעל.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404945.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404945.jpg', true, 6
-where not exists (select 1 from public.products p where p.name = 'ס׳מורשמלו');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'קינדר', 'עוגייה עשירה עם שוקולד חלב, מילוי קרם קינדר בואנו ופניני שוקולד קראנץ׳.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404950.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404950.jpg', true, 7
-where not exists (select 1 from public.products p where p.name = 'קינדר');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'קורנפלקס שוקולד לבן', 'עוגייה עשירה עם קורנפלקס, שוקולד לבן, קרם שוקולד לבן וקראנץ׳ מפנק.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404939.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404939.jpg', true, 8
-where not exists (select 1 from public.products p where p.name = 'קורנפלקס שוקולד לבן');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'קורנפלקס שוקולד חלב', 'עוגייה עשירה עם קורנפלקס, שוקולד חלב, קרם שוקולד אגוזים וקראנץ׳ שוקולדי.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404956.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404956.jpg', true, 9
-where not exists (select 1 from public.products p where p.name = 'קורנפלקס שוקולד חלב');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'אמסטרדם', 'עוגיית קקאו עשירה עם שוקולד חלב, מילוי שוקולד לבן וזילוף קרם שוקולד לבן.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404918.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404918.jpg', true, 10
-where not exists (select 1 from public.products p where p.name = 'אמסטרדם');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'שוקוצ׳יפס', 'עוגיית בצק עשירה עם מטבעות שוקולד חלב, קרם אגוזי לוז וזילוף שוקולד.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404900.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404900.jpg', true, 11
-where not exists (select 1 from public.products p where p.name = 'שוקוצ׳יפס');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'חצי־חצי', 'חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404971.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404971.jpg', true, 12
-where not exists (select 1 from public.products p where p.name = 'חצי־חצי');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'ברוקי', 'בראוניז שוקולד עשיר עם חתיכות בצק עוגיות, קרם שוקולד וזילוף אגוזי לוז.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404968.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404968.jpg', true, 13
-where not exists (select 1 from public.products p where p.name = 'ברוקי');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'שוקולד דובאי', 'עוגיית קקאו עם שוקולד חלב ולבן, מילוי קרם שוקולד דובאי ושיערות קדאיף.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404987.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404987.jpg', true, 14
-where not exists (select 1 from public.products p where p.name = 'שוקולד דובאי');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'מגולגלת קינדר', 'עוגיית קקאו עשירה עם שוקולד לבן, קרם קינדר בואנו ומגולגלת קינדר מעל.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404964.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404964.jpg', true, 15
-where not exists (select 1 from public.products p where p.name = 'מגולגלת קינדר');
-
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
-select 'פתיבר', 'עוגייה עשירה עם שוקולד חלב, מילוי קרם פתיבר, עוגיית פתיבר וסוכריות צבעוניות.', null,
-  'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/A7404912.jpg', 'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/A7404912.jpg', true, 16
-where not exists (select 1 from public.products p where p.name = 'פתיבר');
+select fp.name,
+       fp.description,
+       null,
+       'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/' || fp.filename || '.jpg',
+       'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/' || fp.filename || '.jpg',
+       true,
+       fp.display_order
+from final_products fp
+where not exists (
+  select 1
+  from public.products p
+  where p.name = fp.name
+);
 
 -- ── site_features ───────────────────────────────────────────────────────────
 
@@ -144,3 +148,19 @@ select 'חגיגי ומפנק',
   '', true, 2
 where not exists (select 1 from public.site_features f where f.title = 'חגיגי ומפנק');
 
+-- ── verification queries ───────────────────────────────────────────────────
+
+select count(*) as active_products
+from public.products
+where is_active = true;
+
+select name, card_image_url, image_url, display_order, is_active
+from public.products
+where is_active = true
+order by display_order;
+
+select name, count(*)
+from public.products
+group by name
+having count(*) > 1
+order by name;
