@@ -31,6 +31,20 @@
   box-shadow: none !important;
 }
 
+/* ── Hide floating elements during hero / entrance screen ───────────────── */
+/*
+  .section-nav is already hidden by html.hero-locked in styles.css.
+  Add [data-more-info-button] and [data-more-info-panel] to the same rule.
+  Use visibility:hidden (not display:none) to avoid layout flash on entry.
+*/
+html.hero-locked [data-more-info-button],
+html.hero-locked [data-more-info-panel],
+html.hero-locked .floating-cart {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  visibility: hidden !important;
+}
+
 /* ── Hero entrance transition & site-entered state ──────────────────────── */
 
 /* Fade hero out while transitioning */
