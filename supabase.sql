@@ -32,6 +32,37 @@ create table if not exists public.products (
 alter table public.products add column if not exists card_image_url text;
 alter table public.products add column if not exists price text;
 
+-- Check for duplicate product names before adding the unique constraint.
+select name, count(*)
+from public.products
+group by name
+having count(*) > 1;
+
+-- Add the unique name constraint only when the table is already clean.
+do $$
+begin
+  if exists (
+    select 1
+    from (
+      select name
+      from public.products
+      group by name
+      having count(*) > 1
+    ) duplicate_products
+  ) then
+    raise notice 'products_name_unique was not added because duplicate product names exist. Clean public.products first.';
+  elsif not exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.products'::regclass
+      and conname = 'products_name_unique'
+  ) then
+    alter table public.products
+    add constraint products_name_unique unique (name);
+  end if;
+end;
+$$;
+
 create table if not exists public.site_features (
   id uuid primary key default gen_random_uuid(),
   title text,
