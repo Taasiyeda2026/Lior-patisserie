@@ -6404,6 +6404,93 @@ html {
   }
 }
 
+/* Mobile-only polish: compact "what makes us special" rows and a clearer hero logo. */
+@media (max-width: 768px) {
+  .hero-brand-logo {
+    width: clamp(138px, 38vw, 168px) !important;
+    max-width: 168px;
+  }
+
+  .hero-logo {
+    width: 100%;
+    height: auto;
+  }
+
+  .features-section .details-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: min(92%, 420px);
+    max-width: 92%;
+    margin-inline: auto;
+  }
+
+  .features-section .detail-card {
+    display: grid;
+    grid-template-columns: 42px minmax(0, 1fr);
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    padding: 12px 14px;
+    border-radius: 20px;
+    text-align: right;
+    background:
+      linear-gradient(135deg, rgba(255, 249, 242, 0.96), rgba(247, 240, 230, 0.86)),
+      radial-gradient(circle at 0% 0%, rgba(199, 178, 214, 0.20), transparent 42%);
+    border: 1px solid rgba(200, 169, 106, 0.24);
+    box-shadow: 0 10px 24px rgba(47, 33, 28, 0.08);
+  }
+
+  .features-section .detail-card--image {
+    display: none;
+  }
+
+  .features-section .detail-card .icon-circle {
+    grid-row: auto;
+    width: 42px;
+    height: 42px;
+    min-width: 42px;
+    min-height: 42px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    border-radius: 999px;
+    color: var(--color-aubergine);
+    background: rgba(199, 178, 214, 0.22);
+    border: 1px solid rgba(200, 169, 106, 0.38);
+  }
+
+  .features-section .detail-card .icon-circle > * {
+    display: none;
+  }
+
+  .features-section .detail-card .icon-circle::before {
+    font-size: 1.22rem;
+    line-height: 1;
+  }
+
+  .features-section .detail-card:nth-child(1) .icon-circle::before {
+    content: "🥄";
+  }
+
+  .features-section .detail-card:nth-child(2) .icon-circle::before {
+    content: "🍫";
+  }
+
+  .features-section .detail-card:nth-child(3) .icon-circle::before {
+    content: "🎁";
+  }
+
+  .features-section .detail-card h3 {
+    margin: 0;
+    font-size: 1rem;
+    line-height: 1.2;
+    color: var(--color-aubergine);
+  }
+
+  .features-section .detail-card p {
+    display: none;
 /* Mobile-only product grid lock: keep each product series as a compact 3×3 layout. */
 @media (max-width: 768px) {
   html,
