@@ -5479,3 +5479,386 @@ button[type="submit"]:hover {
     font-size: 0.72rem;
   }
 }
+
+/* Compact sizing pass: refined proportions without global zoom or site-wide transforms. */
+html {
+  font-size: 14px;
+}
+
+:root {
+  --shell-max-width: 1280px;
+  --shell-gutter: 18px;
+  --radius: 24px;
+  --radius-sm: 16px;
+}
+
+.container {
+  width: min(1120px, calc(100% - 36px));
+}
+
+.site-section {
+  padding-block: clamp(46px, 5.25vw, 64px);
+}
+
+.home-opening {
+  padding: 2rem 0 2.25rem;
+}
+
+.home-opening-inner,
+.home-opening-copy {
+  max-width: 720px;
+}
+
+.home-opening-copy {
+  margin-bottom: 18px;
+}
+
+.home-flavors-heading {
+  font-size: clamp(24px, 3.1vw, 34px);
+}
+
+.editorial-text h2,
+.final h2,
+.contact-section h2 {
+  font-size: clamp(1.6rem, 3vw, 2.35rem);
+}
+
+.products-intro-text,
+.home-opening .products-intro-text,
+.home-opening-copy h1 + .products-intro-text {
+  max-width: 560px;
+  font-size: 13px;
+  line-height: 1.62;
+}
+
+.categories-container {
+  margin-top: 16px;
+}
+
+.category-section {
+  margin-bottom: 30px;
+}
+
+.category-header {
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.category-title {
+  font-size: clamp(14px, 1.8vw, 18px);
+}
+
+.category-subtitle {
+  font-size: 12px;
+}
+
+.products-grid,
+.home-opening .products-grid {
+  max-width: 700px;
+  gap: 10px;
+}
+
+.product-card {
+  border-radius: 22px;
+}
+
+.product-image {
+  height: 122px;
+  min-height: 122px;
+}
+
+.product-body {
+  gap: 5px 7px;
+  min-height: 96px;
+  padding: 13px 14px 15px;
+}
+
+.product-body h3 {
+  font-size: 0.96rem;
+  line-height: 1.2;
+}
+
+.product-body p {
+  font-size: 0.76rem;
+  line-height: 1.36;
+}
+
+.product-card .product-link,
+.product-card .btn,
+.product-card button,
+.product-card [data-add-to-cart],
+.btn,
+.button {
+  min-height: 32px;
+  padding: 7px 14px;
+  font-size: 0.86rem;
+}
+
+.product-card .product-link,
+.product-card button[data-add-to-cart],
+.product-card [data-add-to-cart] {
+  width: 26px;
+  height: 26px;
+  min-width: 26px;
+  min-height: 26px;
+  padding: 0;
+}
+
+.editorial,
+.editorial.features-section {
+  padding-block: clamp(42px, 5vw, 58px);
+}
+
+.editorial .container {
+  width: min(100% - 42px, 700px);
+}
+
+.editorial-card {
+  max-width: 700px;
+  gap: 24px;
+}
+
+.editorial-text p {
+  font-size: 0.94rem;
+  line-height: 1.58;
+}
+
+.details-grid {
+  gap: 10px;
+  grid-template-columns: repeat(auto-fit, minmax(118px, 1fr));
+}
+
+.detail-card {
+  padding: 15px 14px;
+}
+
+.detail-card .icon-circle {
+  width: 46px;
+  height: 46px;
+  margin-bottom: 10px;
+}
+
+.pastry-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.detail-card h3 {
+  font-size: 0.96rem;
+}
+
+.detail-card p {
+  font-size: 0.8rem;
+  line-height: 1.48;
+}
+
+.editorial-video {
+  position: relative;
+  isolation: isolate;
+  width: min(58%, 460px);
+  margin-inline: auto;
+  padding: 6px;
+  border-radius: 28px;
+  background: rgba(255, 249, 242, 0.72);
+  border: 1px solid rgba(200, 169, 106, 0.28);
+  box-shadow:
+    0 18px 42px rgba(61, 22, 80, 0.12),
+    0 6px 16px rgba(47, 33, 28, 0.08);
+  overflow: visible;
+}
+
+.editorial-video::before {
+  inset: 12px;
+  border-radius: 32px;
+  background:
+    radial-gradient(circle at 50% 35%, rgba(201, 184, 216, 0.26), transparent 62%),
+    radial-gradient(circle at 50% 72%, rgba(200, 169, 106, 0.16), transparent 58%);
+  filter: blur(18px);
+  opacity: 0.62;
+}
+
+.editorial-video video {
+  width: 100%;
+  height: 400px;
+  display: block;
+  border-radius: 22px;
+  background: #2A1A2E;
+  object-fit: cover;
+  box-shadow: none;
+}
+
+.contact-section .reveal,
+.final .reveal,
+.contact-card {
+  max-width: 640px;
+  padding: 30px 36px;
+}
+
+.contact-section p,
+.final p,
+.contact-details-list,
+.contact-value {
+  font-size: 0.88rem;
+  line-height: 1.54;
+}
+
+.order-modal-card {
+  width: min(90vw, 560px);
+  max-height: min(84vh, 640px);
+  padding: 22px 24px 24px;
+}
+
+.image-lightbox img {
+  max-width: min(86vw, 760px);
+  max-height: 84vh;
+}
+
+@media (max-width: 768px) {
+  html {
+    font-size: 13.5px;
+  }
+
+  .container,
+  .editorial .container {
+    width: min(100% - 28px, 700px);
+  }
+
+  .site-section {
+    padding-block: 34px 38px;
+  }
+
+  .home-opening {
+    padding: 1.55rem 0 1.8rem;
+  }
+
+  .home-flavors-heading {
+    font-size: clamp(1.7rem, 9.5vw, 2.45rem);
+  }
+
+  .products-intro-text,
+  .home-opening .products-intro-text,
+  .home-opening-copy h1 + .products-intro-text {
+    font-size: 0.86rem;
+    line-height: 1.5;
+  }
+
+  .products-grid,
+  .home-opening .products-grid,
+  #productsGrid,
+  #productsGrid1,
+  #productsGrid2,
+  #productsGrid3 {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 10px !important;
+    width: 100%;
+  }
+
+  .product-card {
+    width: 100%;
+    min-width: 0;
+    border-radius: 18px;
+  }
+
+  .product-image {
+    aspect-ratio: 1 / 1;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .product-body {
+    min-height: 88px;
+    padding: 9px 8px 10px;
+  }
+
+  .product-body h3 {
+    font-size: 0.82rem;
+    line-height: 1.18;
+  }
+
+  .product-body p {
+    font-size: 0.68rem;
+    line-height: 1.28;
+  }
+
+  .add-to-cart-btn,
+  .product-link,
+  .product-card .product-link,
+  .product-card button[data-add-to-cart],
+  .product-card [data-add-to-cart] {
+    width: 30px;
+    height: 30px;
+    min-width: 30px;
+    min-height: 30px;
+    padding: 0;
+  }
+
+  .editorial-card {
+    gap: 20px;
+  }
+
+  .details-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .detail-card {
+    padding: 13px 11px;
+  }
+
+  .editorial-video {
+    width: min(88%, 340px);
+    padding: 5px;
+    border-radius: 24px;
+  }
+
+  .editorial-video::before {
+    inset: 8px;
+    filter: blur(14px);
+    opacity: 0.5;
+  }
+
+  .editorial-video video {
+    height: 280px;
+    border-radius: 19px;
+  }
+
+  .contact-section .reveal,
+  .final .reveal,
+  .contact-card {
+    max-width: calc(100% - 28px);
+    padding: 26px 20px;
+    border-radius: 24px;
+  }
+
+  .order-modal-card {
+    width: calc(100vw - 28px);
+    max-height: 86vh;
+    padding: 20px 16px 22px;
+  }
+}
+
+@media (max-width: 390px) {
+  .products-grid,
+  .home-opening .products-grid,
+  #productsGrid,
+  #productsGrid1,
+  #productsGrid2,
+  #productsGrid3 {
+    gap: 8px !important;
+  }
+
+  .product-body h3 {
+    font-size: 0.78rem;
+  }
+
+  .product-body p {
+    font-size: 0.64rem;
+  }
+}
