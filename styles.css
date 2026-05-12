@@ -6368,3 +6368,38 @@ html {
     transform: none;
   }
 }
+
+.image-lightbox.is-loading .image-lightbox-image,
+.image-lightbox.is-loading [data-lightbox-image],
+[data-image-lightbox].is-loading [data-lightbox-image] {
+  opacity: 0;
+}
+
+.image-lightbox-loader,
+[data-lightbox-loader] {
+  width: 42px;
+  height: 42px;
+  border-radius: 999px;
+  border: 3px solid rgba(200, 169, 106, 0.28);
+  border-top-color: rgba(61, 22, 80, 0.72);
+  animation: lightboxSpin 800ms linear infinite;
+}
+
+.image-lightbox-loader[hidden],
+[data-lightbox-loader][hidden],
+[data-lightbox-image][hidden] {
+  display: none !important;
+}
+
+@keyframes lightboxSpin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .image-lightbox-loader,
+  [data-lightbox-loader] {
+    animation: none;
+  }
+}

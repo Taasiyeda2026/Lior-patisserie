@@ -622,6 +622,17 @@ ${productLine}
 
     let modalOpener = null;
     let lightboxOpener = null;
+    let lightboxImageRequestId = 0;
+    const preloadedFullImages = new Set();
+
+    function preloadFullImage(url) {
+      const normalizedUrl = imagePath(url);
+      if (!normalizedUrl || preloadedFullImages.has(normalizedUrl)) return;
+      preloadedFullImages.add(normalizedUrl);
+      const img = new Image();
+      img.decoding = "async";
+      img.src = normalizedUrl;
+    }
 
     function trapModalFocus(event) {
       const lightbox = document.getElementById("imageLightbox");
@@ -972,10 +983,13 @@ ${productLine}
       const image = document.getElementById("imageLightboxImg");
       const closeBtn = document.getElementById("imageLightboxClose");
       const statusEl = document.getElementById("imageLightboxStatus");
+      const loader = lightbox ? lightbox.querySelector("[data-lightbox-loader]") : null;
 
       if (!lightbox || !image) return;
-      const url = String(src || "").trim();
+      const url = imagePath(src);
       if (!url) return;
+
+      const requestId = ++lightboxImageRequestId;
 
       lightboxOpener = document.activeElement && document.activeElement !== document.body
         ? document.activeElement
@@ -983,44 +997,62 @@ ${productLine}
 
       image.onload = null;
       image.onerror = null;
+      image.removeAttribute("src");
+      image.alt = alt || "תמונה מהאתר";
+      image.hidden = true;
+      image.classList.remove("is-loaded");
+
       if (statusEl) {
         statusEl.hidden = true;
         statusEl.textContent = "";
       }
-      const sameImageAlreadyLoaded = image.getAttribute("src") === url && image.complete && image.naturalWidth;
+      if (loader) loader.hidden = false;
 
       lightbox.classList.remove("is-error");
-      lightbox.classList.toggle("is-loading", !sameImageAlreadyLoaded);
-      lightbox.classList.add("is-open");
+      lightbox.classList.add("is-open", "is-loading");
       lightbox.setAttribute("aria-hidden", "false");
       document.body.classList.add("has-lightbox");
-      image.alt = alt || "תמונה מהאתר";
-      image.classList.toggle("is-loaded", sameImageAlreadyLoaded);
 
-      image.onload = function () {
-        lightbox.classList.remove("is-loading");
+      const nextImage = new Image();
+      nextImage.decoding = "async";
+
+      nextImage.onload = function () {
+        if (requestId !== lightboxImageRequestId) return;
+
+        image.src = url;
+        image.alt = alt || "תמונה מהאתר";
+        image.hidden = false;
         image.classList.add("is-loaded");
+
+        lightbox.classList.remove("is-loading", "is-error");
+        if (loader) loader.hidden = true;
+        if (statusEl) {
+          statusEl.hidden = true;
+          statusEl.textContent = "";
+        }
       };
-      image.onerror = function () {
+
+      nextImage.onerror = function () {
+        if (requestId !== lightboxImageRequestId) return;
+
+        image.removeAttribute("src");
+        image.hidden = true;
+        image.classList.remove("is-loaded");
+
         lightbox.classList.remove("is-loading");
         lightbox.classList.add("is-error");
-        image.removeAttribute("src");
+        if (loader) loader.hidden = true;
         if (statusEl) {
-          statusEl.textContent = "התמונה לא זמינה כרגע";
+          statusEl.textContent = "לא ניתן לטעון את התמונה";
           statusEl.hidden = false;
         }
       };
 
-      if (image.getAttribute("src") !== url) {
-        image.src = url;
-      }
+      nextImage.src = url;
 
       requestAnimationFrame(() => {
+        if (requestId !== lightboxImageRequestId) return;
         if (closeBtn && typeof closeBtn.focus === "function") closeBtn.focus();
-        if (image.complete && image.naturalWidth) {
-          lightbox.classList.remove("is-loading");
-          image.classList.add("is-loaded");
-        }
       });
     }
 
@@ -1028,12 +1060,20 @@ ${productLine}
       const lightbox = document.getElementById("imageLightbox");
       const image = document.getElementById("imageLightboxImg");
       const statusEl = document.getElementById("imageLightboxStatus");
+      const loader = lightbox ? lightbox.querySelector("[data-lightbox-loader]") : null;
+
+      lightboxImageRequestId += 1;
 
       if (!lightbox || !image) return;
 
       image.onload = null;
       image.onerror = null;
+      image.removeAttribute("src");
+      image.alt = "";
+      image.hidden = true;
+      image.classList.remove("is-loaded");
 
+      if (loader) loader.hidden = true;
       lightbox.classList.remove("is-open", "is-loading", "is-error");
       lightbox.setAttribute("aria-hidden", "true");
       document.body.classList.remove("has-lightbox");
@@ -1041,8 +1081,6 @@ ${productLine}
         statusEl.hidden = true;
         statusEl.textContent = "";
       }
-
-      image.alt = "";
 
       if (lightboxOpener && typeof lightboxOpener.focus === "function") {
         lightboxOpener.focus();
@@ -1111,6 +1149,16 @@ ${productLine}
             openImageLightbox(src, productImg.alt || "");
           }
         });
+
+        const preloadFromEvent = (event) => {
+          const productImg = event.target.closest(".product-image img");
+          if (productImg) preloadFullImage(productImg.dataset.fullImage || "");
+        };
+
+        document.addEventListener("pointerenter", preloadFromEvent, true);
+        document.addEventListener("pointerdown", preloadFromEvent, { passive: true });
+        document.addEventListener("touchstart", preloadFromEvent, { passive: true });
+        document.addEventListener("focusin", preloadFromEvent);
       }
 
       if (!closeBtn.dataset.liorLightboxCloseBound) {
@@ -1166,21 +1214,33 @@ ${productLine}
     document.addEventListener("DOMContentLoaded", () => {
 
     function setupNavDots() {
-      document.querySelectorAll(".nav-dot").forEach((dot) => {
+      const _dots = Array.from(document.querySelectorAll(".nav-dot:not([hidden])"));
+
+      function getDotTarget(dot) {
+        const target = dot.dataset.target;
+        return target ? document.querySelector(target) : null;
+      }
+
+      _dots.forEach((dot) => {
         dot.addEventListener("click", () => {
           if (dot.hidden) return;
-          const target = dot.dataset.target;
-          const el = document.querySelector(target);
-          if (el) el.scrollIntoView({ behavior: "smooth", block: "start" });
+          const el = getDotTarget(dot);
+          if (!el) return;
+          if (el.id === "products") {
+            sessionStorage.setItem(HERO_UNLOCK_STORAGE_KEY, "true");
+            applyHeroLockState();
+          }
+          el.scrollIntoView({ behavior: "smooth", block: "start" });
         });
       });
 
       let _sectionTops = [];
-      const _dots = Array.from(document.querySelectorAll(".nav-dot:not([hidden])"));
 
       function cacheSectionTops() {
-        const sections = Array.from(document.querySelectorAll("main > section:not([hidden])"));
-        _sectionTops = sections.map((s) => s.offsetTop);
+        _sectionTops = _dots.map((dot) => {
+          const target = getDotTarget(dot);
+          return target ? target.offsetTop : 0;
+        });
       }
       cacheSectionTops();
       window.addEventListener("resize", cacheSectionTops, { passive: true });
@@ -1190,6 +1250,7 @@ ${productLine}
         if (_navTicking) return;
         _navTicking = true;
         requestAnimationFrame(() => {
+          cacheSectionTops();
           if (!_sectionTops.length || !_dots.length) { _navTicking = false; return; }
           const mid = window.scrollY + window.innerHeight * 0.45;
           let activeIndex = 0;
