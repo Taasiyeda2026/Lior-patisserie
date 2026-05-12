@@ -6596,3 +6596,94 @@ html {
     min-height: 24px;
   }
 }
+
+/* Final mobile floating info placement + RTL category heading alignment. */
+.category-header {
+  text-align: right;
+  direction: rtl;
+  align-items: flex-end;
+}
+
+.category-title,
+.category-subtitle {
+  width: 100%;
+  text-align: right;
+}
+
+.category-title::after {
+  content: "";
+  display: block;
+  width: 72px;
+  height: 2px;
+  margin: 8px 0 0 auto;
+  border-radius: 999px;
+  background: linear-gradient(90deg, rgba(196, 168, 68, 0), rgba(196, 168, 68, 0.78));
+  transform-origin: right center;
+}
+
+@media (max-width: 768px) {
+  .floating-cart {
+    right: 14px !important;
+    bottom: 72px !important;
+    z-index: 80 !important;
+  }
+
+  .section-nav .footer-legal-toggle,
+  [data-more-info-button] {
+    left: auto !important;
+    right: 14px !important;
+    bottom: 18px !important;
+    z-index: 80 !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    border-radius: 999px !important;
+    padding: 0 !important;
+    font-size: 0 !important;
+  }
+
+  body.mobile-info-near-footer .section-nav .footer-legal-toggle,
+  body.mobile-info-near-footer [data-more-info-button] {
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+  }
+
+  .section-nav .footer-legal-popover,
+  [data-more-info-panel] {
+    position: fixed !important;
+    right: 14px !important;
+    left: 14px !important;
+    bottom: 130px !important;
+    z-index: 90 !important;
+    max-height: min(52vh, 360px) !important;
+    overflow-y: auto !important;
+    border-radius: 22px !important;
+    padding: 18px 18px 20px !important;
+    background: rgba(255, 249, 242, 0.96) !important;
+    border: 1px solid rgba(200, 169, 106, 0.32) !important;
+    box-shadow: 0 22px 48px rgba(61, 22, 80, 0.22), 0 8px 20px rgba(47, 33, 28, 0.12) !important;
+  }
+
+  .category-header {
+    text-align: right !important;
+    align-items: flex-end !important;
+    direction: rtl !important;
+  }
+
+  .category-title,
+  .category-subtitle,
+  .category-header h2,
+  .category-header p {
+    text-align: right !important;
+    width: 100% !important;
+  }
+
+  .category-title::after,
+  .category-header h2::after {
+    margin-left: auto !important;
+    margin-right: 0 !important;
+    transform-origin: right center !important;
+  }
+}
