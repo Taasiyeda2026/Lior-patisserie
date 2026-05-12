@@ -1409,31 +1409,30 @@ ${productLine}
 
     function setupHeaderColorSwitch() {
       const header = document.querySelector(".site-header");
-      if (!header || !("IntersectionObserver" in window)) return;
+      if (!header) return;
 
       const lightSections = document.querySelectorAll(".editorial, .contact-section, .final");
-      if (!lightSections.length) return;
+      const hero = document.querySelector(".home-hero");
 
-      const observer = new IntersectionObserver(
-        () => {
-          const isOnLight = Array.from(lightSections).some((section) => {
-            const rect = section.getBoundingClientRect();
-            return rect.top <= 46 && rect.bottom > 0;
-          });
-          header.classList.toggle("header--on-light", isOnLight);
-        },
-        { threshold: [0, 0.01, 0.1], rootMargin: "0px 0px -94% 0px" }
-      );
-
-      lightSections.forEach((section) => observer.observe(section));
-
-      window.addEventListener("scroll", () => {
+      const updateHeaderState = () => {
         const isOnLight = Array.from(lightSections).some((section) => {
           const rect = section.getBoundingClientRect();
           return rect.top <= 46 && rect.bottom > 0;
         });
+        const heroBottom = hero ? hero.getBoundingClientRect().bottom : Number.POSITIVE_INFINITY;
         header.classList.toggle("header--on-light", isOnLight);
-      }, { passive: true });
+        header.classList.toggle("header--past-hero", heroBottom <= 46);
+      };
+
+      if ("IntersectionObserver" in window) {
+        const observer = new IntersectionObserver(updateHeaderState, { threshold: [0, 0.01, 0.1], rootMargin: "0px 0px -94% 0px" });
+        lightSections.forEach((section) => observer.observe(section));
+        if (hero) observer.observe(hero);
+      }
+
+      updateHeaderState();
+      window.addEventListener("scroll", updateHeaderState, { passive: true });
+      window.addEventListener("resize", updateHeaderState, { passive: true });
     }
 
     function setupHiddenAdminEntry() {
