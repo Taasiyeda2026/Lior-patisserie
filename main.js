@@ -1050,6 +1050,49 @@ ${productLine}
       lightboxOpener = null;
     }
 
+
+    function setupBakeryVideos() {
+      const videoWrappers = document.querySelectorAll(".bakery-video-wrapper");
+
+      videoWrappers.forEach((wrapper) => {
+        const video = wrapper.querySelector("video");
+        const playButton = wrapper.querySelector(".bakery-video-play");
+
+        if (!video || !playButton) return;
+
+        video.removeAttribute("controls");
+
+        playButton.addEventListener("click", async () => {
+          try {
+            video.setAttribute("controls", "controls");
+            wrapper.classList.add("is-playing");
+            playButton.hidden = true;
+            await video.play();
+          } catch (error) {
+            playButton.hidden = false;
+            wrapper.classList.remove("is-playing");
+            video.removeAttribute("controls");
+            console.warn("Video play failed", error);
+          }
+        });
+
+        video.addEventListener("pause", () => {
+          if (video.currentTime === 0 || video.ended) {
+            wrapper.classList.remove("is-playing");
+            playButton.hidden = false;
+            video.removeAttribute("controls");
+          }
+        });
+
+        video.addEventListener("ended", () => {
+          wrapper.classList.remove("is-playing");
+          playButton.hidden = false;
+          video.removeAttribute("controls");
+          video.currentTime = 0;
+        });
+      });
+    }
+
     function setupImageLightbox() {
       if (window.__liorImageLightboxInitialized) return;
 
@@ -1105,6 +1148,7 @@ ${productLine}
     window.setupSectionUnlockAnimations = setupSectionUnlockAnimations;
     window.setupRevealAnimations = setupRevealAnimations;
     window.setupImageLightbox = setupImageLightbox;
+    window.setupBakeryVideos = setupBakeryVideos;
 
 
     window.addEventListener("pageshow", () => {
@@ -1182,6 +1226,7 @@ ${productLine}
       setupAddToCartButtons();
       setupOrderModal();
       setupImageLightbox();
+      setupBakeryVideos();
       setupNavDots();
       setupFooterLegalMenu();
       setupInstagramLinks();   // async - runs in background, updates links when ready
