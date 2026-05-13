@@ -3759,10 +3759,20 @@ main {
 .site-nav {
   height: 46px;
   display: grid;
-  grid-template-columns: minmax(110px, 1fr) auto minmax(110px, 1fr);
-  grid-template-areas: "cta links brand";
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "end brand";
   align-items: center;
-  gap: 18px;
+  gap: clamp(16px, 2.2vw, 28px);
+}
+
+.nav-end-group {
+  grid-area: end;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  flex-direction: row;
+  direction: ltr;
+  gap: clamp(18px, 2.8vw, 34px);
 }
 
 .nav-brand {
@@ -3784,10 +3794,9 @@ main {
 }
 
 .nav-links {
-  grid-area: links;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: clamp(18px, 4vw, 34px);
 }
 
@@ -3860,8 +3869,7 @@ main {
 }
 
 .nav-cta {
-  grid-area: cta;
-  justify-self: start;
+  flex-shrink: 0;
   min-height: 30px;
   display: inline-flex;
   align-items: center;
@@ -4687,8 +4695,8 @@ html.hero-locked .home-products {
   }
 
   .site-nav {
-    grid-template-columns: auto 1fr auto;
-    grid-template-areas: "cta links brand";
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "end brand";
     gap: 10px;
   }
 
@@ -4761,22 +4769,22 @@ html.hero-locked .home-products {
   .site-nav {
     min-height: 46px;
     height: auto;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "cta brand"
-      "links links";
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "end brand";
     padding-block: 8px;
+    gap: 8px;
+  }
+
+  .nav-end-group {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px clamp(10px, 3vw, 18px);
   }
 
   .nav-links {
-    grid-area: links;
-    justify-content: space-between;
-    border-top: 0.5px solid rgba(196, 168, 68, 0.12);
-    padding-top: 7px;
-  }
-
-  .nav-cta {
-    justify-self: start;
+    justify-content: flex-start;
+    border-top: 0;
+    padding-top: 0;
   }
 
   .nav-brand {
