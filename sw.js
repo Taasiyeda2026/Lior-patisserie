@@ -1,5 +1,5 @@
-const CACHE_NAME = "lior-patisserie-v27";
-const IMAGE_CACHE_NAME = "lior-patisserie-images-v27";
+const CACHE_NAME = "lior-patisserie-v28";
+const IMAGE_CACHE_NAME = "lior-patisserie-images-v28";
 
 /* ─── קבצי ליבה של האתר הציבורי ─────────────────────────────────────────── */
 const CORE_ASSETS = [
