@@ -2451,6 +2451,7 @@ main {
   color: #c8a96a !important;
   margin: 14px 0 22px !important;
   font-size: clamp(1.65rem, 2.5vw, 1.95rem) !important;
+  font-weight: 700 !important;
 }
 
 #about .handmade-body p,
