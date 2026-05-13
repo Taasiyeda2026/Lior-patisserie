@@ -535,111 +535,108 @@ html.site-entered .site-header:not(.header--on-light) {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
-   Editorial / עבודת יד — Boutique redesign (reference: image_1778636826356)
-   Layout: cards column (visual-left in RTL) | video column (visual-right)
-   Style:  cream bg · white cards · gold-rounded icon squares · gold-framed video
+   Editorial / עבודת יד — Refined boutique (RTL): same two-column composition,
+   tighter rhythm, quieter surfaces, readable Hebrew hierarchy, integrated media.
    ══════════════════════════════════════════════════════════════════════════ */
 
-/* Section — warm cream background, generous breathing room */
 .editorial.features-section {
-  background: linear-gradient(160deg, #fdf9f2 0%, #f8f1e4 55%, #fdf9f2 100%) !important;
-  padding: 68px 0 80px !important;
+  background: #faf7f1 !important;
+  padding: clamp(44px, 4.8vw, 56px) 0 clamp(48px, 5vw, 60px) !important;
 }
 
-/* Container — wide enough for 2 columns */
 .editorial .container,
 .editorial.features-section .container,
 .features-section .container {
-  width: min(100% - 40px, 980px) !important;
-  max-width: 980px !important;
+  width: min(100% - 32px, 1000px) !important;
+  max-width: 1000px !important;
 }
 
-/* Section label — gold, spaced caps */
+/* Eyebrow — champagne caps, restrained */
 .editorial .section-label {
-  color: #c8a96a !important;
-  font-size: 0.72rem !important;
-  letter-spacing: 0.22em !important;
+  color: #b6914f !important;
+  font-size: 0.7rem !important;
+  letter-spacing: 0.18em !important;
   text-transform: uppercase !important;
-  margin-bottom: 14px !important;
+  margin-bottom: 10px !important;
   font-weight: 500 !important;
 }
 
-/* Main heading — dark chocolate, large */
+/* Headline — chocolate, editorial weight */
 .editorial h2 {
-  font-size: clamp(1.75rem, 2.8vw, 2.4rem) !important;
-  color: #2c1810 !important;
-  line-height: 1.22 !important;
-  font-weight: 700 !important;
+  font-size: clamp(1.65rem, 2.5vw, 2.15rem) !important;
+  color: #241812 !important;
+  line-height: 1.2 !important;
+  font-weight: 600 !important;
   margin-bottom: 0 !important;
+  letter-spacing: -0.02em !important;
 }
 
-/* Gold decorative divider after heading */
+/* Thin rule — single soft gold bar, no wide gradient band */
 .editorial .features-intro h2::after {
   content: "" !important;
   display: block !important;
-  width: 52px !important;
-  height: 1.5px !important;
-  background: linear-gradient(to left, transparent 0%, #c8a96a 35%, #c8a96a 65%, transparent 100%) !important;
-  margin: 16px 0 16px auto !important;
+  width: 36px !important;
+  height: 1px !important;
+  background: rgba(184, 148, 88, 0.55) !important;
+  margin: 11px 0 11px auto !important;
+  border-radius: 999px !important;
 }
 
-/* Subtitle text */
+/* Lead copy — higher contrast, comfortable reading size */
 .editorial .features-intro p {
-  color: #4a3020 !important;
-  font-size: 0.9rem !important;
-  line-height: 1.72 !important;
+  color: #3d2a22 !important;
+  font-size: 0.92rem !important;
+  line-height: 1.68 !important;
   margin: 0 !important;
+  font-weight: 400 !important;
+  max-width: 42em !important;
 }
 
-/* ── Header: right-aligned above grid (RTL = visually left side) ─────────── */
 .features-intro.editorial-text {
   width: 100% !important;
   max-width: 100% !important;
   text-align: right !important;
-  margin: 0 0 32px !important;
+  margin: 0 0 22px !important;
 }
 
-/* ── Desktop 2-column grid ───────────────────────────────────────────────── */
-/* In RTL: col-1 = visual RIGHT, col-2 = visual LEFT.
-   "media cards" → media on visual-RIGHT, cards on visual-LEFT = matches reference */
+/* Desktop: same grid areas — media | cards (RTL visual: video right, stack left) */
 @media (min-width: 769px) {
   .features-content {
     display: grid !important;
-    grid-template-columns: minmax(0, 440px) minmax(260px, 420px) !important;
+    grid-template-columns: minmax(272px, 400px) minmax(0, 1fr) !important;
     grid-template-areas: "media cards" !important;
     align-items: center !important;
-    gap: clamp(28px, 4vw, 52px) !important;
+    gap: clamp(20px, 2.6vw, 34px) !important;
     justify-content: center !important;
   }
 
-  /* ── Video: square, gold-framed ──────────────────────────────────────── */
   .features-media {
     grid-area: media !important;
     width: 100% !important;
-    max-width: 420px !important;
+    max-width: 392px !important;
     aspect-ratio: 1 / 1 !important;
     height: auto !important;
     min-height: unset !important;
-    border-radius: 28px !important;
+    border-radius: 20px !important;
     overflow: hidden !important;
     position: relative !important;
     flex-shrink: 0 !important;
-    border: 1.5px solid rgba(200, 169, 106, 0.55) !important;
+    justify-self: center !important;
+    border: 1px solid rgba(200, 169, 106, 0.28) !important;
     box-shadow:
-      0 28px 60px rgba(44, 24, 16, 0.14),
-      0 8px 24px rgba(44, 24, 16, 0.08) !important;
-    background: #f0e8d6 !important;
+      0 14px 36px rgba(36, 22, 16, 0.08),
+      0 2px 8px rgba(36, 22, 16, 0.04) !important;
+    background: #f3ebe2 !important;
   }
 
   .features-media.editorial-video {
     width: 100% !important;
-    max-width: 420px !important;
+    max-width: 392px !important;
     aspect-ratio: 1 / 1 !important;
     height: auto !important;
     padding: 0 !important;
   }
 
-  /* Video fills the square */
   .features-media video,
   .features-media.editorial-video video,
   .features-media img {
@@ -650,48 +647,52 @@ html.site-entered .site-header:not(.header--on-light) {
     border-radius: 0 !important;
   }
 
-  /* ── Cards column ────────────────────────────────────────────────────── */
   .features-cards.details-grid {
     grid-area: cards !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
-    gap: 16px !important;
-    max-width: 100% !important;
-    height: 100% !important;
+    gap: 11px !important;
+    max-width: 420px !important;
+    width: 100% !important;
+    margin-inline: auto 0 !important;
+    min-height: 0 !important;
   }
 }
 
-/* ── Individual detail cards — white, rounded, soft shadow ───────────────── */
+/* Cards — compact ivory panels, quiet depth */
 .editorial .detail-card {
-  background: #ffffff !important;
-  border: 1px solid rgba(200, 169, 106, 0.16) !important;
-  border-radius: 20px !important;
+  display: flex !important;
+  flex-direction: row !important;
+  align-items: flex-start !important;
+  gap: 12px !important;
+  background: #fffdfb !important;
+  border: 1px solid rgba(200, 169, 106, 0.14) !important;
+  border-radius: 16px !important;
   box-shadow:
-    0 4px 18px rgba(44, 24, 16, 0.06),
-    0 1px 4px rgba(44, 24, 16, 0.04) !important;
-  padding: 20px 22px !important;
-  min-height: 84px !important;
-  gap: 18px !important;
-  transition: box-shadow 0.22s ease, transform 0.22s ease !important;
+    0 3px 14px rgba(36, 24, 18, 0.045),
+    0 1px 3px rgba(36, 24, 18, 0.035) !important;
+  padding: 13px 15px !important;
+  min-height: 0 !important;
+  transition: box-shadow 0.2s ease !important;
 }
 
 .editorial .detail-card:hover {
   box-shadow:
-    0 10px 30px rgba(44, 24, 16, 0.10),
-    0 2px 8px rgba(44, 24, 16, 0.06) !important;
-  transform: translateY(-1px) !important;
+    0 6px 22px rgba(36, 24, 18, 0.065),
+    0 1px 4px rgba(36, 24, 18, 0.04) !important;
+  transform: none !important;
 }
 
-/* ── Icon area — golden rounded square ───────────────────────────────────── */
+/* Small icon tile — flat cream, no decorative gradient */
 .editorial .detail-card .detail-illustration {
-  width: 48px !important;
-  height: 48px !important;
-  min-width: 48px !important;
-  min-height: 48px !important;
-  border-radius: 14px !important;
-  background: linear-gradient(145deg, #fef7ed, #f5e9d0) !important;
-  border: 1px solid rgba(200, 169, 106, 0.40) !important;
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 40px !important;
+  min-height: 40px !important;
+  border-radius: 10px !important;
+  background: #fdf9f4 !important;
+  border: 1px solid rgba(200, 169, 106, 0.22) !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
@@ -700,80 +701,90 @@ html.site-entered .site-header:not(.header--on-light) {
   order: 2 !important;
 }
 
-/* SVG icons — gold stroke */
 .editorial .pastry-icon {
-  stroke: #c8a96a !important;
-  width: 26px !important;
-  height: 26px !important;
+  stroke: #b6914f !important;
+  width: 22px !important;
+  height: 22px !important;
 }
 
-/* Text content — visual left (RTL order 1) */
 .editorial .detail-card-copy {
   order: 1 !important;
+  flex: 1 !important;
   min-width: 0 !important;
+  text-align: right !important;
 }
 
-/* Card title */
 .editorial .detail-card h3 {
-  color: #2c1810 !important;
-  font-size: 0.97rem !important;
-  font-weight: 700 !important;
-  margin: 0 0 4px !important;
-  line-height: 1.3 !important;
+  color: #241812 !important;
+  font-size: 1rem !important;
+  font-weight: 600 !important;
+  margin: 0 0 5px !important;
+  line-height: 1.32 !important;
+  letter-spacing: -0.015em !important;
 }
 
-/* Card description */
 .editorial .detail-card p {
-  color: #4a3020 !important;
-  font-size: 0.85rem !important;
-  line-height: 1.65 !important;
+  color: #3d2a22 !important;
+  font-size: 0.875rem !important;
+  line-height: 1.6 !important;
   margin: 0 !important;
+  font-weight: 400 !important;
 }
 
-/* ── Play button — glass + gold ring ─────────────────────────────────────── */
+/* Play control — small, calm, not “default player chrome” */
+.editorial .features-media .bakery-video-play,
 .editorial .bakery-video-play {
-  width: 62px !important;
-  height: 62px !important;
+  width: 48px !important;
+  height: 48px !important;
   border-radius: 999px !important;
-  border: 1.5px solid rgba(200, 169, 106, 0.75) !important;
-  background: rgba(255, 249, 242, 0.15) !important;
-  backdrop-filter: blur(10px) !important;
-  color: #fff8ef !important;
-  box-shadow:
-    0 10px 28px rgba(44, 24, 16, 0.22),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  border: 1px solid rgba(200, 169, 106, 0.42) !important;
+  background: rgba(255, 253, 248, 0.88) !important;
+  backdrop-filter: blur(6px) !important;
+  color: #3a2824 !important;
+  box-shadow: 0 4px 16px rgba(36, 24, 18, 0.1) !important;
 }
 
+.editorial .features-media .bakery-video-play:hover,
+.editorial .bakery-video-play:hover {
+  background: rgba(255, 251, 244, 0.95) !important;
+  border-color: rgba(200, 169, 106, 0.55) !important;
+}
+
+.editorial .features-media .bakery-video-play span,
 .editorial .bakery-video-play span {
-  font-size: 1.4rem !important;
-  transform: translateX(2px) !important;
-  color: rgba(255, 252, 246, 0.95) !important;
+  font-size: 1.05rem !important;
+  transform: translateX(1px) !important;
+  color: #3a2824 !important;
 }
 
-/* ── Mobile: stack — video above, cards below ────────────────────────────── */
 @media (max-width: 768px) {
   .features-intro.editorial-text {
     text-align: center !important;
-    margin-bottom: 24px !important;
+    margin: 0 auto 20px !important;
+  }
+
+  .editorial .features-intro p {
+    margin-inline: auto !important;
   }
 
   .editorial .features-intro h2::after {
-    margin: 14px auto !important;
+    margin: 11px auto !important;
   }
 
   .features-content {
     grid-template-columns: 1fr !important;
     grid-template-areas: "media" "cards" !important;
-    gap: 22px !important;
+    gap: 18px !important;
   }
 
   .features-media {
-    width: min(100%, 320px) !important;
+    width: min(100%, 300px) !important;
     aspect-ratio: 1 / 1 !important;
     height: auto !important;
     margin-inline: auto !important;
-    border-radius: 22px !important;
+    border-radius: 18px !important;
     overflow: hidden !important;
+    border-width: 1px !important;
   }
 
   .features-media video,
@@ -787,12 +798,17 @@ html.site-entered .site-header:not(.header--on-light) {
 
   .features-cards.details-grid {
     max-width: 100% !important;
-    gap: 12px !important;
+    gap: 10px !important;
+    margin-inline: 0 !important;
   }
 
   .editorial .detail-card {
-    padding: 16px 18px !important;
-    border-radius: 16px !important;
+    padding: 13px 15px !important;
+    border-radius: 15px !important;
+  }
+
+  .editorial .detail-card-copy {
+    text-align: right !important;
   }
 }
 
