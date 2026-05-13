@@ -569,7 +569,7 @@ html.site-entered .site-header:not(.header--on-light) {
   background-size: 520px 520px !important;
   background-repeat: repeat !important;
   background-position: center top !important;
-  opacity: 0.22 !important;
+  opacity: 0.32 !important;
 }
 
 /* Ensure all direct children of .home-opening sit above the wallpaper */
@@ -581,6 +581,6 @@ html.site-entered .site-header:not(.header--on-light) {
 @media (max-width: 768px) {
   .home-opening::before {
     background-size: 360px 360px !important;
-    opacity: 0.13 !important;
+    opacity: 0.20 !important;
   }
 }
