@@ -2203,3 +2203,58 @@ main {
     height: 8px !important;
   }
 }
+
+/* ══════════════════════════════════════════════════════════════════════════
+   עבודת יד — פונט כתב יד + מרכוז טקסט
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* הגדרת הפונט מחדש עם נתיב יחסי תקין לשרת הנוכחי */
+@font-face {
+  font-family: "FtPilKahol2";
+  src: url("assets/fonts/FtPilKahol2.woff2") format("woff2"),
+       url("assets/fonts/FtPilKahol2.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* מרכוז אזור הטקסט האישי */
+#about .handmade-personal-copy,
+.handmade-section .handmade-personal-copy {
+  text-align: center !important;
+}
+
+/* פונט כתב יד — עם !important כדי לנצח כלל h2 גלובלי */
+#about .handmade-kicker,
+.handmade-section .handmade-kicker {
+  font-family: "FtPilKahol2", cursive !important;
+  font-weight: 400 !important;
+}
+
+#about .handmade-personal-copy h2,
+#handmade-title,
+.handmade-section .handmade-personal-copy h2 {
+  font-family: "FtPilKahol2", cursive !important;
+  font-weight: 400 !important;
+}
+
+#about .handmade-question,
+.handmade-section .handmade-question {
+  font-family: "FtPilKahol2", cursive !important;
+  font-weight: 400 !important;
+}
+
+/* כפתור "לצפייה במוצרים" — ממורכז */
+#about .handmade-products-link,
+.handmade-section .handmade-products-link {
+  display: inline-flex !important;
+  margin-inline: auto !important;
+}
+
+/* מובייל — דריסת text-align: right שב-styles.css */
+@media (max-width: 768px) {
+  #about .handmade-personal-copy,
+  .handmade-section .handmade-personal-copy {
+    text-align: center !important;
+  }
+}
