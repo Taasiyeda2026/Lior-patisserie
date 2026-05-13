@@ -150,6 +150,7 @@
           <button type="button" class="series-tab-btn is-active" data-series-tab-target="1" aria-selected="true">סדרת מוצרים ראשונה</button>
           <button type="button" class="series-tab-btn" data-series-tab-target="2" aria-selected="false">סדרת מוצרים שנייה</button>
           <button type="button" class="series-tab-btn" data-series-tab-target="3" aria-selected="false">סדרת מוצרים שלישית</button>
+          <button type="button" class="series-tab-btn" data-series-tab-target="none" aria-selected="false">ללא סדרה</button>
         </nav>
 
         <div class="series-tab-panel" data-series-tab="1">
@@ -201,6 +202,15 @@
             <div class="notice" data-notice="series-3-settings"></div>
           </div>
           <div id="productsAdmin3" class="admin-series-products" data-products-series="3"></div>
+        </div>
+
+        <div class="series-tab-panel" data-series-tab="none" hidden>
+          <p class="hint">מאגר מוצרים פנימי באדמין. מוצרים שמוגדרים כאן לא יוצגו באתר באף סדרה.</p>
+          <div class="actions-row">
+            <button class="admin-button secondary" type="button" data-add-product-series="none">הוספת מוצר</button>
+            <div class="notice" data-notice="series-none-settings"></div>
+          </div>
+          <div id="productsAdminNone" class="admin-series-products" data-products-series="none"></div>
         </div>
 
         <div class="actions-row actions-row--footer">

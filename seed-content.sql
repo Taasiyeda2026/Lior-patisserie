@@ -73,14 +73,20 @@ with final_products (name, description, filename, display_order) as (
     ('חצי־חצי', 'חצי בצק קקאו וחצי בצק קלאסי עם שוקולד חלב ולבן ושני מילויים מפנקים.', 'A7404971', 26),
     ('ברוקי בייגלה', 'עוגיית ברוקי עשירה עם שוקולד, בייגלה מלוח וקראנץ׳ מתוק־מלוח ממכר.', 'A7404968', 27)
 )
-insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order)
+insert into public.products (name, description, price, image_url, card_image_url, is_active, display_order, product_series)
 select fp.name,
        fp.description,
        null,
        'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/full/' || fp.filename || '.jpg',
        'https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/products/cards/' || fp.filename || '.jpg',
        true,
-       fp.display_order
+       fp.display_order,
+       case
+         when fp.display_order between 1 and 9 then 'series_1'
+         when fp.display_order between 10 and 18 then 'series_2'
+         when fp.display_order between 19 and 27 then 'series_3'
+         else 'none'
+       end
 from final_products fp
 where true
 on conflict (name) do update
@@ -89,7 +95,8 @@ set description = excluded.description,
     image_url = excluded.image_url,
     card_image_url = excluded.card_image_url,
     is_active = excluded.is_active,
-    display_order = excluded.display_order;
+    display_order = excluded.display_order,
+    product_series = excluded.product_series;
 
 -- ── site_features ───────────────────────────────────────────────────────────
 
