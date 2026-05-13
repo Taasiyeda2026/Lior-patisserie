@@ -1,0 +1,76 @@
+עדכון חשוב:
+טפט החתימה מיועד לעמוד המוצרים / אזור הטעמים בלבד, ולא לעמוד הכניסה / Hero.
+
+קובץ הטפט:
+https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png
+
+יש לשלב אותו כרקע עדין באזור המוצרים / הטעמים בלבד.
+
+דרישות:
+1. לא לשים את הטפט על עמוד הכניסה / Hero.
+2. לשלב את הטפט באזור המוצרים / products / flavors.
+3. הטפט צריך להיות עדין מאוד, כמעט מרומז.
+4. לא לתת לו להתחרות בכרטיסי המוצרים.
+5. לא לפגוע בקריאות שמות המוצרים, התיאורים והכפתורים.
+6. לא לשים אותו בעוצמה מלאה.
+7. יש להוסיף שכבת overlay שמנת/לבן עדינה מעל הטפט כדי לרכך אותו.
+8. כרטיסי המוצרים צריכים להישאר נקיים וברורים מעל הרקע.
+9. במובייל להחליש את הטפט עוד יותר או להסתיר אותו אם הוא יוצר עומס.
+10. לא לפגוע בביצועים, באדמין, בעגלה או בטעינת התמונות.
+
+יישום מומלץ:
+להוסיף את הרקע לסקשן המוצרים בלבד, לדוגמה:
+
+.products-section,
+#products,
+.flavors-section {
+  position: relative;
+  background-image:
+    linear-gradient(rgba(255, 248, 239, 0.86), rgba(255, 248, 239, 0.86)),
+    url("https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png");
+  background-size: 560px 560px;
+  background-repeat: repeat;
+  background-position: center;
+}
+
+אם יש כבר רקע לסקשן המוצרים, לא לדרוס אותו בלי לבדוק. במקרה כזה להשתמש בשכבת pseudo-element:
+
+.products-section::before,
+#products::before,
+.flavors-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 248, 239, 0.82), rgba(255, 248, 239, 0.82)),
+    url("https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png");
+  background-size: 560px 560px;
+  background-repeat: repeat;
+  background-position: center;
+  opacity: 0.35;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.products-section > *,
+#products > *,
+.flavors-section > * {
+  position: relative;
+  z-index: 1;
+}
+
+במובייל:
+@media (max-width: 768px) {
+  .products-section::before,
+  #products::before,
+  .flavors-section::before {
+    opacity: 0.2;
+    background-size: 460px 460px;
+  }
+}
+
+חשוב:
+יש לבחור את הסלקטור האמיתי שקיים בקוד עבור אזור המוצרים. לא להוסיף על כל האתר.
+
+תוצאה רצויה:
+אזור המוצרים יקבל רקע חתימה עדין, בוטיקי ואלגנטי, אבל כרטיסי המוצרים יישארו ברורים, קריאים ונקיים.
