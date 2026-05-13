@@ -53,6 +53,21 @@ html.hero-locked body {
   box-shadow: none !important;
 }
 
+/* ── More-info button: SVG icon replaces the text + ::before "!" ─────────── */
+.section-nav .footer-legal-toggle::before,
+[data-more-info-button]::before {
+  display: none !important;
+  content: "" !important;
+}
+
+[data-more-info-button] .more-info-icon,
+.footer-legal-toggle .more-info-icon {
+  display: block !important;
+  width: 20px !important;
+  height: 20px !important;
+  flex-shrink: 0 !important;
+}
+
 /* ── Hide floating elements during hero / entrance screen ───────────────── */
 /*
   .section-nav is already hidden by html.hero-locked in styles.css.
