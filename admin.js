@@ -20,6 +20,43 @@ const ADMIN_ACTIVITY_SCROLL_THROTTLE_MS = 2000;
 
 const ADMIN_ACTIVITY_EVENT_OPTS = { capture: true, passive: true };
 
+const DEFAULT_ADMIN_USERS = [
+  { username: "lior", email: "lior.patisserie@outlook.com" },
+  { username: "tomer", email: "tomer@lior-patisserie.com" }
+];
+
+function normalizeAdminUsername(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function normalizeAdminEmail(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function configuredAdminUsers() {
+  const configured = window.LIOR_SUPABASE_CONFIG && Array.isArray(window.LIOR_SUPABASE_CONFIG.ADMIN_USERS)
+    ? window.LIOR_SUPABASE_CONFIG.ADMIN_USERS
+    : DEFAULT_ADMIN_USERS;
+
+  return configured
+    .map((user) => ({
+      username: normalizeAdminUsername(user && user.username),
+      email: normalizeAdminEmail(user && user.email)
+    }))
+    .filter((user) => user.username && user.email);
+}
+
+function adminEmailForUsername(username) {
+  const normalizedUsername = normalizeAdminUsername(username);
+  const user = configuredAdminUsers().find((candidate) => candidate.username === normalizedUsername);
+  return user ? user.email : "";
+}
+
+function isAllowedAdminEmail(email) {
+  const normalizedEmail = normalizeAdminEmail(email);
+  return Boolean(normalizedEmail && configuredAdminUsers().some((user) => user.email === normalizedEmail));
+}
+
 let adminIdleTimeoutId = null;
 let adminIdleListenersAttached = false;
 let adminIdleTracking = false;
@@ -492,6 +529,23 @@ async function uploadImageAsWebP(file, folder, maxWidth) {
   return data.publicUrl;
 }
 
+function currentHandmadeMode(root = document) {
+  const selected = root.querySelector('[data-setting="handmade_content_mode"]:checked');
+  return selected && selected.value === "general" ? "general" : "personal";
+}
+
+function syncHandmadeAdminFields(root = document) {
+  const panel = root.querySelector ? root : document;
+  const mode = currentHandmadeMode(panel);
+  panel.querySelectorAll("[data-handmade-fields]").forEach((section) => {
+    section.hidden = section.dataset.handmadeFields !== mode;
+  });
+  panel.querySelectorAll(".admin-choice-option").forEach((option) => {
+    const radio = option.querySelector('[data-setting="handmade_content_mode"]');
+    option.classList.toggle("is-active", Boolean(radio && radio.checked));
+  });
+}
+
 async function loadSettings() {
   const { data, error } = await client().from("site_settings").select("key,value");
   if (error) throw error;
@@ -503,15 +557,20 @@ async function loadSettings() {
 
   document.querySelectorAll("[data-setting]").forEach((input) => {
     const primaryValue = settings[input.dataset.setting] || "";
+    if (input.type === "radio") {
+      input.checked = input.value === (primaryValue || "personal");
+      return;
+    }
     const mergedKey = input.dataset.mergedSetting;
     const mergedValue = mergedKey ? settings[mergedKey] || "" : "";
     input.value = [primaryValue, mergedValue].filter((value) => value.trim()).join("\n\n");
   });
+  syncHandmadeAdminFields();
   document.querySelectorAll(".admin-preview-shell[data-setting-preview]").forEach(syncAdminPreviewShell);
 }
 
 async function saveSettings(scope = "hero-settings", root = document) {
-  const inputs = Array.from(root.querySelectorAll("[data-setting]"));
+  const inputs = Array.from(root.querySelectorAll("[data-setting]")).filter((input) => input.type !== "radio" || input.checked);
   const now = new Date().toISOString();
   const rows = inputs.flatMap((input) => {
     const row = {
@@ -1086,7 +1145,7 @@ async function initAdmin() {
 
 function setupEvents() {
   document.getElementById("loginButton").addEventListener("click", async () => {
-    const username = (document.getElementById("adminUsername").value || "").trim().toLowerCase();
+    const username = normalizeAdminUsername(document.getElementById("adminUsername").value);
     const password = document.getElementById("adminPassword").value || "";
 
     if (!username || !password) {
@@ -1094,8 +1153,7 @@ function setupEvents() {
       return;
     }
 
-    const ADMIN_USERS = { lior: "lior.patisserie@outlook.com" };
-    const email = ADMIN_USERS[username];
+    const email = adminEmailForUsername(username);
     if (!email) {
       showLoginError("שם המשתמש או הסיסמה שגויים");
       return;
@@ -1106,8 +1164,9 @@ function setupEvents() {
     btn.textContent = "מתחבר...";
 
     try {
-      const { error } = await client().auth.signInWithPassword({ email, password });
+      const { data, error } = await client().auth.signInWithPassword({ email, password });
       if (error) throw error;
+      if (!isAllowedAdminEmail(data && data.user && data.user.email)) throw new Error("Unauthorized admin user");
       sessionStorage.setItem(ADMIN_LAST_ACTIVITY_KEY, String(Date.now()));
       document.getElementById("logoutButton").classList.remove("hidden");
       showAdminApp();
@@ -1266,6 +1325,10 @@ function setupEvents() {
   });
 
   document.addEventListener("change", async (event) => {
+    if (event.target.matches('[data-setting="handmade_content_mode"]')) {
+      syncHandmadeAdminFields(event.target.closest(".editor-card") || document);
+      return;
+    }
     const fileInput = event.target;
     if (!fileInput.matches("[data-upload], [data-product-upload], [data-feature-upload]")) return;
     const file = fileInput.files && fileInput.files[0];
@@ -1346,6 +1409,18 @@ async function checkExistingSession() {
     const session = data && data.session;
     if (!session) {
       showLoginScreen();
+      return;
+    }
+
+    if (!isAllowedAdminEmail(session.user && session.user.email)) {
+      try {
+        await client().auth.signOut();
+      } catch {
+      }
+      sessionStorage.removeItem(ADMIN_LAST_ACTIVITY_KEY);
+      clearAdminPasswordField();
+      showLoginScreen();
+      showLoginError("שם המשתמש או הסיסמה שגויים");
       return;
     }
 

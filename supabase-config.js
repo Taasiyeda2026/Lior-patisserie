@@ -53,7 +53,13 @@ window.LIOR_IMAGE_PLACEHOLDER =
 window.LIOR_SUPABASE_CONFIG = {
   SUPABASE_URL: "https://osehkbkeydhpesjlisuk.supabase.co",
   SUPABASE_ANON_KEY: "sb_publishable_YMY-BeSAPGGYTa9L-PHsSg_JvCRteCP",
-  STORAGE_BUCKET: "site-images"
+  STORAGE_BUCKET: "site-images",
+  // Usernames are aliases for Supabase Auth emails. Passwords stay only in
+  // Supabase Auth and must never be committed to this repository.
+  ADMIN_USERS: [
+    { username: "lior", email: "lior.patisserie@outlook.com" },
+    { username: "tomer", email: "tomer@lior-patisserie.com" }
+  ]
 };
 
 window.getLiorSupabaseClient = function getLiorSupabaseClient() {

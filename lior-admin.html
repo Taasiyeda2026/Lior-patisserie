@@ -242,18 +242,56 @@
           <span class="section-number">04</span>
           <div>
             <h2>עבודת יד</h2>
-            <p>הכותרת והטקסט של אזור עבודת היד, ומתחתיהם כרטיסי מידע קצרים שמסבירים מה מיוחד אצלנו.</p>
+            <p>בחירה ועריכה של התוכן שמוצג ליד הסרטון: טקסט אישי של ליאור או שלוש נקודות כלליות בוטיקיות.</p>
           </div>
         </div>
-        <div class="grid two-columns">
-          <label class="field-label">תגית קטנה מעל אזור עבודת יד
-            <input data-setting="handmade_label" type="text" placeholder="- עבודת יד -">
+        <div class="handmade-admin-mode" aria-label="סוג תוכן בעמוד עבודת יד">
+          <p class="admin-choice-title">סוג תוכן בעמוד עבודת יד</p>
+          <div class="admin-choice-tabs" role="radiogroup" aria-label="סוג תוכן בעמוד עבודת יד">
+            <label class="admin-choice-option">
+              <input data-setting="handmade_content_mode" data-handmade-mode-radio type="radio" name="handmadeContentMode" value="personal" checked>
+              <span>אישי</span>
+            </label>
+            <label class="admin-choice-option">
+              <input data-setting="handmade_content_mode" data-handmade-mode-radio type="radio" name="handmadeContentMode" value="general">
+              <span>כללי</span>
+            </label>
+          </div>
+        </div>
+        <div class="grid two-columns handmade-admin-fields" data-handmade-fields="personal">
+          <label class="field-label">כותרת קטנה
+            <input data-setting="handmade_personal_label" type="text" placeholder="כמה מילים ממני">
           </label>
-          <label class="field-label">כותרת אזור עבודת יד
-            <input data-setting="handmade_title" type="text" placeholder="הפרטים הקטנים שעושים את ההבדל">
+          <label class="field-label">כותרת ראשית
+            <input data-setting="handmade_personal_title" type="text" placeholder="אני כאן כדי להמתיק לכם את היום">
           </label>
-          <label class="field-label wide">טקסט אזור עבודת יד
-            <textarea data-setting="handmade_text" placeholder="מהבצק ועד הקרם..."></textarea>
+          <label class="field-label wide">פסקה ראשונה
+            <textarea data-setting="handmade_personal_paragraph_1" placeholder="תמיד אהבתי לקחת רגע פשוט..."></textarea>
+          </label>
+          <label class="field-label wide">פסקה שנייה
+            <textarea data-setting="handmade_personal_paragraph_2" placeholder="כל עוגייה, מארז וקינוח..."></textarea>
+          </label>
+          <label class="field-label wide">משפט הנעה לפעולה
+            <input data-setting="handmade_personal_cta" type="text" placeholder="מוכנים לבחור את הרגע המתוק שלכם?">
+          </label>
+        </div>
+        <div class="grid two-columns handmade-admin-fields" data-handmade-fields="general" hidden>
+          <label class="field-label wide">נקודה כללית 1
+            <input data-setting="handmade_general_bullet_1" type="text" placeholder="רגעים יפים מתחילים בפרטים הקטנים.">
+          </label>
+          <label class="field-label wide">נקודה כללית 2
+            <input data-setting="handmade_general_bullet_2" type="text" placeholder="כל קינוח משלב טעם, יופי והמון מחשבה.">
+          </label>
+          <label class="field-label wide">נקודה כללית 3
+            <input data-setting="handmade_general_bullet_3" type="text" placeholder="התוצאה היא חוויה מתוקה שנשארת בלב.">
+          </label>
+        </div>
+        <div class="grid two-columns handmade-admin-common">
+          <label class="field-label">טקסט הכפתור
+            <input data-setting="handmade_button_text" type="text" placeholder="לצפייה במוצרים">
+          </label>
+          <label class="field-label">קישור / Anchor של הכפתור
+            <input data-setting="handmade_button_anchor" type="text" placeholder="#products">
           </label>
         </div>
         <div class="actions-row">
