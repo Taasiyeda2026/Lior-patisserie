@@ -281,7 +281,8 @@ html.site-entered .site-header:not(.header--on-light) {
 /* ── Section background: clean warm ivory ────────────────────────────────── */
 .home-opening {
   background: #fdf9f2 !important;
-  padding: 2rem 0 3rem !important;
+  /* padding-top accounts for the sticky 46px header that shows on light sections */
+  padding: clamp(62px, 7vw, 78px) 0 3rem !important;
 }
 
 /* ── Section intro ────────────────────────────────────────────────────────── */
@@ -315,8 +316,8 @@ html.site-entered .site-header:not(.header--on-light) {
 
 /* Intro text */
 .home-opening .products-intro-text {
-  color: #7a5540 !important;
-  font-size: 0.86rem !important;
+  color: #4a3020 !important;
+  font-size: 0.88rem !important;
   line-height: 1.75 !important;
 }
 
@@ -343,8 +344,8 @@ html.site-entered .site-header:not(.header--on-light) {
 }
 
 .category-subtitle {
-  color: #a07a60 !important;
-  font-size: 0.78rem !important;
+  color: #6b4c38 !important;
+  font-size: 0.8rem !important;
 }
 
 /* ── Products grid ────────────────────────────────────────────────────────── */
@@ -488,10 +489,10 @@ html.site-entered .site-header:not(.header--on-light) {
   grid-column: 1 !important;
   grid-row: 2 !important;
   margin: 6px 0 0 !important;
-  color: #9a7560 !important;
-  font-size: 0.73rem !important;
+  color: #4a3020 !important;
+  font-size: 0.78rem !important;
   font-weight: 400 !important;
-  line-height: 1.6 !important;
+  line-height: 1.65 !important;
   text-align: right !important;
 }
 
@@ -581,8 +582,8 @@ html.site-entered .site-header:not(.header--on-light) {
 
 /* Subtitle text */
 .editorial .features-intro p {
-  color: #7a5540 !important;
-  font-size: 0.88rem !important;
+  color: #4a3020 !important;
+  font-size: 0.9rem !important;
   line-height: 1.72 !important;
   margin: 0 !important;
 }
@@ -720,9 +721,9 @@ html.site-entered .site-header:not(.header--on-light) {
 
 /* Card description */
 .editorial .detail-card p {
-  color: #7a5540 !important;
-  font-size: 0.82rem !important;
-  line-height: 1.62 !important;
+  color: #4a3020 !important;
+  font-size: 0.85rem !important;
+  line-height: 1.65 !important;
   margin: 0 !important;
 }
 
@@ -863,7 +864,7 @@ html.site-entered .site-header:not(.header--on-light) {
 .final p {
   max-width: 480px !important;
   margin: 0 auto 28px !important;
-  color: #7a5540 !important;
+  color: #4a3020 !important;
   font-size: 1rem !important;
   font-weight: 400 !important;
   line-height: 1.72 !important;
