@@ -2400,8 +2400,9 @@ main {
 
 #about .handmade-question,
 .handmade-section .handmade-question {
-  color: #5b2e64 !important;
-  margin: 10px 0 20px !important;
+  color: #c8a96a !important;
+  margin: 14px 0 22px !important;
+  font-size: clamp(1.65rem, 2.5vw, 1.95rem) !important;
 }
 
 #about .handmade-body p,
@@ -2410,11 +2411,32 @@ main {
   margin: 0 !important;
 }
 
-/* כפתור "לצפייה במוצרים" — ממורכז */
-#about .handmade-products-link,
-.handmade-section .handmade-products-link {
+/* חץ "לצפייה במוצרים" — עדין ומרוכז */
+#about .handmade-arrow-link,
+.handmade-section .handmade-arrow-link {
   display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
   margin-inline: auto !important;
+  width: 52px !important;
+  height: 52px !important;
+  border-radius: 50% !important;
+  border: 1px solid rgba(200, 169, 106, 0.35) !important;
+  background: transparent !important;
+  text-decoration: none !important;
+  transition: border-color 0.22s ease, transform 0.22s ease !important;
+}
+
+#about .handmade-arrow-link:hover,
+.handmade-section .handmade-arrow-link:hover {
+  border-color: rgba(200, 169, 106, 0.75) !important;
+  transform: translateY(3px) !important;
+}
+
+#about .handmade-arrow-link svg,
+.handmade-section .handmade-arrow-link svg {
+  display: block !important;
+  flex-shrink: 0 !important;
 }
 
 /* מובייל — דריסת text-align: right שב-styles.css */
