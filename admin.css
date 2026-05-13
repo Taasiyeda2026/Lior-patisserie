@@ -855,6 +855,10 @@ body.has-product-drawer {
   text-align: center;
 }
 
+.product-grid-card-noimg[hidden] {
+  display: none !important;
+}
+
 .product-grid-card-meta {
   padding: 8px 10px 10px;
   display: flex;

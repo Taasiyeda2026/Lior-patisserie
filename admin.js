@@ -580,6 +580,53 @@ function productGridCardTemplate(product) {
   </button>`;
 }
 
+/**
+ * Tries to load a product card image with cascading fallback:
+ *   card_image_url → image_url → show placeholder
+ */
+function loadProductCardImg(img, ph, altText, product) {
+  const urls = [product.card_image_url, product.image_url]
+    .map((u) => adminPreviewSrc(String(u || "").trim(), { whenEmpty: "" }))
+    .filter(Boolean);
+
+  function showPlaceholder() {
+    img.onload = null;
+    img.onerror = null;
+    img.removeAttribute("src");
+    img.classList.add("is-hidden");
+    ph.hidden = false;
+  }
+
+  function tryNext(remaining) {
+    if (!remaining.length) { showPlaceholder(); return; }
+    const [url, ...rest] = remaining;
+    if (img.getAttribute("src") === url && img.complete && img.naturalWidth > 0) {
+      ph.hidden = true;
+      img.classList.remove("is-hidden");
+      return;
+    }
+    img.onload = null;
+    img.onerror = null;
+    img.onload = function () {
+      if (img.naturalWidth > 0) {
+        ph.hidden = true;
+        img.classList.remove("is-hidden");
+      } else {
+        tryNext(rest);
+      }
+    };
+    img.onerror = function () { tryNext(rest); };
+    ph.hidden = true;
+    img.classList.remove("is-hidden");
+    img.alt = altText;
+    img.src = url;
+  }
+
+  if (!urls.length) { showPlaceholder(); return; }
+  img.alt = altText;
+  tryNext(urls);
+}
+
 function hydrateProductGridCards(container) {
   container.querySelectorAll(".product-grid-card").forEach((card) => {
     const id = card.dataset.productId;
@@ -588,14 +635,6 @@ function hydrateProductGridCards(container) {
     const ph = card.querySelector(".product-grid-card-noimg");
     if (!img || !ph) return;
     if (!product) {
-      img.removeAttribute("src");
-      img.classList.add("is-hidden");
-      ph.hidden = false;
-      return;
-    }
-    const raw = String(product.card_image_url || product.image_url || "").trim();
-    const url = adminPreviewSrc(raw, { whenEmpty: "" });
-    if (!url) {
       img.onload = null;
       img.onerror = null;
       img.removeAttribute("src");
@@ -603,24 +642,7 @@ function hydrateProductGridCards(container) {
       ph.hidden = false;
       return;
     }
-    ph.hidden = true;
-    img.classList.remove("is-hidden");
-    img.alt = String(product.name || "");
-    // Skip network request if the same image is already fully loaded
-    if (img.getAttribute("src") === url && img.complete && img.naturalWidth > 0) {
-      return;
-    }
-    img.onload = null;
-    img.onerror = null;
-    img.onload = function () {
-      if (img.naturalWidth > 0) ph.hidden = true;
-    };
-    img.onerror = function () {
-      img.removeAttribute("src");
-      img.classList.add("is-hidden");
-      ph.hidden = false;
-    };
-    img.src = url;
+    loadProductCardImg(img, ph, String(product.name || ""), product);
   });
 }
 
@@ -843,34 +865,11 @@ function tryUpdateProductCardInPlace(productId) {
     badgeEl.remove();
   }
 
-  // Image
+  // Image — cascading fallback: card_image_url → image_url → placeholder
   const img = card.querySelector(".product-grid-card-img");
   const ph = card.querySelector(".product-grid-card-noimg");
   if (img && ph) {
-    const raw = String(product.card_image_url || product.image_url || "").trim();
-    const url = adminPreviewSrc(raw, { whenEmpty: "" });
-    if (!url) {
-      img.onload = null;
-      img.onerror = null;
-      img.removeAttribute("src");
-      img.classList.add("is-hidden");
-      ph.hidden = false;
-    } else {
-      ph.hidden = true;
-      img.classList.remove("is-hidden");
-      img.alt = nameRaw;
-      if (img.getAttribute("src") !== url) {
-        img.onload = null;
-        img.onerror = null;
-        img.onload = function () { if (img.naturalWidth > 0) ph.hidden = true; };
-        img.onerror = function () {
-          img.removeAttribute("src");
-          img.classList.add("is-hidden");
-          ph.hidden = false;
-        };
-        img.src = url;
-      }
-    }
+    loadProductCardImg(img, ph, nameRaw, product);
   }
 
   return true;
