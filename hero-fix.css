@@ -496,11 +496,13 @@ html.site-entered .home-opening {
 }
 
 /* ── Signature wallpaper — products/flavors area only ───────────────────────
-   Applied via ::before pseudo-element so we don't disrupt the existing
-   radial-gradient backgrounds that styles.css sets on .home-opening.
-   The pseudo-element sits at z-index 0; all content is at z-index ≥ 1.    */
+   ::before = wallpaper tile only (no overlay gradient mixed in).
+   The cream base background of .home-opening shows through beneath it.
+   All content sits at z-index ≥ 1 above z-index 0 pseudo-element.         */
 .home-opening {
   isolation: isolate;
+  position: relative !important;
+  background-color: #fff8ef !important;
 }
 
 .home-opening::before {
@@ -509,16 +511,11 @@ html.site-entered .home-opening {
   inset: 0 !important;
   pointer-events: none !important;
   z-index: 0 !important;
-  background-image:
-    linear-gradient(
-      rgba(247, 240, 230, 0.88),
-      rgba(247, 240, 230, 0.88)
-    ),
-    url("https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png") !important;
-  background-size: auto, 480px 480px !important;
+  background-image: url("https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png") !important;
+  background-size: 520px 520px !important;
   background-repeat: repeat !important;
-  background-position: center !important;
-  opacity: 0.7 !important;
+  background-position: center top !important;
+  opacity: 0.22 !important;
 }
 
 /* Ensure all direct children of .home-opening sit above the wallpaper */
@@ -529,7 +526,7 @@ html.site-entered .home-opening {
 
 @media (max-width: 768px) {
   .home-opening::before {
-    background-size: auto, 360px 360px !important;
-    opacity: 0.45 !important;
+    background-size: 360px 360px !important;
+    opacity: 0.13 !important;
   }
 }
