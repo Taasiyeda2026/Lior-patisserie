@@ -2380,12 +2380,29 @@ main {
 
 #about .handmade-question,
 .handmade-section .handmade-question {
-  font-family: var(--font-body, "Assistant", sans-serif) !important;
-  font-size: clamp(1.05rem, 1.5vw, 1.18rem) !important;
-  font-weight: 600 !important;
+  font-family: "FtPilKahol2", cursive !important;
+  font-weight: 400 !important;
+  font-size: clamp(1.55rem, 3vw, 2.15rem) !important;
   color: #5b2e64 !important;
-  letter-spacing: 0.01em !important;
   margin: 10px 0 20px !important;
+}
+
+#about .handmade-body p,
+.handmade-section .handmade-body p {
+  font-family: "FtPilKahol2", cursive !important;
+  font-weight: 400 !important;
+  font-size: clamp(1.15rem, 1.8vw, 1.35rem) !important;
+  line-height: 1.85 !important;
+}
+
+#about .handmade-products-link,
+#about .handmade-products-link.btn,
+.handmade-section .handmade-products-link,
+.handmade-section .handmade-products-link.btn {
+  font-family: "FtPilKahol2", cursive !important;
+  font-weight: 400 !important;
+  font-size: clamp(1.2rem, 1.8vw, 1.4rem) !important;
+  letter-spacing: 0.01em !important;
 }
 
 /* כפתור "לצפייה במוצרים" — ממורכז */
