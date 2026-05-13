@@ -7500,6 +7500,7 @@ svg {
   grid-area: copy;
   direction: rtl;
   position: relative;
+  overflow: hidden;
   padding: clamp(28px, 4vw, 46px);
   border: 1px solid rgba(200, 169, 106, 0.24);
   border-radius: 34px;
@@ -7508,19 +7509,35 @@ svg {
   color: var(--lior-aubergine, #3D1650);
 }
 
-.handmade-personal-copy::before {
+.handmade-personal-copy::before,
+.handmade-personal-copy::after {
   content: "";
   position: absolute;
+  pointer-events: none;
+}
+
+.handmade-personal-copy::before {
   inset: 14px;
-  z-index: 0;
+  z-index: 1;
   border-radius: 26px;
   border: 1px solid rgba(200, 169, 106, 0.16);
-  pointer-events: none;
+}
+
+.handmade-personal-copy::after {
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  background-image: url("https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png");
+  background-repeat: repeat;
+  background-position: center;
+  background-size: 430px 430px;
+  opacity: 0.055;
+  mix-blend-mode: multiply;
 }
 
 .handmade-personal-copy > * {
   position: relative;
-  z-index: 1;
+  z-index: 2;
 }
 
 .handmade-kicker,
@@ -7612,6 +7629,11 @@ svg {
   .handmade-personal-copy::before {
     inset: 10px;
     border-radius: 22px;
+  }
+
+  .handmade-personal-copy::after {
+    background-size: 380px 380px;
+    opacity: 0.038;
   }
 
   .handmade-products-link.btn {
@@ -7753,7 +7775,7 @@ svg {
 
 .handmade-signature {
   position: relative;
-  z-index: 1;
+  z-index: 2;
   margin: 2px 0 12px;
   color: #5b2e64;
   font-family: "FtPilKahol2", var(--font-signature);
