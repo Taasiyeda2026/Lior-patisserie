@@ -242,6 +242,7 @@
       <div class="handmade-body">
         ${[paragraph1, paragraph2].filter(hasText).map((text) => `<p>${escapeHtml(text)}</p>`).join("")}
       </div>
+      <p class="handmade-signature">באהבה, ליאור <span class="handmade-heart" aria-hidden="true">💜</span></p>
       <p class="handmade-question">${escapeHtml(cta)}</p>
       <a class="handmade-arrow-link" href="${escapeHtml(buttonAnchor)}" aria-label="${escapeHtml(buttonText)}">
         <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
