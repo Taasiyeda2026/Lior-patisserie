@@ -565,11 +565,14 @@ html.site-entered .site-header:not(.header--on-light) {
   inset: 0 !important;
   pointer-events: none !important;
   z-index: 0 !important;
-  background-image: url("https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png") !important;
-  background-size: 520px 520px !important;
+  /* Overlay (top layer) is very faint — wallpaper file already has built-in transparency */
+  background-image:
+    linear-gradient(rgba(255, 248, 239, 0.12), rgba(255, 248, 239, 0.12)),
+    url("https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png") !important;
+  background-size: auto, 420px 420px !important;
   background-repeat: repeat !important;
   background-position: center top !important;
-  opacity: 0.32 !important;
+  opacity: 1 !important;
 }
 
 /* Ensure all direct children of .home-opening sit above the wallpaper */
@@ -580,7 +583,7 @@ html.site-entered .site-header:not(.header--on-light) {
 
 @media (max-width: 768px) {
   .home-opening::before {
-    background-size: 360px 360px !important;
-    opacity: 0.20 !important;
+    background-size: auto, 340px 340px !important;
+    opacity: 1 !important;
   }
 }
