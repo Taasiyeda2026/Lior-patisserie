@@ -218,7 +218,12 @@
         <ul class="handmade-general-list">
           ${bullets.map((text) => `<li><span>${escapeHtml(text)}</span></li>`).join("")}
         </ul>
-        <a class="btn handmade-products-link" href="${escapeHtml(buttonAnchor)}">${escapeHtml(buttonText)}</a>
+        <a class="handmade-arrow-link" href="${escapeHtml(buttonAnchor)}" aria-label="${escapeHtml(buttonText)}">
+          <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <line x1="18" y1="4" x2="18" y2="30" stroke="#c8a96a" stroke-width="1.5" stroke-linecap="round"/>
+            <polyline points="9,21 18,31 27,21" fill="none" stroke="#c8a96a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
       `;
       return;
     }
@@ -238,7 +243,12 @@
         ${[paragraph1, paragraph2].filter(hasText).map((text) => `<p>${escapeHtml(text)}</p>`).join("")}
       </div>
       <p class="handmade-question">${escapeHtml(cta)}</p>
-      <a class="btn handmade-products-link" href="${escapeHtml(buttonAnchor)}">${escapeHtml(buttonText)}</a>
+      <a class="handmade-arrow-link" href="${escapeHtml(buttonAnchor)}" aria-label="${escapeHtml(buttonText)}">
+        <svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <line x1="18" y1="4" x2="18" y2="30" stroke="#c8a96a" stroke-width="1.5" stroke-linecap="round"/>
+          <polyline points="9,21 18,31 27,21" fill="none" stroke="#c8a96a" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
     `;
   }
 
