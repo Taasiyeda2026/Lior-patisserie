@@ -2560,3 +2560,16 @@ input[type="file"]::file-selector-button {
     padding: 6px 10px;
   }
 }
+
+.product-grid-card-series {
+  display: inline-flex;
+  align-items: center;
+  align-self: flex-start;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background: rgba(196, 168, 68, 0.14);
+  color: rgba(61, 34, 73, 0.82);
+  font-size: 0.74rem;
+  font-weight: 700;
+  line-height: 1.2;
+}

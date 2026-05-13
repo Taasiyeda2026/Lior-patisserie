@@ -446,19 +446,36 @@
     }
   }
 
+  function productSeriesValue(product) {
+    const raw = String(product && product.product_series || "").trim();
+    if (["series_1", "series_2", "series_3", "none"].includes(raw)) return raw;
+    const order = Number(product && product.display_order) || 0;
+    if (order >= 10 && order <= 18) return "series_2";
+    if (order >= 19) return "series_3";
+    if (order > 0) return "series_1";
+    return "none";
+  }
+
+  function productsForSeries(productsList, seriesValue) {
+    return productsList.filter((product) => productSeriesValue(product) === seriesValue);
+  }
+
   function renderManagedProducts(rows) {
     if (!Array.isArray(rows)) return;
 
     const activeProducts = rows
-      .filter((product) => product && product.is_active === true && hasText(product.name))
+      .filter((product) => product && product.is_active === true && hasText(product.name) && productSeriesValue(product) !== "none")
       .sort((a, b) => (Number(a.display_order) || 0) - (Number(b.display_order) || 0));
 
     const hasNewLayout = !!document.getElementById("productsGrid1");
 
     if (hasNewLayout) {
-      renderCategoryGrid("productsGrid1", activeProducts.slice(0, PRODUCTS_PER_CATEGORY), 0);
-      renderCategoryGrid("productsGrid2", activeProducts.slice(PRODUCTS_PER_CATEGORY, PRODUCTS_PER_CATEGORY * 2), PRODUCTS_PER_CATEGORY);
-      renderCategoryGrid("productsGrid3", activeProducts.slice(PRODUCTS_PER_CATEGORY * 2, PRODUCTS_PER_CATEGORY * 3), PRODUCTS_PER_CATEGORY * 2);
+      const series1Products = productsForSeries(activeProducts, "series_1");
+      const series2Products = productsForSeries(activeProducts, "series_2");
+      const series3Products = productsForSeries(activeProducts, "series_3");
+      renderCategoryGrid("productsGrid1", series1Products, 0);
+      renderCategoryGrid("productsGrid2", series2Products, series1Products.length);
+      renderCategoryGrid("productsGrid3", series3Products, series1Products.length + series2Products.length);
       refreshDynamicBehaviors();
       return;
     }
@@ -480,7 +497,7 @@
 
     const { data, error } = await client
       .from("products")
-      .select("id,name,description,price,image_url,card_image_url,is_active,display_order")
+      .select("id,name,description,price,image_url,card_image_url,is_active,display_order,product_series")
       .order("display_order", { ascending: true });
 
     if (error || !Array.isArray(data)) {

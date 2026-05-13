@@ -7273,3 +7273,45 @@ body.site-entered .section-nav .footer-legal-wrap {
     height: 40px !important;
   }
 }
+
+/* Footer Instagram closing line — keep icon, brand and sentence optically centered. */
+.footer-instagram.ig-closing {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35em 0.55em;
+  margin-inline: auto;
+  line-height: 1.45;
+}
+
+.footer-instagram.ig-closing .instagram-closing-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.28em;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.footer-instagram.ig-closing .instagram-inline-icon {
+  display: block;
+  width: 1em;
+  height: 1em;
+  min-width: 14px;
+  min-height: 14px;
+  position: static;
+  flex: 0 0 auto;
+}
+
+.footer-instagram-brand.footer-copy {
+  display: inline-flex;
+  align-items: center;
+  width: auto;
+  margin: 0;
+  line-height: 1;
+  vertical-align: middle;
+}
+
+.footer-instagram-brand.footer-copy::after {
+  content: none;
+}

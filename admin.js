@@ -2,6 +2,13 @@ const WEBP_QUALITY = 0.8;
 const JPEG_QUALITY = 0.88;
 const PRODUCT_CARD_RESIZE_MAX = 768;
 const BUCKET = (window.LIOR_SUPABASE_CONFIG && window.LIOR_SUPABASE_CONFIG.STORAGE_BUCKET) || "site-images";
+const PRODUCT_SERIES_OPTIONS = [
+  { value: "series_1", label: "סדרה 1", tabLabel: "סדרה ראשונה" },
+  { value: "series_2", label: "סדרה 2", tabLabel: "סדרה שנייה" },
+  { value: "series_3", label: "סדרה 3", tabLabel: "סדרה שלישית" },
+  { value: "none", label: "ללא סדרה", tabLabel: "ללא סדרה" }
+];
+const PRODUCT_SERIES_VALUES = PRODUCT_SERIES_OPTIONS.map((option) => option.value);
 
 let adminProductsCache = [];
 
@@ -529,20 +536,37 @@ function seriesRange(seriesIndex) {
   return { start, end };
 }
 
-function getProductSeriesIndex(product) {
+function legacyProductSeriesValue(product) {
   const order = Number(product && product.display_order) || 0;
-  if (order >= 10 && order <= 18) return 2;
-  if (order >= 19) return 3;
+  if (order >= 10 && order <= 18) return "series_2";
+  if (order >= 19) return "series_3";
+  if (order > 0) return "series_1";
+  return "none";
+}
+
+function normalizeProductSeriesValue(value, product) {
+  const raw = String(value || "").trim();
+  if (PRODUCT_SERIES_VALUES.includes(raw)) return raw;
+  return product ? legacyProductSeriesValue(product) : "none";
+}
+
+function getProductSeriesIndex(product) {
+  const seriesValue = normalizeProductSeriesValue(product && product.product_series, product);
+  if (seriesValue === "series_2") return 2;
+  if (seriesValue === "series_3") return 3;
+  if (seriesValue === "none") return 0;
   return 1;
 }
 
+function productSeriesLabel(product) {
+  const value = normalizeProductSeriesValue(product && product.product_series, product);
+  return PRODUCT_SERIES_OPTIONS.find((option) => option.value === value)?.label || "ללא סדרה";
+}
+
 function productsForSeries(seriesIndex) {
-  const { start, end } = seriesRange(seriesIndex);
+  const targetValue = seriesIndex === "none" || Number(seriesIndex) === 0 ? "none" : `series_${Number(seriesIndex) || 1}`;
   return adminProductsCache
-    .filter((product) => {
-      const order = Number(product.display_order) || 0;
-      return order >= start && order <= end;
-    })
+    .filter((product) => normalizeProductSeriesValue(product && product.product_series, product) === targetValue)
     .sort((a, b) => (Number(a.display_order) || 0) - (Number(b.display_order) || 0));
 }
 
@@ -555,8 +579,9 @@ function nextDisplayOrderForSeries(seriesIndex) {
 }
 
 function productNoticeScopeForRoot(root) {
-  const seriesIndex = root?.dataset?.seriesIndex || getProductSeriesIndex({ display_order: root?.dataset?.displayOrder });
-  return `series-${seriesIndex}-settings`;
+  const seriesValue = root?.querySelector?.('[data-field="product_series"]')?.value || root?.dataset?.productSeries || "";
+  const seriesIndex = seriesValue === "none" ? 0 : (root?.dataset?.seriesIndex || getProductSeriesIndex({ product_series: seriesValue, display_order: root?.dataset?.displayOrder }));
+  return seriesIndex === 0 ? "series-none-settings" : `series-${seriesIndex}-settings`;
 }
 
 function productGridCardTemplate(product) {
@@ -566,7 +591,8 @@ function productGridCardTemplate(product) {
   const name = escapeHtml(nameRaw);
   const priceRaw = product.price != null ? String(product.price).trim() : "";
   const priceHtml = priceRaw ? `<span class="product-grid-card-price">${escapeHtml(priceRaw)}</span>` : "";
-  const badge = isActive ? "" : `<span class="product-grid-card-badge">מוסתר</span>`;
+  const hiddenBadge = isActive ? "" : `<span class="product-grid-card-badge">מוסתר</span>`;
+  const seriesBadge = `<span class="product-grid-card-series">${escapeHtml(productSeriesLabel(product))}</span>`;
   return `<button type="button" class="product-grid-card${isActive ? "" : " product-grid-card--inactive"}" data-product-id="${escapeHtml(String(id))}" aria-label="עריכה: ${name}">
     <div class="product-grid-card-visual">
       <img class="product-grid-card-img" alt="" loading="lazy" decoding="async">
@@ -575,7 +601,8 @@ function productGridCardTemplate(product) {
     <div class="product-grid-card-meta">
       <span class="product-grid-card-name">${name}</span>
       ${priceHtml}
-      ${badge}
+      ${seriesBadge}
+      ${hiddenBadge}
     </div>
   </button>`;
 }
@@ -673,8 +700,6 @@ function openProductDrawer(product, seriesIndex) {
   let p;
   let heading;
   if (!product) {
-    const targetSeries = Number(seriesIndex) || 1;
-    const nextOrder = nextDisplayOrderForSeries(targetSeries);
     p = {
       id: crypto.randomUUID(),
       name: "",
@@ -682,13 +707,14 @@ function openProductDrawer(product, seriesIndex) {
       price: "",
       image_url: "",
       card_image_url: "",
-      display_order: nextOrder,
+      product_series: "none",
+      display_order: 0,
       is_active: true,
-      __seriesIndex: targetSeries
+      __seriesIndex: 0
     };
     heading = "מוצר חדש";
   } else {
-    p = { ...product, __seriesIndex: getProductSeriesIndex(product) };
+    p = { ...product, product_series: normalizeProductSeriesValue(product.product_series, product), __seriesIndex: getProductSeriesIndex(product) };
     heading = adminProductsCache.some((x) => String(x.id) === String(product.id)) ? "עריכת מוצר" : "מוצר חדש";
   }
 
@@ -730,10 +756,15 @@ function productDrawerFormTemplate(product = {}) {
   const id = product.id || crypto.randomUUID();
   const isActive = product.is_active !== false;
   const priceVal = product.price != null ? String(product.price) : "";
-  return `<form id="productDrawerForm" class="product-drawer-form" data-product-id="${escapeHtml(String(id))}" data-display-order="${Number(product.display_order) || 0}" data-series-index="${Number(product.__seriesIndex) || getProductSeriesIndex(product)}" data-is-active="${isActive}">
+  const seriesVal = normalizeProductSeriesValue(product.product_series, product);
+  const seriesOptionsHtml = PRODUCT_SERIES_OPTIONS.map((option) =>
+    `<option value="${option.value}" ${seriesVal === option.value ? "selected" : ""}>${option.label}</option>`
+  ).join("");
+  return `<form id="productDrawerForm" class="product-drawer-form" data-product-id="${escapeHtml(String(id))}" data-display-order="${Number(product.display_order) || 0}" data-product-series="${escapeHtml(seriesVal)}" data-series-index="${Number(product.__seriesIndex) || getProductSeriesIndex(product)}" data-is-active="${isActive}">
     <div class="product-drawer-fields">
       <label class="field-label">שם הטעם <input data-field="name" value="${escapeHtml(product.name || "")}"></label>
       <label class="field-label">מחיר (אופציונלי) <input data-field="price" type="text" value="${escapeHtml(priceVal)}" placeholder="למשל 28 או ₪28"></label>
+      <label class="field-label">שיוך לסדרה <select data-field="product_series">${seriesOptionsHtml}</select></label>
       <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
       <label class="field-label wide">תיאור <textarea data-field="description" rows="4">${escapeHtml(product.description || "")}</textarea></label>
       <div class="field-label wide product-image-manager">
@@ -764,23 +795,26 @@ function productDrawerFormTemplate(product = {}) {
 }
 
 function buildAdminSeriesProductsHtml(products, seriesIndex) {
-  const label = ["", "סדרה ראשונה", "סדרה שנייה", "סדרה שלישית"][Number(seriesIndex)] || "סדרה";
+  const isNone = seriesIndex === "none" || Number(seriesIndex) === 0;
+  const label = isNone ? "ללא סדרה" : (["", "סדרה ראשונה", "סדרה שנייה", "סדרה שלישית"][Number(seriesIndex)] || "סדרה");
+  const emptyText = isNone ? "אין מוצרים במאגר ללא סדרה." : "אין מוצרים בסדרה זו.";
   return `
-    <div class="admin-category-group" data-category-index="${Number(seriesIndex)}">
+    <div class="admin-category-group" data-category-index="${isNone ? "none" : Number(seriesIndex)}">
       <div class="admin-category-group-head">
         <span class="admin-category-group-label">${label}</span>
         <span class="admin-category-group-count">${products.length} מוצרים</span>
       </div>
       <div class="products-admin-grid admin-category-cards">
-        ${products.length ? products.map(productGridCardTemplate).join("") : '<p class="hint admin-empty-hint">אין מוצרים בסדרה זו.</p>'}
+        ${products.length ? products.map(productGridCardTemplate).join("") : `<p class="hint admin-empty-hint">${emptyText}</p>`}
       </div>
     </div>
   `;
 }
 
 function renderProductsBySeries() {
-  [1, 2, 3].forEach((seriesIndex) => {
-    const container = document.getElementById(`productsAdmin${seriesIndex}`);
+  [1, 2, 3, "none"].forEach((seriesIndex) => {
+    const containerId = seriesIndex === "none" ? "productsAdminNone" : `productsAdmin${seriesIndex}`;
+    const container = document.getElementById(containerId);
     if (!container) return;
     const products = productsForSeries(seriesIndex);
     container.innerHTML = buildAdminSeriesProductsHtml(products, seriesIndex);
@@ -863,7 +897,18 @@ function tryUpdateProductCardInPlace(productId) {
     }
   } else if (badgeEl) {
     badgeEl.remove();
+    badgeEl = null;
   }
+
+  // Series badge
+  let seriesEl = card.querySelector(".product-grid-card-series");
+  if (!seriesEl) {
+    seriesEl = document.createElement("span");
+    seriesEl.className = "product-grid-card-series";
+    const meta = card.querySelector(".product-grid-card-meta");
+    if (meta) meta.insertBefore(seriesEl, badgeEl || null);
+  }
+  seriesEl.textContent = productSeriesLabel(product);
 
   // Image — cascading fallback: card_image_url → image_url → placeholder
   const img = card.querySelector(".product-grid-card-img");
@@ -896,16 +941,24 @@ async function ensureUniqueProductName(payload) {
 }
 
 async function saveProduct(root) {
+  const existingProduct = adminProductsCache.find((product) => String(product.id) === String(root.dataset.productId));
+  const previousSeries = existingProduct ? normalizeProductSeriesValue(existingProduct.product_series, existingProduct) : "none";
   const payload = rowPayload(root, "product");
   payload.name = String(payload.name || "").trim();
+  payload.product_series = normalizeProductSeriesValue(payload.product_series);
+
+  if (payload.product_series === "none") {
+    payload.display_order = Number(payload.display_order) || 0;
+  } else if (!existingProduct || previousSeries !== payload.product_series || !(Number(payload.display_order) > 0)) {
+    payload.display_order = nextDisplayOrderForSeries(Number(payload.product_series.replace("series_", "")));
+  }
+
   await ensureUniqueProductName(payload);
 
   const { error } = await client().from("products").upsert(payload, { onConflict: "id" });
   if (error) throw friendlyProductSaveError(error);
   updateProductInCache(payload);
-  // Update only the changed card without rebuilding the entire grid; fall back
-  // to a full rebuild only when the product is new (not yet in the DOM)
-  if (!tryUpdateProductCardInPlace(payload.id)) {
+  if (previousSeries !== payload.product_series || !tryUpdateProductCardInPlace(payload.id)) {
     rerenderProductGrid();
   }
   showNotice(productNoticeScopeForRoot(root), "המוצר נשמר בהצלחה");
@@ -1014,6 +1067,7 @@ function rowPayload(row, type) {
     payload.description ||= "";
     payload.image_url ||= "";
     payload.card_image_url ||= "";
+    payload.product_series = normalizeProductSeriesValue(payload.product_series);
     sanitizeProductImagePayload(payload);
     if (payload.price === undefined || payload.price === null) payload.price = "";
     else payload.price = String(payload.price).trim();

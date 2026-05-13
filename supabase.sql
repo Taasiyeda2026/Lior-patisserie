@@ -31,6 +31,22 @@ create table if not exists public.products (
 
 alter table public.products add column if not exists card_image_url text;
 alter table public.products add column if not exists price text;
+alter table public.products add column if not exists product_series text;
+
+do $$
+begin
+  if not exists (
+    select 1
+    from pg_constraint
+    where conrelid = 'public.products'::regclass
+      and conname = 'products_product_series_check'
+  ) then
+    alter table public.products
+    add constraint products_product_series_check
+    check (product_series is null or product_series in ('series_1', 'series_2', 'series_3', 'none'));
+  end if;
+end;
+$$;
 
 -- Check for duplicate product names before adding the unique constraint.
 select name, count(*)
