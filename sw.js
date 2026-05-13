@@ -1,4 +1,4 @@
-const CACHE_NAME = "lior-patisserie-v16";
+const CACHE_NAME = "lior-patisserie-v17";
 
 const CORE_ASSETS = [
   "./",
