@@ -1,8 +1,8 @@
 {
   "id": "./lior-admin.html",
-  "name": "Lior’s Pâtisserie Admin",
-  "short_name": "Admin",
-  "description": "ממשק הניהול של Lior’s Pâtisserie",
+  "name": "Admin Pâtisserie",
+  "short_name": "Admin Pâtisserie",
+  "description": "ממשק הניהול של Admin Pâtisserie",
   "start_url": "./lior-admin.html",
   "scope": "./",
   "display": "standalone",
