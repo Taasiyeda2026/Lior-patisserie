@@ -260,6 +260,86 @@ html.site-entered .home-opening {
   }
 }
 
+/* ── Products intro: tighter spacing ────────────────────────────────────── */
+.home-opening {
+  padding: 1.5rem 0 1.8rem !important;
+}
+
+.home-opening-copy {
+  margin-bottom: 12px !important;
+}
+
+.categories-container {
+  margin-top: 14px !important;
+}
+
+.flavors-actions {
+  margin-top: 8px !important;
+}
+
+.category-section {
+  margin-bottom: 28px !important;
+}
+
+/* ── Products grid: 4 per row desktop ───────────────────────────────────── */
+@media (min-width: 901px) {
+  .products-grid,
+  .home-opening .products-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+    max-width: 1040px !important;
+    gap: 10px !important;
+  }
+
+  .product-image {
+    height: 130px !important;
+    min-height: 130px !important;
+  }
+
+  .product-body {
+    padding: 12px 14px 14px !important;
+    min-height: 90px !important;
+  }
+}
+
+/* Tablet 601–900px: 3 per row */
+@media (min-width: 601px) and (max-width: 900px) {
+  .products-grid,
+  .home-opening .products-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    max-width: 100% !important;
+  }
+}
+
+/* Mobile ≤600px: 2 per row */
+@media (max-width: 600px) {
+  .products-grid,
+  .home-opening .products-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    width: 100% !important;
+    gap: 8px !important;
+  }
+}
+
+/* ── Product name: badge/pill on right of card ───────────────────────────── */
+.product-body h3 {
+  grid-column: 1 !important;
+  width: fit-content !important;
+  max-width: 100% !important;
+  padding: 4px 10px !important;
+  border-radius: 999px !important;
+  background: rgba(255, 249, 242, 0.94) !important;
+  border: 0.5px solid rgba(196, 168, 68, 0.24) !important;
+  color: var(--color-aubergine, #3f2145) !important;
+  font-size: 12px !important;
+  font-weight: 500 !important;
+  line-height: 1.3 !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  box-shadow: 0 1px 4px rgba(63, 33, 69, 0.07) !important;
+  letter-spacing: 0 !important;
+}
+
 /* Contact section centering */
 .final .section-label,
 .contact-section .section-label {

@@ -105,7 +105,7 @@
       }
     }
 
-    const PRODUCTS_PER_CATEGORY = 9;
+    const PRODUCTS_PER_CATEGORY = 8;
 
     const signatureProductNames = ["אוראו דרים", "קוקילוטוס", "פיסטצ׳יו", "שוקולד דובאי"];
 
