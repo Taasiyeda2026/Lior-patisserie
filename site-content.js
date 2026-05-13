@@ -19,6 +19,17 @@
     "handmade_label",
     "handmade_title",
     "handmade_text",
+    "handmade_content_mode",
+    "handmade_personal_label",
+    "handmade_personal_title",
+    "handmade_personal_paragraph_1",
+    "handmade_personal_paragraph_2",
+    "handmade_personal_cta",
+    "handmade_general_bullet_1",
+    "handmade_general_bullet_2",
+    "handmade_general_bullet_3",
+    "handmade_button_text",
+    "handmade_button_anchor",
     "contact_label",
     "contact_title",
     "contact_text",
@@ -158,6 +169,79 @@
       });
     });
   }
+
+  const HANDMADE_DEFAULTS = {
+    handmade_content_mode: "personal",
+    handmade_personal_label: "כמה מילים ממני",
+    handmade_personal_title: "אני כאן כדי להמתיק לכם את היום",
+    handmade_personal_paragraph_1: "תמיד אהבתי לקחת רגע פשוט ולהפוך אותו למשהו קטן, מתוק ומרגש. בשבילי קינוח הוא לא רק טעם — הוא דרך לשמח, לרגש ולהשאיר זיכרון טוב.",
+    handmade_personal_paragraph_2: "כל עוגייה, מארז וקינוח נוצרים מתוך אהבה לפרטים הקטנים, לאסתטיקה ולטעם מדויק.",
+    handmade_personal_cta: "מוכנים לבחור את הרגע המתוק שלכם?",
+    handmade_general_bullet_1: "רגעים יפים מתחילים בפרטים הקטנים.",
+    handmade_general_bullet_2: "כל קינוח משלב טעם, יופי והמון מחשבה.",
+    handmade_general_bullet_3: "התוצאה היא חוויה מתוקה שנשארת בלב.",
+    handmade_button_text: "לצפייה במוצרים",
+    handmade_button_anchor: "#products"
+  };
+
+  function settingOrDefault(settings, key) {
+    return hasText(settings[key]) ? settings[key].trim() : HANDMADE_DEFAULTS[key];
+  }
+
+  function safeHandmadeButtonHref(value) {
+    const href = hasText(value) ? value.trim() : "#products";
+    if (href.startsWith("#") || href.startsWith("/") || /^https?:\/\//i.test(href)) return href;
+    return "#products";
+  }
+
+  function applyHandmadeContent(settings) {
+    const section = document.querySelector("[data-handmade-section]");
+    if (!section) return;
+
+    const mode = settingOrDefault(settings, "handmade_content_mode") === "general" ? "general" : "personal";
+    const copy = section.querySelector("[data-handmade-copy]");
+    if (!copy) return;
+
+    const buttonText = settingOrDefault(settings, "handmade_button_text");
+    const buttonAnchor = safeHandmadeButtonHref(settingOrDefault(settings, "handmade_button_anchor"));
+
+    if (mode === "general") {
+      const bullets = [
+        settingOrDefault(settings, "handmade_general_bullet_1"),
+        settingOrDefault(settings, "handmade_general_bullet_2"),
+        settingOrDefault(settings, "handmade_general_bullet_3")
+      ].filter(hasText);
+
+      copy.classList.add("is-general-mode");
+      copy.setAttribute("aria-label", "נקודות בולטות על עבודת היד");
+      copy.innerHTML = `
+        <ul class="handmade-general-list">
+          ${bullets.map((text) => `<li><span>${escapeHtml(text)}</span></li>`).join("")}
+        </ul>
+        <a class="btn handmade-products-link" href="${escapeHtml(buttonAnchor)}">${escapeHtml(buttonText)}</a>
+      `;
+      return;
+    }
+
+    const label = settingOrDefault(settings, "handmade_personal_label");
+    const title = settingOrDefault(settings, "handmade_personal_title");
+    const paragraph1 = settingOrDefault(settings, "handmade_personal_paragraph_1");
+    const paragraph2 = settingOrDefault(settings, "handmade_personal_paragraph_2");
+    const cta = settingOrDefault(settings, "handmade_personal_cta");
+
+    copy.classList.remove("is-general-mode");
+    copy.setAttribute("aria-label", "כמה מילים מליאור");
+    copy.innerHTML = `
+      <p class="handmade-kicker">${escapeHtml(label)}</p>
+      <h2 id="handmade-title">${escapeHtml(title)}</h2>
+      <div class="handmade-body">
+        ${[paragraph1, paragraph2].filter(hasText).map((text) => `<p>${escapeHtml(text)}</p>`).join("")}
+      </div>
+      <p class="handmade-question">${escapeHtml(cta)}</p>
+      <a class="btn handmade-products-link" href="${escapeHtml(buttonAnchor)}">${escapeHtml(buttonText)}</a>
+    `;
+  }
+
 
   function applyContactSettings(settings) {
     const phone = normalizeWhatsappPhone(settings.whatsapp_number || "") || normalizeWhatsappPhone("972506422900");
@@ -591,6 +675,7 @@
 
       const settings = normalizeSettings(await loadSettings());
       applyTextSettings(settings);
+      applyHandmadeContent(settings);
       applyContactSettings(settings);
       applyImageSettings(settings);
       await Promise.all([loadProducts(), loadFeatures()]);
