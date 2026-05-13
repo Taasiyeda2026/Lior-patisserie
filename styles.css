@@ -3760,12 +3760,14 @@ main {
   height: 46px;
   display: grid;
   grid-template-columns: minmax(110px, 1fr) auto minmax(110px, 1fr);
+  grid-template-areas: "cta links brand";
   align-items: center;
   gap: 18px;
 }
 
 .nav-brand {
-  justify-self: start;
+  grid-area: brand;
+  justify-self: end;
   display: inline-flex;
   align-items: baseline;
   gap: 0.28em;
@@ -3782,6 +3784,7 @@ main {
 }
 
 .nav-links {
+  grid-area: links;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -3857,7 +3860,8 @@ main {
 }
 
 .nav-cta {
-  justify-self: end;
+  grid-area: cta;
+  justify-self: start;
   min-height: 30px;
   display: inline-flex;
   align-items: center;
@@ -4684,6 +4688,7 @@ html.hero-locked .home-products {
 
   .site-nav {
     grid-template-columns: auto 1fr auto;
+    grid-template-areas: "cta links brand";
     gap: 10px;
   }
 
@@ -4757,18 +4762,24 @@ html.hero-locked .home-products {
     min-height: 46px;
     height: auto;
     grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "cta brand"
+      "links links";
     padding-block: 8px;
   }
 
   .nav-links {
-    grid-column: 1 / -1;
-    grid-row: 2;
+    grid-area: links;
     justify-content: space-between;
     border-top: 0.5px solid rgba(196, 168, 68, 0.12);
     padding-top: 7px;
   }
 
   .nav-cta {
+    justify-self: start;
+  }
+
+  .nav-brand {
     justify-self: end;
   }
 
