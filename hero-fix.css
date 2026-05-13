@@ -104,21 +104,21 @@ html:not(.site-entered) [data-more-info-panel] {
   pointer-events: none !important;
 }
 
-/* More-info button: slightly smaller, refined (in-flow inside .section-nav) */
+/* More-info button: compact 17 × 17px on desktop */
 @media (min-width: 769px) {
   .section-nav .footer-legal-toggle,
   [data-more-info-button] {
     display: inline-flex !important;
     align-items: center !important;
     justify-content: center !important;
-    width: 34px !important;
-    height: 34px !important;
-    min-width: 34px !important;
-    min-height: 34px !important;
+    width: 17px !important;
+    height: 17px !important;
+    min-width: 17px !important;
+    min-height: 17px !important;
     background: rgba(53, 25, 61, 0.52) !important;
-    border: 0.5px solid rgba(220, 195, 130, 0.38) !important;
-    color: rgba(248, 235, 190, 0.95) !important;
-    box-shadow: 0 4px 12px rgba(20, 10, 30, 0.14) !important;
+    border: 0.5px solid rgba(220, 195, 130, 0.32) !important;
+    color: rgba(248, 235, 190, 0.90) !important;
+    box-shadow: 0 2px 7px rgba(20, 10, 30, 0.12) !important;
   }
 
   .section-nav .footer-legal-toggle:hover,
@@ -130,8 +130,8 @@ html:not(.site-entered) [data-more-info-panel] {
 
   [data-more-info-button] .more-info-icon,
   .footer-legal-toggle .more-info-icon {
-    width: 16px !important;
-    height: 16px !important;
+    width: 8px !important;
+    height: 8px !important;
   }
 }
 
@@ -2016,8 +2016,8 @@ main {
   position: relative !important;
   inset: auto !important;
   flex: 0 0 auto !important;
-  margin-top: clamp(28px, 5vw, 64px) !important;
-  padding: clamp(18px, 2.4vw, 26px) clamp(16px, 4vw, 28px) !important;
+  margin-top: clamp(48px, 7vw, 88px) !important;
+  padding: clamp(16px, 2.2vw, 24px) clamp(16px, 4vw, 28px) !important;
   clear: both !important;
   overflow: visible !important;
   z-index: 1 !important;
@@ -2032,25 +2032,38 @@ main {
   justify-content: center !important;
 }
 
+/* Single clean horizontal row: brand | instagram | sentence */
 .footer-instagram.ig-closing {
   display: flex !important;
   flex-direction: row !important;
-  flex-wrap: wrap !important;
+  flex-wrap: nowrap !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 0.38em 0.72em !important;
+  gap: 0 1em !important;
   width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
-  line-height: 1.25 !important;
+  line-height: 1.2 !important;
   text-align: center !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
 }
 
 .footer-instagram.ig-closing > * {
   display: inline-flex !important;
   align-items: center !important;
+  flex-shrink: 0 !important;
   margin: 0 !important;
-  line-height: 1.25 !important;
+  line-height: 1.2 !important;
+  white-space: nowrap !important;
+}
+
+/* Long sentence: can shrink and truncate if too narrow */
+.footer-instagram.ig-closing > span[data-content-key] {
+  flex-shrink: 1 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  min-width: 0 !important;
 }
 
 .footer-instagram.ig-closing .instagram-closing-link {
@@ -2059,14 +2072,24 @@ main {
 }
 
 .footer-instagram.ig-closing .instagram-inline-icon {
-  width: 0.95em !important;
-  height: 0.95em !important;
-  min-width: 13px !important;
-  min-height: 13px !important;
+  width: 0.9em !important;
+  height: 0.9em !important;
+  min-width: 12px !important;
+  min-height: 12px !important;
 }
 
+/* Suppress the decorative underline block that breaks the single-line flow */
 .footer-instagram-brand.footer-copy::after {
   content: none !important;
+}
+
+/* Dot separators between footer items */
+.footer-instagram.ig-closing > *:not(:first-child)::before {
+  content: "·" !important;
+  display: inline-block !important;
+  margin-inline-end: 1em !important;
+  opacity: 0.45 !important;
+  font-weight: 300 !important;
 }
 
 .final.contact-section {
@@ -2084,16 +2107,16 @@ main {
 .section-nav .footer-legal-toggle,
 [data-more-info-button] {
   position: relative !important;
-  width: 22px !important;
-  height: 22px !important;
-  min-width: 22px !important;
-  min-height: 22px !important;
+  width: 17px !important;
+  height: 17px !important;
+  min-width: 17px !important;
+  min-height: 17px !important;
   padding: 0 !important;
   border-radius: 999px !important;
   background: rgba(43, 23, 56, 0.42) !important;
-  border: 0.5px solid rgba(248, 235, 190, 0.46) !important;
-  color: rgba(248, 235, 190, 0.92) !important;
-  box-shadow: 0 3px 9px rgba(18, 8, 26, 0.12) !important;
+  border: 0.5px solid rgba(248, 235, 190, 0.36) !important;
+  color: rgba(248, 235, 190, 0.88) !important;
+  box-shadow: 0 2px 7px rgba(18, 8, 26, 0.10) !important;
 }
 
 .section-nav .footer-legal-toggle::before,
@@ -2114,9 +2137,9 @@ main {
 [data-more-info-button] .more-info-icon,
 .section-nav .footer-legal-toggle svg,
 [data-more-info-button] svg {
-  width: 10px !important;
-  height: 10px !important;
-  stroke-width: 1.8 !important;
+  width: 8px !important;
+  height: 8px !important;
+  stroke-width: 2 !important;
 }
 
 .section-nav .footer-legal-toggle:hover,
@@ -2128,13 +2151,34 @@ main {
 
 @media (max-width: 768px) {
   .footer {
-    margin-top: clamp(24px, 8vw, 44px) !important;
-    padding-bottom: max(20px, env(safe-area-inset-bottom)) !important;
+    margin-top: clamp(36px, 9vw, 56px) !important;
+    padding-bottom: max(24px, env(safe-area-inset-bottom)) !important;
   }
 
+  /* On mobile: allow wrapping so items don't truncate badly */
   .footer-instagram.ig-closing {
-    gap: 0.42em 0.62em !important;
-    font-size: 0.82rem !important;
+    flex-wrap: wrap !important;
+    white-space: normal !important;
+    overflow: visible !important;
+    gap: 0.3em 0.7em !important;
+    font-size: 0.80rem !important;
+  }
+
+  .footer-instagram.ig-closing > * {
+    white-space: nowrap !important;
+    flex-shrink: 1 !important;
+  }
+
+  .footer-instagram.ig-closing > span[data-content-key] {
+    flex-basis: 100% !important;
+    text-overflow: clip !important;
+    white-space: normal !important;
+    overflow: visible !important;
+  }
+
+  /* Remove dot separators on mobile — wrap handles the spacing */
+  .footer-instagram.ig-closing > *:not(:first-child)::before {
+    content: none !important;
   }
 
   html.site-entered body.show-mobile-more-info .section-nav .footer-legal-toggle,
@@ -2145,17 +2189,17 @@ main {
     left: auto !important;
     right: 14px !important;
     bottom: 18px !important;
-    width: 22px !important;
-    height: 22px !important;
-    min-width: 22px !important;
-    min-height: 22px !important;
+    width: 17px !important;
+    height: 17px !important;
+    min-width: 17px !important;
+    min-height: 17px !important;
   }
 
   html.site-entered body.show-mobile-more-info .section-nav .footer-legal-toggle svg,
   html.site-entered body.show-mobile-more-info [data-more-info-button] svg,
   .section-nav .footer-legal-toggle svg,
   [data-more-info-button] svg {
-    width: 10px !important;
-    height: 10px !important;
+    width: 8px !important;
+    height: 8px !important;
   }
 }
