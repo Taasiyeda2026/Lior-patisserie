@@ -1,5 +1,5 @@
 /*
-  Supabase public configuration for GitHub Pages.
+  Supabase public configuration for Lior's Pâtisserie.
   Replace the placeholders below with your Supabase project URL and anon public key.
   Never place a service role key in client-side code.
 */

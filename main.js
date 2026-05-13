@@ -133,7 +133,7 @@
 
     function getWhatsAppUrl(productName = "") {
       const productLine = productName ? `מוצר / הזמנה: ${productName}` : "מוצר / הזמנה:";
-      const message = `שלום ליאור, אשמח לבצע הזמנה מ־Lior’s Pâtisserie.
+      const message = `שלום ליאור, אשמח לבצע הזמנה מ־Lior's Pâtisserie.
 ${productLine}
 כמות:
 שם מלא:
@@ -148,7 +148,7 @@ ${productLine}
       const phoneLine = phone ? `טלפון: ${phone}`         : "טלפון:";
       const notesLine = notes ? `פרטים / שאלה: ${notes}` : "פרטים / שאלה:";
       const msg = [
-        `שלום ליאור, אשמח להתייעץ לגבי הזמנה מדַLior’s Pâtisserie.`,
+        `שלום ליאור, אשמח להתייעץ לגבי הזמנה מדַLior's Pâtisserie.`,
         "",
         nameLine,
         phoneLine,
@@ -800,7 +800,7 @@ ${productLine}
 
     function buildOrderWhatsAppUrl(data) {
       const messageLines = [
-        "שלום ליאור, אשמח לבצע הזמנה מ־Lior’s Pâtisserie.",
+        "שלום ליאור, אשמח לבצע הזמנה מ־Lior's Pâtisserie.",
         "",
         `שם מלא: ${data.name}`,
         `טלפון: ${data.phone}`,
