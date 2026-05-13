@@ -2821,3 +2821,40 @@ svg {
 .handmade-admin-fields[hidden] {
   display: none !important;
 }
+
+/* ── מובייל: קונטיינרי אזורי האדמין מצטמצמים ל-65% ──────────────────────── */
+@media (max-width: 768px) {
+  .editor-card,
+  .login-card {
+    width: 65% !important;
+    max-width: 65% !important;
+    margin-inline: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  /* תיבת המוצרים — תוכן רחב, לא מצמצמים */
+  #productsPanel {
+    width: min(100% - 16px, 680px) !important;
+    max-width: 100% !important;
+  }
+
+  /* תפריט בחירת האזורים */
+  .admin-domain-menu {
+    width: 65% !important;
+    max-width: 65% !important;
+    margin-inline: auto !important;
+  }
+
+  /* תוכן פנימי — ממלא את הקונטיינר המצומצם */
+  .editor-card > .grid,
+  .editor-card > .image-grid,
+  .editor-card > .section-fields,
+  .editor-card > .actions-row,
+  .editor-card > .subsection-head,
+  .editor-card > .stack-list,
+  .editor-card > .notice,
+  .editor-card > .hint {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+}
