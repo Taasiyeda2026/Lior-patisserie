@@ -9,6 +9,21 @@
   padding: 0 !important;
 }
 
+/* ── Header spacing & alignment tweaks ──────────────────────────────────── */
+.site-nav {
+  align-items: center !important;
+}
+
+.nav-links {
+  gap: clamp(12px, 2.5vw, 20px) !important;
+}
+
+.nav-cta {
+  min-height: 26px !important;
+  padding: 0 12px !important;
+  font-size: 11px !important;
+}
+
 /* ── Boutique strip: fix clipping during hero-locked ──────────────────────
    .boutique-strip sits BELOW .home-hero in the DOM, inside .home-products.
    When hero-locked, .home-products height = 100svh and overflows hidden,
