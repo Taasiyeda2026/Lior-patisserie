@@ -1,13 +1,13 @@
 {
   "id": "./lior-admin.html",
   "name": "Admin Pâtisserie",
-  "short_name": "Admin Pâtisserie",
-  "description": "ממשק הניהול של Admin Pâtisserie",
+  "short_name": "Admin",
+  "description": "ממשק הניהול של Lior's Pâtisserie",
   "start_url": "./lior-admin.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "theme_color": "#4b173f",
+  "theme_color": "#3D2249",
   "background_color": "#fff8ef",
   "dir": "rtl",
   "lang": "he",
@@ -16,13 +16,25 @@
       "src": "./assets/icons/admin/admin-192x192.png",
       "sizes": "192x192",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icons/admin/admin-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "./assets/icons/admin/admin-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icons/admin/admin-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
     },
     {
       "src": "./assets/icons/admin/admin-apple-touch-icon.png",

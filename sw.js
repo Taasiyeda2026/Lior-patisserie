@@ -1,5 +1,5 @@
-const CACHE_NAME = "lior-patisserie-v28";
-const IMAGE_CACHE_NAME = "lior-patisserie-images-v28";
+const CACHE_NAME = "lior-patisserie-v29";
+const IMAGE_CACHE_NAME = "lior-patisserie-images-v29";
 
 /* ─── קבצי ליבה של האתר הציבורי ─────────────────────────────────────────── */
 const CORE_ASSETS = [
@@ -160,7 +160,7 @@ self.addEventListener("fetch", (event) => {
   }
 
   /* 5. קבצי ליבה (CSS/JS/assets) — רשת ראשונה, fallback ל-cache
-        הגרסאות (?v=N) מזוהות לפי pathname בלבד, כך שהעדכון תמיד עובר */
+        ignoreSearch: true — ?v=N נדחה בהתאמה לפי pathname בלבד */
   if (isCoreAsset(url)) {
     event.respondWith(
       fetch(request)
@@ -170,7 +170,7 @@ self.addEventListener("fetch", (event) => {
           }
           return response;
         })
-        .catch(() => caches.match(request))
+        .catch(() => caches.match(request, { ignoreSearch: true }))
     );
     return;
   }

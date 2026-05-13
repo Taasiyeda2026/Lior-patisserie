@@ -1,6 +1,15 @@
 (function registerPWA() {
   if (!("serviceWorker" in navigator)) return;
 
+  /* כשה-SW החדש תופס שליטה — טוענים מחדש פעם אחת לקבלת קבצים עדכניים */
+  let refreshing = false;
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (!refreshing) {
+      refreshing = true;
+      window.location.reload();
+    }
+  });
+
   window.addEventListener("load", () => {
     navigator.serviceWorker
       .register("./sw.js", { scope: "./" })
@@ -9,15 +18,12 @@
 
         registration.addEventListener("updatefound", () => {
           const newWorker = registration.installing;
-
           if (!newWorker) return;
 
           newWorker.addEventListener("statechange", () => {
-            if (
-              newWorker.state === "installed" &&
-              navigator.serviceWorker.controller
-            ) {
-              console.log("[PWA] New version installed. Refresh to update.");
+            if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+              console.log("[PWA] New version ready — reloading.");
+              /* skipWaiting() ב-SW יגרום ל-controllerchange שיבצע reload */
             }
           });
         });
