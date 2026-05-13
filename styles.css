@@ -7664,3 +7664,220 @@ svg {
   box-shadow: inset 0 0 0 1px rgba(184, 138, 74, 0.34);
   font-size: 0.9rem;
 }
+
+/* Targeted boutique refinements: product cards, about balance, separators and footer CTA. */
+.product-image {
+  height: 176px !important;
+  min-height: 176px !important;
+  flex-basis: 176px !important;
+}
+
+.product-body {
+  min-height: 96px !important;
+  gap: 3px 7px !important;
+  padding: 9px 12px 10px !important;
+}
+
+.product-body h3 {
+  margin-bottom: 1px !important;
+  line-height: 1.18 !important;
+}
+
+.product-body h3::after {
+  margin-top: 3px !important;
+}
+
+.product-body p {
+  margin-bottom: 1px !important;
+  line-height: 1.34 !important;
+}
+
+.product-card .product-link,
+.product-card .btn,
+.product-card button,
+.product-card [data-add-to-cart] {
+  align-self: center !important;
+  justify-self: end !important;
+}
+
+.category-section + .category-section::before {
+  width: min(620px, 78vw);
+  height: 1.5px;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(200, 169, 106, 0.62),
+    rgba(132, 89, 155, 0.36),
+    rgba(200, 169, 106, 0.5),
+    transparent
+  );
+}
+
+.category-section::after {
+  background: radial-gradient(
+    circle,
+    rgba(201, 184, 216, 0.2),
+    transparent 70%
+  );
+}
+
+.handmade-content.features-content {
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: stretch;
+}
+
+.handmade-content .features-media,
+.handmade-personal-copy {
+  width: 100%;
+  min-height: 390px;
+  height: clamp(390px, 34vw, 460px);
+  box-sizing: border-box;
+}
+
+.handmade-content .features-media {
+  display: flex;
+}
+
+.handmade-content .features-media .bakery-video,
+.handmade-content .features-media video {
+  width: 100%;
+  height: 100%;
+}
+
+.handmade-personal-copy {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: clamp(24px, 3.2vw, 38px);
+}
+
+.handmade-signature {
+  position: relative;
+  z-index: 1;
+  margin: 2px 0 12px;
+  color: #5b2e64;
+  font-family: "FtPilKahol2", var(--font-signature);
+  font-size: clamp(1.35rem, 2.5vw, 1.9rem);
+  line-height: 1.1;
+}
+
+.handmade-heart {
+  display: inline-block;
+  margin-inline-start: 0.25em;
+  color: #9d75b1;
+  font-size: 0.72em;
+  filter: drop-shadow(0 4px 10px rgba(157, 117, 177, 0.18));
+  transform: translateY(-0.02em);
+}
+
+.contact-order-btn {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 38px;
+  margin: 10px auto 0;
+  padding: 8px 24px;
+  border: 1px solid rgba(212, 175, 85, 0.48);
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fff8ee 0%, #f0dca9 100%);
+  color: #3d1650;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+  box-shadow: 0 10px 24px rgba(24, 9, 32, 0.18);
+  transition: transform 220ms ease, box-shadow 220ms ease, background 220ms ease;
+}
+
+.contact-order-btn:hover,
+.contact-order-btn:focus-visible {
+  transform: translateY(-1px);
+  background: linear-gradient(135deg, #fffaf2 0%, #ead49a 100%);
+  box-shadow: 0 14px 30px rgba(24, 9, 32, 0.24);
+}
+
+.footer-inner {
+  display: grid;
+  justify-items: center;
+  gap: 10px;
+}
+
+.footer-instagram-sentence {
+  max-width: min(100%, 620px);
+  margin: 0 auto 8px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid rgba(201, 160, 220, 0.14);
+  color: rgba(232, 214, 239, 0.74);
+  font-size: 0.78rem;
+  font-weight: 300;
+  line-height: 1.55;
+  text-align: center;
+}
+
+.footer-instagram.ig-closing {
+  margin: 0 auto !important;
+  gap: 0.45em 0.7em;
+}
+
+@media (max-width: 768px) {
+  .product-image {
+    height: clamp(92px, 25vw, 136px) !important;
+    min-height: clamp(92px, 25vw, 136px) !important;
+    flex-basis: clamp(92px, 25vw, 136px) !important;
+  }
+
+  .product-body {
+    min-height: 74px !important;
+    gap: 2px 5px !important;
+    padding: clamp(6px, 1.7vw, 8px) clamp(5px, 1.6vw, 8px) !important;
+  }
+
+  .product-body p {
+    line-height: 1.24 !important;
+  }
+
+  .handmade-content.features-content {
+    grid-template-columns: 1fr;
+    align-items: stretch;
+  }
+
+  .handmade-content .features-media,
+  .handmade-personal-copy {
+    min-height: 300px;
+    height: auto;
+  }
+
+  .handmade-content .features-media {
+    height: clamp(260px, 68vw, 330px);
+  }
+
+  .handmade-personal-copy {
+    padding: 26px 22px 28px;
+  }
+
+  .contact-order-btn {
+    min-height: 40px;
+    width: min(100%, 190px);
+  }
+
+  .footer-instagram-sentence {
+    margin-bottom: 6px;
+    padding-inline: 8px;
+    font-size: 0.74rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .product-image {
+    height: clamp(102px, 32vw, 142px) !important;
+    min-height: clamp(102px, 32vw, 142px) !important;
+    flex-basis: clamp(102px, 32vw, 142px) !important;
+  }
+
+  .product-body {
+    min-height: 70px !important;
+    padding: 6px 6px 7px !important;
+  }
+}
