@@ -86,7 +86,7 @@ html.site-entered [data-more-info-button] {
   transition: opacity 0.3s ease 0.3s, visibility 0.3s ease 0.3s !important;
 }
 
-/* More-info button: slightly smaller, refined */
+/* More-info button: slightly smaller, refined (in-flow inside .section-nav) */
 @media (min-width: 769px) {
   .section-nav .footer-legal-toggle,
   [data-more-info-button] {
@@ -98,7 +98,6 @@ html.site-entered [data-more-info-button] {
     border: 0.5px solid rgba(196, 168, 68, 0.28) !important;
     color: rgba(196, 168, 68, 0.85) !important;
     box-shadow: 0 4px 12px rgba(20, 10, 30, 0.14) !important;
-    left: var(--float-inset) !important;
   }
 
   .section-nav .footer-legal-toggle:hover,
@@ -221,57 +220,118 @@ html.site-entered .site-header:not(.header--on-light) {
 }
 
 /* ── Floating UI offset relative to page frame ──────────────────────────── */
-/*
-  --shell-gutter is defined on html in index.html:
-  clamp(8px, 1.2vw, 18px)
-  --float-inset = gutter + 10px inner gap from the frame border
-*/
 :root {
   --float-inset: calc(var(--shell-gutter, 12px) + 10px);
-  --float-bottom: calc(var(--shell-gutter, 12px) + 72px);
+  /* Cart sits a little lower (closer to the bottom of the shell) */
+  --float-bottom: calc(var(--shell-gutter, 12px) + 52px);
 }
 
-/* Desktop — floating cart */
 .floating-cart {
   right: var(--float-inset) !important;
   bottom: var(--float-bottom) !important;
+  z-index: 88 !important;
 }
 
-/* Desktop — more-info button (boutique moves it to right side on mobile,
-   but on desktop it stays on the left — keep left aligned with frame) */
+/*
+ * Side nav + "מידע נוסף" share one fixed column: the toggle stays inside
+ * .section-nav with position:relative so it tracks the dots and does not
+ * jump on scroll. Popovers anchor to .footer-legal-wrap, not the viewport.
+ */
 @media (min-width: 769px) {
-  [data-more-info-button] {
-    left: var(--float-inset) !important;
-    bottom: var(--float-bottom) !important;
+  .section-nav {
+    z-index: 92 !important;
+    pointer-events: none !important;
   }
 
-  .section-nav .footer-legal-popover,
-  [data-more-info-panel] {
-    left: var(--float-inset) !important;
-    right: var(--float-inset) !important;
-    bottom: calc(var(--shell-gutter, 12px) + 132px) !important;
+  .section-nav .nav-dot,
+  .section-nav .footer-legal-wrap {
+    pointer-events: auto !important;
   }
-}
 
-/* Mobile ≤ 768px — both elements sit on the RIGHT side, near frame */
-@media (max-width: 768px) {
-  .floating-cart {
-    right: var(--float-inset) !important;
-    bottom: calc(var(--shell-gutter, 12px) + 64px) !important;
+  .section-nav .footer-legal-wrap {
+    margin-top: 6px !important;
+    margin-bottom: 0 !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px !important;
   }
 
   .section-nav .footer-legal-toggle,
   [data-more-info-button] {
-    right: var(--float-inset) !important;
+    position: relative !important;
     left: auto !important;
-    bottom: calc(var(--shell-gutter, 12px) + 12px) !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
   }
 
   .section-nav .footer-legal-popover,
   [data-more-info-panel] {
+    position: absolute !important;
+    left: calc(100% + 12px) !important;
+    right: auto !important;
+    top: 0 !important;
+    bottom: auto !important;
+    transform: translateX(-2px) !important;
+    margin: 0 !important;
+    max-width: min(220px, calc(100vw - 72px)) !important;
+  }
+
+  .section-nav .footer-legal-wrap.is-open .footer-legal-popover,
+  .section-nav .footer-legal-wrap.is-open [data-more-info-panel] {
+    transform: translateX(0) !important;
+  }
+}
+
+@media (max-width: 768px) {
+  .floating-cart {
     right: var(--float-inset) !important;
-    left: var(--float-inset) !important;
-    bottom: calc(var(--shell-gutter, 12px) + 122px) !important;
+    bottom: calc(var(--shell-gutter, 12px) + 46px) !important;
+  }
+
+  .section-nav {
+    z-index: 92 !important;
+    pointer-events: none !important;
+  }
+
+  .section-nav .nav-dot,
+  .section-nav .footer-legal-wrap {
+    pointer-events: auto !important;
+  }
+
+  .section-nav .footer-legal-wrap {
+    margin-top: 6px !important;
+    margin-bottom: 0 !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 6px !important;
+  }
+
+  .section-nav .footer-legal-toggle,
+  [data-more-info-button] {
+    position: relative !important;
+    left: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    top: auto !important;
+  }
+
+  .section-nav .footer-legal-popover,
+  [data-more-info-panel] {
+    position: absolute !important;
+    left: calc(100% + 10px) !important;
+    right: auto !important;
+    top: 0 !important;
+    bottom: auto !important;
+    transform: translateX(-6px) !important;
+    max-width: min(300px, calc(100vw - 48px)) !important;
+    max-height: min(52vh, 360px) !important;
+    overflow-y: auto !important;
+    margin: 0 !important;
+  }
+
+  body.mobile-info-near-footer .section-nav {
+    transform: translateY(calc(-50% - 22px)) !important;
   }
 }
 
@@ -308,6 +368,11 @@ html.site-entered .site-header:not(.header--on-light) {
   margin-bottom: 10px !important;
 }
 
+/* One gentle line of air above THE COLLECTION */
+.home-opening .section-label.products-eyebrow {
+  margin-top: 0.75rem !important;
+}
+
 /* Main heading */
 .home-flavors-heading {
   font-size: clamp(1.7rem, 3.2vw, 2.4rem) !important;
@@ -324,9 +389,17 @@ html.site-entered .site-header:not(.header--on-light) {
   line-height: 1.75 !important;
 }
 
+/* Widen products runway; keep copy block readable */
+.home-opening-inner {
+  max-width: min(1240px, calc(100% - 20px)) !important;
+  margin-inline: auto !important;
+}
+
 /* ── Category headers ─────────────────────────────────────────────────────── */
 .categories-container {
   margin-top: 14px !important;
+  width: 100% !important;
+  max-width: none !important;
 }
 
 .category-section {
@@ -356,8 +429,10 @@ html.site-entered .site-header:not(.header--on-light) {
   .products-grid,
   .home-opening .products-grid {
     grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
-    max-width: 1060px !important;
-    gap: 16px !important;
+    max-width: 1180px !important;
+    width: 100% !important;
+    margin-inline: auto !important;
+    gap: clamp(14px, 1.6vw, 20px) !important;
   }
 }
 
@@ -401,10 +476,10 @@ html.site-entered .site-header:not(.header--on-light) {
   border-color: transparent !important;
 }
 
-/* ── Product image ────────────────────────────────────────────────────────── */
+/* ── Product image — a bit shorter for a wider, lower card silhouette ───── */
 .product-image {
-  height: 170px !important;
-  min-height: 170px !important;
+  height: 138px !important;
+  min-height: 138px !important;
   border-radius: 0 !important;
   overflow: hidden !important;
   background: #f5ece0 !important;
@@ -412,8 +487,8 @@ html.site-entered .site-header:not(.header--on-light) {
 
 @media (max-width: 600px) {
   .product-image {
-    height: 130px !important;
-    min-height: 130px !important;
+    height: 118px !important;
+    min-height: 118px !important;
   }
 }
 
@@ -429,44 +504,37 @@ html.site-entered .site-header:not(.header--on-light) {
   transform: scale(1.04) !important;
 }
 
-/* ── Product body — clean grid ───────────────────────────────────────────── */
+/* ── Product body — wide strip: centered title + line; text + CTA balanced ─ */
 .product-body {
-  position: static !important;
-  display: grid !important;
-  grid-template-columns: 1fr auto !important;
-  grid-template-rows: auto auto auto !important;
-  gap: 0 8px !important;
-  padding: 14px 14px 13px !important;
-  min-height: unset !important;
+  position: relative !important;
+  display: block !important;
+  padding: 12px 44px 44px 12px !important;
+  min-height: 0 !important;
   background: #ffffff !important;
-  text-align: right !important;
   direction: rtl !important;
-  align-items: start !important;
 }
 
-/* ── Product name — in normal flow ──────────────────────────────────────── */
 .product-body h3 {
   position: static !important;
   bottom: auto !important;
   top: auto !important;
   right: auto !important;
   left: auto !important;
-  width: auto !important;
-  max-width: none !important;
-  grid-column: 1 / -1 !important;
-  grid-row: 1 !important;
+  width: 100% !important;
+  max-width: 100% !important;
   margin: 0 0 2px !important;
   min-height: unset !important;
-  padding: 0 !important;
+  padding: 0 2px !important;
+  box-sizing: border-box !important;
   border-radius: 0 !important;
   background: none !important;
   border: none !important;
   box-shadow: none !important;
   color: #2c1810 !important;
-  font-size: 0.86rem !important;
+  font-size: 0.84rem !important;
   font-weight: 700 !important;
-  line-height: 1.3 !important;
-  text-align: right !important;
+  line-height: 1.35 !important;
+  text-align: center !important;
   white-space: normal !important;
   overflow: visible !important;
   text-overflow: unset !important;
@@ -476,42 +544,57 @@ html.site-entered .site-header:not(.header--on-light) {
   display: block !important;
 }
 
-/* Gold underline — uniform width, consistent position across all cards */
+/* Aubergine → gold → aubergine rule, centered, same on every card */
 .product-body h3::after {
   content: "" !important;
   display: block !important;
-  width: 28px !important;
+  width: 64px !important;
   height: 1px !important;
-  background: #c8a96a !important;
-  margin: 7px 0 0 auto !important;
+  margin: 8px auto 0 !important;
+  border-radius: 999px !important;
+  background: linear-gradient(
+    90deg,
+    rgba(82, 48, 92, 0) 0%,
+    rgba(82, 48, 92, 0.55) 18%,
+    rgba(200, 169, 106, 0.95) 50%,
+    rgba(82, 48, 92, 0.55) 82%,
+    rgba(82, 48, 92, 0) 100%
+  ) !important;
   opacity: 1 !important;
 }
 
-/* ── Product description ─────────────────────────────────────────────────── */
-.product-body p {
-  grid-column: 1 !important;
-  grid-row: 2 !important;
-  margin: 6px 0 0 !important;
-  color: #4a3020 !important;
-  font-size: 0.78rem !important;
-  font-weight: 400 !important;
-  line-height: 1.65 !important;
-  text-align: right !important;
+.product-body .product-price {
+  margin: 8px 0 0 !important;
+  text-align: center !important;
+  width: 100% !important;
 }
 
-/* ── Add-to-cart button — refined gold circle ────────────────────────────── */
+.product-body .product-price-inner {
+  font-size: 0.74rem !important;
+}
+
+.product-body p {
+  margin: 8px 0 0 !important;
+  color: #4a3020 !important;
+  font-size: 0.77rem !important;
+  font-weight: 400 !important;
+  line-height: 1.62 !important;
+  text-align: center !important;
+  max-width: 32ch !important;
+  margin-inline: auto !important;
+}
+
 .product-card .product-link,
 .product-card .btn,
 .product-card button,
 .product-card [data-add-to-cart] {
-  grid-column: 2 !important;
-  grid-row: 1 / span 2 !important;
-  align-self: end !important;
-  justify-self: end !important;
-  width: 28px !important;
-  height: 28px !important;
-  min-width: 28px !important;
-  min-height: 28px !important;
+  position: absolute !important;
+  inset-inline-end: 10px !important;
+  bottom: 10px !important;
+  width: 30px !important;
+  height: 30px !important;
+  min-width: 30px !important;
+  min-height: 30px !important;
   padding: 0 !important;
   border: 1px solid rgba(200, 169, 106, 0.55) !important;
   border-radius: 50% !important;
@@ -525,6 +608,15 @@ html.site-entered .site-header:not(.header--on-light) {
   box-shadow: 0 2px 8px rgba(44, 24, 16, 0.09) !important;
   transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease !important;
   cursor: pointer !important;
+}
+
+.product-card .cart-feedback {
+  position: absolute !important;
+  left: 10px !important;
+  right: 48px !important;
+  bottom: 12px !important;
+  text-align: center !important;
+  pointer-events: none !important;
 }
 
 .product-card [data-add-to-cart]:hover,
@@ -972,15 +1064,16 @@ html.site-entered .site-header:not(.header--on-light) {
   color: #2c1810 !important;
 }
 
-/* ── Signature — smaller, softer, accent only ────────────────────────────── */
+/* ── Closing signature — boutique plum (contact only; scoped selectors) ─── */
 .contact-section .signature,
-.final .signature {
+.final.contact-section .signature {
   font-size: clamp(1.3rem, 2.4vw, 1.8rem) !important;
-  color: #2c1810 !important;
-  opacity: 0.45 !important;
-  margin-top: 4px !important;
-  letter-spacing: 0 !important;
-  line-height: 1.2 !important;
+  color: #6b4a7c !important;
+  opacity: 1 !important;
+  font-weight: 500 !important;
+  margin-top: 6px !important;
+  letter-spacing: 0.02em !important;
+  line-height: 1.25 !important;
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */
@@ -1061,5 +1154,60 @@ html.site-entered .site-header:not(.header--on-light) {
 @media (max-width: 768px) {
   .home-opening::before {
     opacity: 0 !important;
+  }
+}
+
+/* ── More-info visibility: past hero / main content (body class from main.js) ─
+   Keeps the toggle inside the nav stack; hidden until scroll threshold. */
+html.site-entered body:not(.show-mobile-more-info) .section-nav .footer-legal-toggle,
+html.site-entered body:not(.show-mobile-more-info) [data-more-info-button] {
+  box-sizing: border-box !important;
+  transform: scale(0) !important;
+  width: 0 !important;
+  height: 0 !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  border-width: 0 !important;
+  overflow: hidden !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html.site-entered body.show-mobile-more-info .section-nav .footer-legal-toggle,
+html.site-entered body.show-mobile-more-info [data-more-info-button] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+  overflow: visible !important;
+}
+
+@media (min-width: 769px) {
+  html.site-entered body.show-mobile-more-info .section-nav .footer-legal-toggle,
+  html.site-entered body.show-mobile-more-info [data-more-info-button] {
+    transform: none !important;
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    border-width: 0.5px !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+}
+
+@media (max-width: 768px) {
+  html.site-entered body.show-mobile-more-info .section-nav .footer-legal-toggle,
+  html.site-entered body.show-mobile-more-info [data-more-info-button] {
+    transform: translateY(0) !important;
+    width: 42px !important;
+    height: 42px !important;
+    min-width: 42px !important;
+    min-height: 42px !important;
+    border-width: 0.5px !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 }

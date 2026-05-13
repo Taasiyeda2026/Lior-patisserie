@@ -1368,16 +1368,22 @@ ${productLine}
 
 
     function setupMobileFloatingInfoVisibility() {
-      const btn = document.getElementById("footerLegalToggle");
-      if (!btn) return;
+      if (!document.getElementById("footerLegalToggle")) return;
 
       const productsSection = document.getElementById("products") || document.querySelector(".categories-container");
+      const hero = document.querySelector(".home-hero");
       const footer = document.querySelector(".footer");
-      let showThreshold = productsSection ? productsSection.offsetTop - 80 : 420;
+      let showThreshold = 420;
       let footerThreshold = Infinity;
 
       function recacheFloatingInfoThresholds() {
-        showThreshold = productsSection ? productsSection.offsetTop - 80 : 420;
+        if (hero && hero.offsetParent !== null && hero.offsetHeight > 0) {
+          showThreshold = hero.offsetTop + hero.offsetHeight - 100;
+        } else if (productsSection) {
+          showThreshold = productsSection.offsetTop - 80;
+        } else {
+          showThreshold = 420;
+        }
         footerThreshold = footer ? footer.offsetTop - window.innerHeight + 96 : Infinity;
       }
 
