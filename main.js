@@ -1396,8 +1396,20 @@ ${productLine}
         ticking = true;
         requestAnimationFrame(() => {
           const y = window.scrollY || window.pageYOffset || 0;
-          document.body.classList.toggle("show-mobile-more-info", y >= showThreshold);
+          const show = y >= showThreshold;
+          document.body.classList.toggle("show-mobile-more-info", show);
           document.body.classList.toggle("mobile-info-near-footer", y >= footerThreshold);
+          if (!show) {
+            const wrap = document.querySelector(".footer-legal-wrap");
+            const btn = document.getElementById("footerLegalToggle");
+            const panel = document.getElementById("footerLegalPanel");
+            if (wrap && btn && panel && wrap.classList.contains("is-open")) {
+              wrap.classList.remove("is-open");
+              btn.setAttribute("aria-expanded", "false");
+              panel.setAttribute("aria-hidden", "true");
+              panel.setAttribute("inert", "");
+            }
+          }
           ticking = false;
         });
       }

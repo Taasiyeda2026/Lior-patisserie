@@ -79,17 +79,13 @@ html:not(.site-entered) [data-more-info-panel] {
   pointer-events: none !important;
 }
 
-html.site-entered [data-more-info-button] {
-  opacity: 1 !important;
-  visibility: visible !important;
-  pointer-events: auto !important;
-  transition: opacity 0.3s ease 0.3s, visibility 0.3s ease 0.3s !important;
-}
-
 /* More-info button: slightly smaller, refined (in-flow inside .section-nav) */
 @media (min-width: 769px) {
   .section-nav .footer-legal-toggle,
   [data-more-info-button] {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
     width: 34px !important;
     height: 34px !important;
     min-width: 34px !important;
@@ -207,6 +203,11 @@ html.site-entered .home-opening {
   margin-top: 0 !important;
 }
 
+/* After site entry, offset scroll targets so the fixed header does not cover titles */
+html.site-entered {
+  scroll-padding-top: calc(46px + var(--shell-gutter, 12px) + 10px) !important;
+}
+
 /* ── Hide entrance header once the user has entered the site ─────────────
    The .site-header overlays the hero. After entering, hero is gone and
    the header is no longer needed — navigation uses .section-nav dots.
@@ -222,8 +223,8 @@ html.site-entered .site-header:not(.header--on-light) {
 /* ── Floating UI offset relative to page frame ──────────────────────────── */
 :root {
   --float-inset: calc(var(--shell-gutter, 12px) + 10px);
-  /* Cart sits a little lower (closer to the bottom of the shell) */
-  --float-bottom: calc(var(--shell-gutter, 12px) + 52px);
+  /* Floating cart: sit clearly below mid-screen, clear of side controls */
+  --float-bottom: calc(var(--shell-gutter, 12px) + 44px);
 }
 
 .floating-cart {
@@ -286,7 +287,7 @@ html.site-entered .site-header:not(.header--on-light) {
 @media (max-width: 768px) {
   .floating-cart {
     right: var(--float-inset) !important;
-    bottom: calc(var(--shell-gutter, 12px) + 46px) !important;
+    bottom: calc(var(--shell-gutter, 12px) + 40px) !important;
   }
 
   .section-nav {
@@ -384,9 +385,10 @@ html.site-entered .site-header:not(.header--on-light) {
 
 /* Intro text */
 .home-opening .products-intro-text {
-  color: #4a3020 !important;
+  color: #3d2a22 !important;
   font-size: 0.88rem !important;
   line-height: 1.75 !important;
+  font-weight: 400 !important;
 }
 
 /* Widen products runway; keep copy block readable */
@@ -420,8 +422,9 @@ html.site-entered .site-header:not(.header--on-light) {
 }
 
 .category-subtitle {
-  color: #6b4c38 !important;
+  color: #5a4334 !important;
   font-size: 0.8rem !important;
+  font-weight: 400 !important;
 }
 
 /* ── Products grid ────────────────────────────────────────────────────────── */
@@ -530,9 +533,9 @@ html.site-entered .site-header:not(.header--on-light) {
   background: none !important;
   border: none !important;
   box-shadow: none !important;
-  color: #2c1810 !important;
+  color: #241812 !important;
   font-size: 0.84rem !important;
-  font-weight: 700 !important;
+  font-weight: 600 !important;
   line-height: 1.35 !important;
   text-align: center !important;
   white-space: normal !important;
@@ -575,7 +578,7 @@ html.site-entered .site-header:not(.header--on-light) {
 
 .product-body p {
   margin: 8px 0 0 !important;
-  color: #4a3020 !important;
+  color: #3d2a22 !important;
   font-size: 0.77rem !important;
   font-weight: 400 !important;
   line-height: 1.62 !important;
@@ -975,7 +978,7 @@ html.site-entered .site-header:not(.header--on-light) {
 .final p {
   max-width: 480px !important;
   margin: 0 auto 28px !important;
-  color: #4a3020 !important;
+  color: #3d2a22 !important;
   font-size: 1rem !important;
   font-weight: 400 !important;
   line-height: 1.72 !important;
@@ -1198,6 +1201,9 @@ html.site-entered body.show-mobile-more-info [data-more-info-button] {
   visibility: visible !important;
   pointer-events: auto !important;
   overflow: visible !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 @media (min-width: 769px) {
@@ -1211,6 +1217,9 @@ html.site-entered body.show-mobile-more-info [data-more-info-button] {
     border-width: 0.5px !important;
     margin: 0 !important;
     padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }
 
@@ -1225,5 +1234,8 @@ html.site-entered body.show-mobile-more-info [data-more-info-button] {
     border-width: 0.5px !important;
     margin: 0 !important;
     padding: 0 !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
   }
 }
