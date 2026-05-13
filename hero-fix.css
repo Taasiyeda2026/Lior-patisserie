@@ -2032,21 +2032,40 @@ main {
   justify-content: center !important;
 }
 
-/* Single clean horizontal row: brand | instagram | sentence */
+/* שתי שורות: Lior's Pâtisserie | instagram · sentence */
 .footer-instagram.ig-closing {
   display: flex !important;
   flex-direction: row !important;
-  flex-wrap: nowrap !important;
+  flex-wrap: wrap !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 0 1em !important;
+  gap: 0.2em 1em !important;
   width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
   line-height: 1.2 !important;
   text-align: center !important;
-  white-space: nowrap !important;
   overflow: hidden !important;
+}
+
+/* השם — שורה שלמה לבדו */
+.footer-instagram.ig-closing .footer-instagram-brand.footer-copy {
+  flex-basis: 100% !important;
+  width: 100% !important;
+  text-align: center !important;
+  white-space: nowrap !important;
+  margin-bottom: 0.15em !important;
+}
+
+/* שאר הפריטים — אין שורה עצמאית, זורמים ביחד */
+.footer-instagram.ig-closing > *:not(.footer-instagram-brand) {
+  flex-shrink: 1 !important;
+  white-space: nowrap !important;
+}
+
+/* מסיר נקודת-הפרדה לפני כפתור האינסטגרם (הוא עכשיו ראשון בשורה שנייה) */
+.footer-instagram.ig-closing > .instagram-btn::before {
+  content: none !important;
 }
 
 .footer-instagram.ig-closing > * {
