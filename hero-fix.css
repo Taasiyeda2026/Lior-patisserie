@@ -1636,6 +1636,8 @@ body.hero-locked .floating-cart {
   .contact-section,
   .final.contact-section {
     padding-bottom: calc(64px + env(safe-area-inset-bottom)) !important;
+  }
+}
 
 /* ══════════════════════════════════════════════════════════════════════════
    Targeted contact section refinement — dark boutique finish
@@ -1828,12 +1830,6 @@ body.hero-locked .floating-cart {
   [data-more-info-button] svg {
     width: 16px !important;
     height: 16px !important;
-  }
-
-  .floating-cart {
-    width: 46px !important;
-    height: 46px !important;
-    font-size: 18px !important;
   }
 }
 
