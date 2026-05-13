@@ -205,6 +205,18 @@ html.site-entered .home-opening {
   margin-top: 0 !important;
 }
 
+/* ── Hide entrance header once the user has entered the site ─────────────
+   The .site-header overlays the hero. After entering, hero is gone and
+   the header is no longer needed — navigation uses .section-nav dots.
+   Hide immediately on site-entered; re-show only on explicitly light
+   sections (editorial / contact) via the existing header--on-light class. */
+html.site-entered .site-header:not(.header--on-light) {
+  opacity: 0 !important;
+  pointer-events: none !important;
+  transform: translateY(-100%) !important;
+  transition: none !important;
+}
+
 /* ── Floating UI offset relative to page frame ──────────────────────────── */
 /*
   --shell-gutter is defined on html in index.html:
@@ -260,21 +272,24 @@ html.site-entered .home-opening {
   }
 }
 
-/* ── Products intro: tighter spacing ────────────────────────────────────── */
+/* ── Products intro: hide order button, tighter spacing ──────────────────── */
+
+/* Hide "להזמנה" button from products intro — keep cart/header buttons intact */
+.home-opening .flavors-actions,
+.home-opening .cta-row {
+  display: none !important;
+}
+
 .home-opening {
   padding: 1.5rem 0 1.8rem !important;
 }
 
 .home-opening-copy {
-  margin-bottom: 12px !important;
+  margin-bottom: 8px !important;
 }
 
 .categories-container {
-  margin-top: 14px !important;
-}
-
-.flavors-actions {
-  margin-top: 8px !important;
+  margin-top: 10px !important;
 }
 
 .category-section {
