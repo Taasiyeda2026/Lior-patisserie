@@ -3759,10 +3759,20 @@ main {
 .site-nav {
   height: 46px;
   display: grid;
-  grid-template-columns: minmax(110px, 1fr) auto minmax(110px, 1fr);
-  grid-template-areas: "cta links brand";
+  grid-template-columns: auto minmax(0, 1fr);
+  grid-template-areas: "end brand";
   align-items: center;
-  gap: 18px;
+  gap: clamp(16px, 2.2vw, 28px);
+}
+
+.nav-end-group {
+  grid-area: end;
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  flex-direction: row;
+  direction: ltr;
+  gap: clamp(18px, 2.8vw, 34px);
 }
 
 .nav-brand {
@@ -3774,20 +3784,29 @@ main {
   font-family: var(--font-display);
   font-size: 16px;
   letter-spacing: 0.02em;
-  color: rgba(248, 244, 238, 0.92);
+  color: #b8a396;
   white-space: nowrap;
   direction: ltr;
 }
 
+.nav-brand span:first-child {
+  color: #baa59a;
+  text-shadow:
+    0 1px 2px rgba(6, 3, 5, 0.72),
+    0 0 22px rgba(176, 148, 92, 0.06);
+}
+
 .nav-brand span:last-child {
-  color: var(--color-gold);
+  color: #b8965e;
+  text-shadow:
+    0 1px 2px rgba(6, 3, 5, 0.64),
+    0 0 18px rgba(188, 158, 88, 0.11);
 }
 
 .nav-links {
-  grid-area: links;
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
   gap: clamp(18px, 4vw, 34px);
 }
 
@@ -3805,8 +3824,7 @@ main {
   color: var(--color-gold);
 }
 
-.nav-links .hero-scroll-link,
-.nav-brand.hero-scroll-link {
+.nav-links .hero-scroll-link {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -3814,6 +3832,19 @@ main {
   padding: 0 !important;
   animation: none !important;
   text-shadow: none !important;
+  backdrop-filter: none !important;
+  min-height: unset !important;
+  line-height: inherit !important;
+  white-space: nowrap;
+}
+
+.nav-brand.hero-scroll-link {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  animation: none !important;
   backdrop-filter: none !important;
   min-height: unset !important;
   line-height: inherit !important;
@@ -3831,12 +3862,15 @@ main {
 
 .site-header.header--on-light .nav-brand,
 .site-header.header--on-light .nav-brand span:first-child {
-  color: #3f2145 !important;
-  text-shadow: none !important;
+  color: #332118 !important;
+  text-shadow:
+    0 1px 0 rgba(218, 196, 158, 0.22),
+    0 0 1px rgba(140, 108, 72, 0.12) !important;
 }
 
 .site-header.header--on-light .nav-brand span:last-child {
-  color: var(--color-gold) !important;
+  color: #5e4a32 !important;
+  text-shadow: 0 1px 0 rgba(212, 184, 120, 0.22) !important;
 }
 
 .site-header.header--on-light .nav-links a,
@@ -3860,8 +3894,7 @@ main {
 }
 
 .nav-cta {
-  grid-area: cta;
-  justify-self: start;
+  flex-shrink: 0;
   min-height: 30px;
   display: inline-flex;
   align-items: center;
@@ -4687,8 +4720,8 @@ html.hero-locked .home-products {
   }
 
   .site-nav {
-    grid-template-columns: auto 1fr auto;
-    grid-template-areas: "cta links brand";
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "end brand";
     gap: 10px;
   }
 
@@ -4761,22 +4794,22 @@ html.hero-locked .home-products {
   .site-nav {
     min-height: 46px;
     height: auto;
-    grid-template-columns: 1fr auto;
-    grid-template-areas:
-      "cta brand"
-      "links links";
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas: "end brand";
     padding-block: 8px;
+    gap: 8px;
+  }
+
+  .nav-end-group {
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 8px clamp(10px, 3vw, 18px);
   }
 
   .nav-links {
-    grid-area: links;
-    justify-content: space-between;
-    border-top: 0.5px solid rgba(196, 168, 68, 0.12);
-    padding-top: 7px;
-  }
-
-  .nav-cta {
-    justify-self: start;
+    justify-content: flex-start;
+    border-top: 0;
+    padding-top: 0;
   }
 
   .nav-brand {
