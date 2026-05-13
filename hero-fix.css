@@ -2102,6 +2102,29 @@ main {
   content: none !important;
 }
 
+/* טקסט הפוטר — גדול ובהיר יותר */
+.footer-instagram.ig-closing {
+  font-size: clamp(0.82rem, 1.1vw, 0.96rem) !important;
+  color: rgba(230, 205, 245, 0.88) !important;
+}
+
+.footer-instagram.ig-closing > span[data-content-key] {
+  color: rgba(230, 205, 245, 0.88) !important;
+  font-size: inherit !important;
+}
+
+.footer-instagram.ig-closing .instagram-closing-link {
+  font-size: inherit !important;
+  color: #c8a96a !important;
+}
+
+.footer-instagram.ig-closing .instagram-inline-icon {
+  width: 1em !important;
+  height: 1em !important;
+  min-width: 14px !important;
+  min-height: 14px !important;
+}
+
 /* Dot separators between footer items */
 .footer-instagram.ig-closing > *:not(:first-child)::before {
   content: "·" !important;
