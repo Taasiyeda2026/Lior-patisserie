@@ -2239,13 +2239,13 @@ main {
     display: grid !important;
     grid-template-columns: 1fr 1fr !important;
     grid-template-areas: "media copy" !important;
-    align-items: stretch !important;
+    align-items: center !important;
     justify-content: center !important;
     gap: clamp(28px, 3.5vw, 48px) !important;
     direction: ltr !important;
   }
 
-  /* וידאו — ממלא גובה שווה לכרטיס */
+  /* וידאו — ריבוע סימטרי */
   .handmade-content .features-media,
   .handmade-content .features-media.editorial-video,
   #about .features-media,
@@ -2253,11 +2253,11 @@ main {
     grid-area: media !important;
     width: 100% !important;
     max-width: unset !important;
-    aspect-ratio: unset !important;
-    height: 100% !important;
-    min-height: 380px !important;
-    align-self: stretch !important;
-    justify-self: stretch !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    min-height: unset !important;
+    align-self: center !important;
+    justify-self: center !important;
     border-radius: 24px !important;
     overflow: hidden !important;
     border: 1px solid rgba(200, 169, 106, 0.28) !important;
@@ -2285,8 +2285,8 @@ main {
     direction: rtl !important;
     width: 100% !important;
     max-width: unset !important;
-    align-self: stretch !important;
-    justify-self: stretch !important;
+    align-self: center !important;
+    justify-self: center !important;
     display: flex !important;
     flex-direction: column !important;
     justify-content: center !important;
