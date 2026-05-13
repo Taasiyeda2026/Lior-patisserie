@@ -58,17 +58,9 @@
           <span>עמוד הבית</span>
           <small>תמונת פתיחה ולוגו</small>
         </button>
-        <button class="admin-domain-card" type="button" data-admin-section-card="seriesPanel1">
-          <span>סדרת מוצרים ראשונה</span>
-          <small>כותרות ומוצרים 1–9</small>
-        </button>
-        <button class="admin-domain-card" type="button" data-admin-section-card="seriesPanel2">
-          <span>סדרת מוצרים שנייה</span>
-          <small>כותרות ומוצרים 10–18</small>
-        </button>
-        <button class="admin-domain-card" type="button" data-admin-section-card="seriesPanel3">
-          <span>סדרת מוצרים שלישית</span>
-          <small>כותרות ומוצרים 19–27</small>
+        <button class="admin-domain-card" type="button" data-admin-section-card="productsPanel">
+          <span>מוצרים</span>
+          <small>ניהול שלוש סדרות המוצרים</small>
         </button>
         <button class="admin-domain-card" type="button" data-admin-section-card="flavorsPanel">
           <span>עמוד הטעמים</span>
@@ -83,8 +75,8 @@
           <small>וואטסאפ, מייל וטקסטים</small>
         </button>
         <button class="admin-domain-card" type="button" data-admin-section-card="instagramPanel">
-          <span>מדיה / תמונות כלליות</span>
-          <small>משפט וקישור אינסטגרם</small>
+          <span>אזור אינסטגרם</span>
+          <small>משפט הסיום וקישור לאינסטגרם</small>
         </button>
       </nav>
 
@@ -145,79 +137,75 @@
         </div>
       </section>
 
-      <section class="editor-card admin-section-panel" id="seriesPanel1" data-series-index="1" hidden>
+      <section class="editor-card admin-section-panel" id="productsPanel" hidden>
         <div class="section-heading">
           <span class="section-number">03</span>
           <div>
-            <h2>סדרת מוצרים ראשונה</h2>
-            <p>ניהול עצמאי לכותרת, כותרת משנה ומוצרים לפי display_order 1–9.</p>
+            <h2>מוצרים</h2>
+            <p>ניהול כותרות ומוצרים לפי שלוש סדרות.</p>
           </div>
         </div>
-        <div class="grid two-columns">
-          <label class="field-label">כותרת סדרה
-            <input data-setting="category_1_title" type="text" placeholder="סדרת עוגות ראשונה">
-          </label>
-          <label class="field-label">כותרת משנה / תיאור קצר
-            <input data-setting="category_1_subtitle" type="text" placeholder="מגוון עוגות סדרה ראשונה">
-          </label>
-        </div>
-        <div class="actions-row">
-          <button class="admin-button" type="button" data-save-settings="series-1-settings">שמירת סדרה 1</button>
-          <button class="admin-button secondary" type="button" data-add-product-series="1">הוספת מוצר לסדרה 1</button>
-          <button class="admin-button muted" type="button" data-close-admin-section>חזרה לתפריט</button>
-          <div class="notice" data-notice="series-1-settings"></div>
-        </div>
-        <div id="productsAdmin1" class="admin-series-products" data-products-series="1"></div>
-      </section>
 
-      <section class="editor-card admin-section-panel" id="seriesPanel2" data-series-index="2" hidden>
-        <div class="section-heading">
-          <span class="section-number">04</span>
-          <div>
-            <h2>סדרת מוצרים שנייה</h2>
-            <p>ניהול עצמאי לכותרת, כותרת משנה ומוצרים לפי display_order 10–18.</p>
-          </div>
-        </div>
-        <div class="grid two-columns">
-          <label class="field-label">כותרת סדרה
-            <input data-setting="category_2_title" type="text" placeholder="סדרת עוגות שניה">
-          </label>
-          <label class="field-label">כותרת משנה / תיאור קצר
-            <input data-setting="category_2_subtitle" type="text" placeholder="מגוון עוגות סדרה שניה">
-          </label>
-        </div>
-        <div class="actions-row">
-          <button class="admin-button" type="button" data-save-settings="series-2-settings">שמירת סדרה 2</button>
-          <button class="admin-button secondary" type="button" data-add-product-series="2">הוספת מוצר לסדרה 2</button>
-          <button class="admin-button muted" type="button" data-close-admin-section>חזרה לתפריט</button>
-          <div class="notice" data-notice="series-2-settings"></div>
-        </div>
-        <div id="productsAdmin2" class="admin-series-products" data-products-series="2"></div>
-      </section>
+        <nav class="series-tabs-nav" aria-label="בחירת סדרה">
+          <button type="button" class="series-tab-btn is-active" data-series-tab-target="1" aria-selected="true">סדרת מוצרים ראשונה</button>
+          <button type="button" class="series-tab-btn" data-series-tab-target="2" aria-selected="false">סדרת מוצרים שנייה</button>
+          <button type="button" class="series-tab-btn" data-series-tab-target="3" aria-selected="false">סדרת מוצרים שלישית</button>
+        </nav>
 
-      <section class="editor-card admin-section-panel" id="seriesPanel3" data-series-index="3" hidden>
-        <div class="section-heading">
-          <span class="section-number">05</span>
-          <div>
-            <h2>סדרת מוצרים שלישית</h2>
-            <p>ניהול עצמאי לכותרת, כותרת משנה ומוצרים לפי display_order 19–27.</p>
+        <div class="series-tab-panel" data-series-tab="1">
+          <div class="grid two-columns">
+            <label class="field-label">כותרת סדרה
+              <input data-setting="category_1_title" type="text" placeholder="סדרת עוגות ראשונה">
+            </label>
+            <label class="field-label">כותרת משנה / תיאור קצר
+              <input data-setting="category_1_subtitle" type="text" placeholder="מגוון עוגות סדרה ראשונה">
+            </label>
           </div>
+          <div class="actions-row">
+            <button class="admin-button" type="button" data-save-settings="series-1-settings">שמירת כותרות</button>
+            <button class="admin-button secondary" type="button" data-add-product-series="1">הוספת מוצר</button>
+            <div class="notice" data-notice="series-1-settings"></div>
+          </div>
+          <div id="productsAdmin1" class="admin-series-products" data-products-series="1"></div>
         </div>
-        <div class="grid two-columns">
-          <label class="field-label">כותרת סדרה
-            <input data-setting="category_3_title" type="text" placeholder="סדרת עוגות שלישית">
-          </label>
-          <label class="field-label">כותרת משנה / תיאור קצר
-            <input data-setting="category_3_subtitle" type="text" placeholder="מגוון עוגות סדרה שלישית">
-          </label>
+
+        <div class="series-tab-panel" data-series-tab="2" hidden>
+          <div class="grid two-columns">
+            <label class="field-label">כותרת סדרה
+              <input data-setting="category_2_title" type="text" placeholder="סדרת עוגות שנייה">
+            </label>
+            <label class="field-label">כותרת משנה / תיאור קצר
+              <input data-setting="category_2_subtitle" type="text" placeholder="מגוון עוגות סדרה שנייה">
+            </label>
+          </div>
+          <div class="actions-row">
+            <button class="admin-button" type="button" data-save-settings="series-2-settings">שמירת כותרות</button>
+            <button class="admin-button secondary" type="button" data-add-product-series="2">הוספת מוצר</button>
+            <div class="notice" data-notice="series-2-settings"></div>
+          </div>
+          <div id="productsAdmin2" class="admin-series-products" data-products-series="2"></div>
         </div>
-        <div class="actions-row">
-          <button class="admin-button" type="button" data-save-settings="series-3-settings">שמירת סדרה 3</button>
-          <button class="admin-button secondary" type="button" data-add-product-series="3">הוספת מוצר לסדרה 3</button>
+
+        <div class="series-tab-panel" data-series-tab="3" hidden>
+          <div class="grid two-columns">
+            <label class="field-label">כותרת סדרה
+              <input data-setting="category_3_title" type="text" placeholder="סדרת עוגות שלישית">
+            </label>
+            <label class="field-label">כותרת משנה / תיאור קצר
+              <input data-setting="category_3_subtitle" type="text" placeholder="מגוון עוגות סדרה שלישית">
+            </label>
+          </div>
+          <div class="actions-row">
+            <button class="admin-button" type="button" data-save-settings="series-3-settings">שמירת כותרות</button>
+            <button class="admin-button secondary" type="button" data-add-product-series="3">הוספת מוצר</button>
+            <div class="notice" data-notice="series-3-settings"></div>
+          </div>
+          <div id="productsAdmin3" class="admin-series-products" data-products-series="3"></div>
+        </div>
+
+        <div class="actions-row actions-row--footer">
           <button class="admin-button muted" type="button" data-close-admin-section>חזרה לתפריט</button>
-          <div class="notice" data-notice="series-3-settings"></div>
         </div>
-        <div id="productsAdmin3" class="admin-series-products" data-products-series="3"></div>
       </section>
 
       <div id="productDrawerBackdrop" class="product-drawer-backdrop" hidden aria-hidden="true"></div>

@@ -1120,8 +1120,22 @@ function setupEvents() {
     }
     if (event.target.matches("[data-save-settings]")) {
       const scope = event.target.dataset.saveSettings || "home-settings";
-      const settingsRoot = event.target.closest(".editor-card") || document;
+      const settingsRoot = event.target.closest(".series-tab-panel") || event.target.closest(".editor-card") || document;
       try { await saveSettings(scope, settingsRoot); } catch (error) { showNotice(scope, error.message, false); }
+    }
+    const seriesTabBtn = event.target.closest(".series-tab-btn");
+    if (seriesTabBtn) {
+      const target = seriesTabBtn.dataset.seriesTabTarget;
+      const panel = seriesTabBtn.closest("#productsPanel");
+      if (!panel || !target) return;
+      panel.querySelectorAll(".series-tab-btn").forEach((btn) => {
+        btn.classList.toggle("is-active", btn === seriesTabBtn);
+        btn.setAttribute("aria-selected", btn === seriesTabBtn ? "true" : "false");
+      });
+      panel.querySelectorAll(".series-tab-panel").forEach((pane) => {
+        pane.hidden = pane.dataset.seriesTab !== target;
+      });
+      return;
     }
     if (event.target.matches("[data-add-product-series]")) {
       openProductDrawer(null, Number(event.target.dataset.addProductSeries) || 1);
