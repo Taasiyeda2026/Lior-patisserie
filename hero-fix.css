@@ -542,13 +542,13 @@ html.site-entered .site-header:not(.header--on-light) {
   position: static !important;
   width: 100% !important;
   max-width: 100% !important;
-  margin: 0 0 6px !important;
+  margin: 0 !important;
   padding: 0 4px !important;
   box-sizing: border-box !important;
-  min-height: 2.75em !important;
   display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
-  justify-content: center !important;
+  justify-content: flex-start !important;
   text-align: center !important;
   color: #241812 !important;
   font-size: 0.84rem !important;
@@ -561,29 +561,34 @@ html.site-entered .site-header:not(.header--on-light) {
   box-shadow: none !important;
 }
 
-/* Rule sits on the description block (between title/price and body copy), identical on every card */
-.home-opening .product-body > p:not(.product-price)::before {
+/* Decorative rule: directly under the title only (not on the description block) */
+.home-opening .product-body h3::after {
   content: "" !important;
   display: block !important;
+  flex-shrink: 0 !important;
   width: 78px !important;
   height: 1px !important;
-  margin: 0 auto 12px !important;
+  margin: 0.38rem auto 0.48rem !important;
   border-radius: 999px !important;
   background: linear-gradient(
     90deg,
     rgba(132, 98, 150, 0) 0%,
-    rgba(92, 58, 108, 0.42) 14%,
-    rgba(196, 168, 106, 0.88) 42%,
-    rgba(236, 214, 168, 0.65) 50%,
-    rgba(196, 168, 106, 0.88) 58%,
-    rgba(92, 58, 108, 0.42) 86%,
+    rgba(110, 82, 138, 0.4) 12%,
+    rgba(92, 58, 108, 0.48) 22%,
+    rgba(168, 132, 188, 0.35) 32%,
+    rgba(196, 168, 106, 0.9) 44%,
+    rgba(236, 214, 168, 0.62) 50%,
+    rgba(196, 168, 106, 0.9) 56%,
+    rgba(168, 132, 188, 0.35) 68%,
+    rgba(92, 58, 108, 0.48) 78%,
+    rgba(110, 82, 138, 0.4) 88%,
     rgba(132, 98, 150, 0) 100%
   ) !important;
-  box-shadow: 0 0 1px rgba(196, 168, 106, 0.25) !important;
+  box-shadow: 0 0 1px rgba(196, 168, 106, 0.28) !important;
 }
 
 .home-opening .product-body .product-price {
-  margin: 0 0 4px !important;
+  margin: 0 0 6px !important;
   text-align: center !important;
   width: 100% !important;
   flex-shrink: 0 !important;
@@ -597,7 +602,7 @@ html.site-entered .site-header:not(.header--on-light) {
   flex: 1 1 auto !important;
   width: 100% !important;
   max-width: 100% !important;
-  margin: 6px 0 0 !important;
+  margin: 0 !important;
   padding: 0 4px 2px !important;
   box-sizing: border-box !important;
   color: #3d2a22 !important;
@@ -605,9 +610,7 @@ html.site-entered .site-header:not(.header--on-light) {
   font-weight: 400 !important;
   line-height: 1.68 !important;
   text-align: center !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
+  display: block !important;
 }
 
 .home-opening .product-card .product-link,
