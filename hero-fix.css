@@ -1756,7 +1756,7 @@ body.hero-locked .floating-cart {
 .contact-section .reveal {
   max-width: 620px !important;
   width: min(calc(100% - 32px), 620px) !important;
-  padding: clamp(28px, 3.5vw, 38px) clamp(22px, 4vw, 42px) clamp(26px, 3.4vw, 36px) !important;
+  padding: clamp(22px, 2.8vw, 32px) clamp(22px, 4vw, 42px) clamp(26px, 3.4vw, 36px) !important;
   border-radius: 26px !important;
   background:
     linear-gradient(145deg, rgba(58, 27, 72, 0.78), rgba(38, 17, 51, 0.72)) !important;
@@ -1771,17 +1771,12 @@ body.hero-locked .floating-cart {
 
 .final .section-label,
 .contact-section .section-label {
-  margin-bottom: 12px !important;
-  color: #d9b968 !important;
-  font-size: 0.66rem !important;
-  letter-spacing: 0.22em !important;
+  display: none !important;
 }
 
 .contact-section .section-label::before,
 .final .section-label::before {
-  width: 34px !important;
-  margin-bottom: 10px !important;
-  background: linear-gradient(to left, transparent, rgba(217, 185, 104, 0.92), transparent) !important;
+  display: none !important;
 }
 
 .contact-section h2,
