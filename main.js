@@ -1482,15 +1482,15 @@ ${productLine}
       window.addEventListener("scroll", update, { passive: true });
       update();
 
-      // Recalculate threshold when hero collapses (site-entered class added to <html>)
+      // Once site-entered: hero is gone — always show the button, stop threshold logic
       if ("MutationObserver" in window) {
         const htmlEl = document.documentElement;
         const siteEnteredObserver = new MutationObserver(() => {
           if (htmlEl.classList.contains("site-entered")) {
             siteEnteredObserver.disconnect();
-            // Wait one rAF so hero is display:none and offsetTop is correct
             requestAnimationFrame(() => {
-              recacheFloatingInfoThresholds();
+              showThreshold = 0;   // scrollY >= 0 is always true → always show
+              footerThreshold = footer ? footer.offsetTop - window.innerHeight + 96 : Infinity;
               update();
             });
           }
@@ -1504,7 +1504,9 @@ ${productLine}
       let threshold = hero ? hero.offsetTop + hero.offsetHeight - 120 : 420;
 
       function recacheThreshold() {
-        threshold = hero ? hero.offsetTop + hero.offsetHeight - 120 : 420;
+        threshold = hero && hero.offsetParent !== null && hero.offsetHeight > 0
+          ? hero.offsetTop + hero.offsetHeight - 120
+          : 420;
       }
       window.addEventListener("resize", recacheThreshold, { passive: true });
 
@@ -1520,6 +1522,21 @@ ${productLine}
 
       window.addEventListener("scroll", update, { passive: true });
       update();
+
+      // Once site-entered: hero is gone — always show the cart
+      if ("MutationObserver" in window) {
+        const htmlEl = document.documentElement;
+        const obs = new MutationObserver(() => {
+          if (htmlEl.classList.contains("site-entered")) {
+            obs.disconnect();
+            requestAnimationFrame(() => {
+              threshold = -Infinity; // always true → always show
+              update();
+            });
+          }
+        });
+        obs.observe(htmlEl, { attributes: true, attributeFilter: ["class"] });
+      }
     }
 
     let hiddenAdminClickCount = 0;

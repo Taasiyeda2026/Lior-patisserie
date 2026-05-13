@@ -120,7 +120,7 @@ html:not(.site-entered) [data-more-info-panel] {
   pointer-events: none !important;
 }
 
-/* More-info button: compact 17 × 17px on desktop */
+/* More-info button: compact 17 × 17px on desktop — light cream on dark bg */
 @media (min-width: 769px) {
   .section-nav .footer-legal-toggle,
   [data-more-info-button] {
@@ -131,17 +131,17 @@ html:not(.site-entered) [data-more-info-panel] {
     height: 17px !important;
     min-width: 17px !important;
     min-height: 17px !important;
-    background: rgba(53, 25, 61, 0.52) !important;
-    border: 0.5px solid rgba(220, 195, 130, 0.32) !important;
-    color: rgba(248, 235, 190, 0.90) !important;
-    box-shadow: 0 2px 7px rgba(20, 10, 30, 0.12) !important;
+    background: rgba(248, 240, 226, 0.82) !important;
+    border: 0.5px solid rgba(200, 168, 90, 0.50) !important;
+    color: #35173f !important;
+    box-shadow: 0 2px 8px rgba(20, 10, 30, 0.18) !important;
   }
 
   .section-nav .footer-legal-toggle:hover,
   [data-more-info-button]:hover {
-    background: rgba(53, 25, 61, 0.75) !important;
-    border-color: rgba(196, 168, 68, 0.5) !important;
-    color: var(--color-gold) !important;
+    background: rgba(248, 240, 226, 0.96) !important;
+    border-color: rgba(200, 168, 90, 0.75) !important;
+    color: #24102f !important;
   }
 
   [data-more-info-button] .more-info-icon,
@@ -2161,10 +2161,10 @@ main {
   min-height: 17px !important;
   padding: 0 !important;
   border-radius: 999px !important;
-  background: rgba(43, 23, 56, 0.42) !important;
-  border: 0.5px solid rgba(248, 235, 190, 0.36) !important;
-  color: rgba(248, 235, 190, 0.88) !important;
-  box-shadow: 0 2px 7px rgba(18, 8, 26, 0.10) !important;
+  background: rgba(248, 240, 226, 0.82) !important;
+  border: 0.5px solid rgba(200, 168, 90, 0.50) !important;
+  color: #35173f !important;
+  box-shadow: 0 2px 8px rgba(18, 8, 26, 0.18) !important;
 }
 
 .section-nav .footer-legal-toggle::before,
@@ -2192,9 +2192,9 @@ main {
 
 .section-nav .footer-legal-toggle:hover,
 [data-more-info-button]:hover {
-  background: rgba(43, 23, 56, 0.58) !important;
-  border-color: rgba(248, 235, 190, 0.62) !important;
-  color: rgba(255, 244, 208, 0.98) !important;
+  background: rgba(248, 240, 226, 0.96) !important;
+  border-color: rgba(200, 168, 90, 0.75) !important;
+  color: #24102f !important;
 }
 
 @media (max-width: 768px) {
