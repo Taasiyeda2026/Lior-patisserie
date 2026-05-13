@@ -54,6 +54,16 @@
       font-display: swap;
     }
 
+
+    @font-face {
+      font-family: "FtPilKahol2";
+      src: url("assets/fonts/FtPilKahol2.woff2") format("woff2"),
+           url("assets/fonts/FtPilKahol2.ttf") format("truetype");
+      font-weight: 400;
+      font-style: normal;
+      font-display: swap;
+    }
+
     :root {
       --cream: #F7F0E6;
       --cream-2: #F2EADF;
@@ -7447,5 +7457,165 @@ svg {
   #productsGrid2,
   #productsGrid3 {
     gap: 7px !important;
+  }
+}
+
+
+/* Handmade personal section — video + Lior's note directly after the hero. */
+.handmade-section {
+  scroll-margin-top: clamp(18px, 3.6vw, 46px);
+  padding: clamp(58px, 7vw, 88px) 0 clamp(52px, 6vw, 78px) !important;
+  background:
+    radial-gradient(circle at 16% 18%, rgba(200, 169, 106, 0.13), transparent 30%),
+    radial-gradient(circle at 86% 82%, rgba(199, 178, 214, 0.24), transparent 34%),
+    linear-gradient(135deg, #fff9f2 0%, #f8efe5 52%, #f6ecdf 100%);
+}
+
+.handmade-section .container {
+  width: min(100% - 32px, 1120px);
+}
+
+.handmade-card.editorial-card {
+  max-width: 1060px;
+}
+
+.handmade-content.features-content {
+  direction: ltr;
+  grid-template-columns: minmax(330px, 500px) minmax(300px, 430px);
+  grid-template-areas: "media copy";
+  align-items: center;
+  gap: clamp(26px, 4vw, 54px);
+}
+
+.handmade-content .features-media {
+  grid-area: media;
+  min-height: 340px;
+  height: clamp(340px, 34vw, 460px);
+  border-radius: 30px;
+  border: 1px solid rgba(255, 249, 242, 0.9);
+  box-shadow: 0 22px 54px rgba(61, 22, 80, 0.14), 0 8px 20px rgba(47, 33, 28, 0.08);
+}
+
+.handmade-personal-copy {
+  grid-area: copy;
+  direction: rtl;
+  position: relative;
+  padding: clamp(28px, 4vw, 46px);
+  border: 1px solid rgba(200, 169, 106, 0.24);
+  border-radius: 34px;
+  background: rgba(255, 252, 247, 0.78);
+  box-shadow: 0 18px 48px rgba(61, 22, 80, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.72);
+  color: var(--lior-aubergine, #3D1650);
+}
+
+.handmade-personal-copy::before {
+  content: "";
+  position: absolute;
+  inset: 14px;
+  z-index: 0;
+  border-radius: 26px;
+  border: 1px solid rgba(200, 169, 106, 0.16);
+  pointer-events: none;
+}
+
+.handmade-personal-copy > * {
+  position: relative;
+  z-index: 1;
+}
+
+.handmade-kicker,
+.handmade-personal-copy h2,
+.handmade-question {
+  font-family: "FtPilKahol2", var(--font-signature);
+  font-weight: 400;
+}
+
+.handmade-kicker {
+  margin: 0 0 10px;
+  color: var(--lior-gold, #B8943A);
+  font-size: clamp(1.55rem, 3.2vw, 2.25rem);
+  line-height: 1;
+}
+
+.handmade-personal-copy h2 {
+  margin: 0 0 18px;
+  color: #3d1650;
+  font-size: clamp(2rem, 4vw, 3.15rem);
+  line-height: 1.03;
+}
+
+.handmade-body {
+  display: grid;
+  gap: 12px;
+  margin: 0 0 18px;
+}
+
+.handmade-body p {
+  margin: 0;
+  color: rgba(47, 33, 28, 0.82);
+  font-family: var(--font-body);
+  font-size: clamp(0.98rem, 1.35vw, 1.08rem);
+  line-height: 1.78;
+}
+
+.handmade-question {
+  margin: 8px 0 18px;
+  color: #5b2e64;
+  font-size: clamp(1.55rem, 3vw, 2.15rem);
+  line-height: 1.08;
+}
+
+.handmade-products-link.btn {
+  min-height: 44px;
+  padding-inline: 28px;
+  border-color: rgba(61, 22, 80, 0.16);
+  background: linear-gradient(135deg, #3D1650, #5f3a6d);
+  color: #fff9f2;
+  box-shadow: 0 14px 30px rgba(61, 22, 80, 0.16);
+}
+
+.handmade-products-link.btn:hover,
+.handmade-products-link.btn:focus-visible {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 38px rgba(61, 22, 80, 0.22);
+}
+
+@media (max-width: 768px) {
+  .handmade-section {
+    padding: 44px 0 48px !important;
+  }
+
+  .handmade-section .container {
+    width: min(100% - 28px, 520px);
+  }
+
+  .handmade-content.features-content {
+    grid-template-columns: 1fr;
+    grid-template-areas:
+      "media"
+      "copy";
+    gap: 20px;
+  }
+
+  .handmade-content .features-media {
+    min-height: 240px;
+    height: clamp(240px, 68vw, 330px);
+    border-radius: 22px;
+  }
+
+  .handmade-personal-copy {
+    padding: 28px 24px 30px;
+    border-radius: 28px;
+    text-align: right;
+  }
+
+  .handmade-personal-copy::before {
+    inset: 10px;
+    border-radius: 22px;
+  }
+
+  .handmade-products-link.btn {
+    width: 100%;
+    justify-content: center;
   }
 }

@@ -54,7 +54,7 @@
     }
 
     function enterContentArea(target) {
-      const destination = target || document.getElementById("products");
+      const destination = target || document.getElementById("about") || document.getElementById("products");
       if (!destination) return;
 
       sessionStorage.setItem(HERO_UNLOCK_STORAGE_KEY, "true");
@@ -70,11 +70,12 @@
         if (document.body) document.body.classList.add("site-entered");
 
         requestAnimationFrame(() => {
-          // Step 3: hero is gone — products is now at the top of #home.
-          window.scrollTo({ top: 0, behavior: "instant" });
+          // Step 3: hero is gone — move to the requested section in the content flow.
+          const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+          destination.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
 
-          if (window.history && window.history.replaceState) {
-            window.history.replaceState(null, "", "#products");
+          if (destination.id && window.history && window.history.replaceState) {
+            window.history.replaceState(null, "", `#${destination.id}`);
           }
 
           window.dispatchEvent(new CustomEvent("lior:site-entered"));
