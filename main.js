@@ -1605,7 +1605,7 @@ ${productLine}
       const header = document.querySelector(".site-header");
       if (!header) return;
 
-      const lightSections = document.querySelectorAll(".editorial, .contact-section, .final");
+      const lightSections = document.querySelectorAll(".editorial, .home-opening, .contact-section, .final");
       const hero = document.querySelector(".home-hero");
 
       const updateHeaderState = () => {
