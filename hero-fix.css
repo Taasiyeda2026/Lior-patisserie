@@ -2364,45 +2364,49 @@ main {
   text-align: center !important;
 }
 
-/* פונט כתב יד — עם !important כדי לנצח כלל h2 גלובלי */
+/* פונט כתב יד — גודל אחיד ובולט לכל הטקסט */
 #about .handmade-kicker,
-.handmade-section .handmade-kicker {
-  font-family: "FtPilKahol2", cursive !important;
-  font-weight: 400 !important;
-}
-
+.handmade-section .handmade-kicker,
 #about .handmade-personal-copy h2,
 #handmade-title,
-.handmade-section .handmade-personal-copy h2 {
-  font-family: "FtPilKahol2", cursive !important;
-  font-weight: 400 !important;
-}
-
+.handmade-section .handmade-personal-copy h2,
 #about .handmade-question,
-.handmade-section .handmade-question {
-  font-family: "FtPilKahol2", cursive !important;
-  font-weight: 400 !important;
-  font-size: clamp(1.55rem, 3vw, 2.15rem) !important;
-  color: #5b2e64 !important;
-  margin: 10px 0 20px !important;
-}
-
+.handmade-section .handmade-question,
 #about .handmade-body p,
-.handmade-section .handmade-body p {
-  font-family: "FtPilKahol2", cursive !important;
-  font-weight: 400 !important;
-  font-size: clamp(1.15rem, 1.8vw, 1.35rem) !important;
-  line-height: 1.85 !important;
-}
-
+.handmade-section .handmade-body p,
 #about .handmade-products-link,
 #about .handmade-products-link.btn,
 .handmade-section .handmade-products-link,
 .handmade-section .handmade-products-link.btn {
   font-family: "FtPilKahol2", cursive !important;
   font-weight: 400 !important;
-  font-size: clamp(1.2rem, 1.8vw, 1.4rem) !important;
-  letter-spacing: 0.01em !important;
+  font-size: clamp(1.45rem, 2.2vw, 1.7rem) !important;
+  line-height: 1.75 !important;
+}
+
+#about .handmade-kicker,
+.handmade-section .handmade-kicker {
+  color: var(--lior-gold, #B8943A) !important;
+  margin: 0 0 10px !important;
+}
+
+#about .handmade-personal-copy h2,
+#handmade-title,
+.handmade-section .handmade-personal-copy h2 {
+  color: #3d1650 !important;
+  margin: 0 0 16px !important;
+}
+
+#about .handmade-question,
+.handmade-section .handmade-question {
+  color: #5b2e64 !important;
+  margin: 10px 0 20px !important;
+}
+
+#about .handmade-body p,
+.handmade-section .handmade-body p {
+  color: rgba(47, 33, 28, 0.82) !important;
+  margin: 0 !important;
 }
 
 /* כפתור "לצפייה במוצרים" — ממורכז */
