@@ -1398,6 +1398,22 @@ ${productLine}
 
       window.addEventListener("scroll", update, { passive: true });
       update();
+
+      // Recalculate threshold when hero collapses (site-entered class added to <html>)
+      if ("MutationObserver" in window) {
+        const htmlEl = document.documentElement;
+        const siteEnteredObserver = new MutationObserver(() => {
+          if (htmlEl.classList.contains("site-entered")) {
+            siteEnteredObserver.disconnect();
+            // Wait one rAF so hero is display:none and offsetTop is correct
+            requestAnimationFrame(() => {
+              recacheFloatingInfoThresholds();
+              update();
+            });
+          }
+        });
+        siteEnteredObserver.observe(htmlEl, { attributes: true, attributeFilter: ["class"] });
+      }
     }
 
     function setupOrderActionsVisibility() {

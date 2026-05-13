@@ -80,6 +80,9 @@ html:not(.site-entered) [data-more-info-panel] {
 }
 
 html.site-entered [data-more-info-button] {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
   transition: opacity 0.3s ease 0.3s, visibility 0.3s ease 0.3s !important;
 }
 
