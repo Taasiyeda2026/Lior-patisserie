@@ -618,26 +618,30 @@ html.site-entered .site-header:not(.header--on-light) {
   padding: 14px 12px 14px !important;
   background: #ffffff !important;
   direction: rtl !important;
+  gap: 0.45rem !important;
 }
 
 @media (max-width: 600px) {
   .home-opening .product-body {
     min-height: 158px !important;
     padding: 12px 10px 12px !important;
+    gap: 0.4rem !important;
   }
 }
 
+/* Title stack: centered name, ombré rule directly beneath (same rhythm 1 or 2 lines) */
 .home-opening .product-body h3 {
   position: static !important;
   width: 100% !important;
   max-width: 100% !important;
-  margin: 0 0 6px !important;
+  margin: 0 !important;
   padding: 0 4px !important;
   box-sizing: border-box !important;
-  min-height: 2.75em !important;
   display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
-  justify-content: center !important;
+  justify-content: flex-start !important;
+  gap: 0.42rem !important;
   text-align: center !important;
   color: #241812 !important;
   font-size: 0.84rem !important;
@@ -650,21 +654,25 @@ html.site-entered .site-header:not(.header--on-light) {
   box-shadow: none !important;
 }
 
-/* Rule sits on the description block (between title/price and body copy), identical on every card */
-.home-opening .product-body > p:not(.product-price)::before {
+.home-opening .product-body h3::after {
   content: "" !important;
   display: block !important;
-  width: 78px !important;
+  flex-shrink: 0 !important;
+  width: 60% !important;
+  max-width: 100% !important;
+  min-width: 4.5rem !important;
   height: 1px !important;
-  margin: 0 auto 12px !important;
+  margin: 0 !important;
   border-radius: 999px !important;
   background: linear-gradient(
     90deg,
     rgba(132, 98, 150, 0) 0%,
     rgba(92, 58, 108, 0.42) 14%,
+    rgba(168, 132, 188, 0.32) 28%,
     rgba(196, 168, 106, 0.88) 42%,
     rgba(236, 214, 168, 0.65) 50%,
     rgba(196, 168, 106, 0.88) 58%,
+    rgba(168, 132, 188, 0.32) 72%,
     rgba(92, 58, 108, 0.42) 86%,
     rgba(132, 98, 150, 0) 100%
   ) !important;
@@ -672,7 +680,7 @@ html.site-entered .site-header:not(.header--on-light) {
 }
 
 .home-opening .product-body .product-price {
-  margin: 0 0 4px !important;
+  margin: 0 !important;
   text-align: center !important;
   width: 100% !important;
   flex-shrink: 0 !important;
@@ -686,7 +694,7 @@ html.site-entered .site-header:not(.header--on-light) {
   flex: 1 1 auto !important;
   width: 100% !important;
   max-width: 100% !important;
-  margin: 6px 0 0 !important;
+  margin: 0 0 0.35rem 0 !important;
   padding: 0 4px 2px !important;
   box-sizing: border-box !important;
   color: #3d2a22 !important;
@@ -694,9 +702,7 @@ html.site-entered .site-header:not(.header--on-light) {
   font-weight: 400 !important;
   line-height: 1.68 !important;
   text-align: center !important;
-  display: flex !important;
-  flex-direction: column !important;
-  justify-content: flex-start !important;
+  display: block !important;
 }
 
 .home-opening .product-card .product-link,
