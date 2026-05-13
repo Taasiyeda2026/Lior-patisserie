@@ -306,8 +306,8 @@ html.site-entered .site-header:not(.header--on-light) {
   }
 
   .product-image {
-    height: 130px !important;
-    min-height: 130px !important;
+    height: 155px !important;
+    min-height: 155px !important;
   }
 
   .product-body {
