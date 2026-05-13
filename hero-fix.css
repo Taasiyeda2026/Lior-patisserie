@@ -401,24 +401,45 @@ html.site-entered .site-header:not(.header--on-light) {
 @media (min-width: 769px) {
   .features-content {
     display: grid !important;
-    grid-template-columns: minmax(300px, 1fr) minmax(280px, 420px) !important;
+    grid-template-columns: minmax(0, 420px) minmax(280px, 420px) !important;
     grid-template-areas: "media cards" !important;
-    align-items: stretch !important;
+    align-items: center !important;
     gap: clamp(24px, 3vw, 40px) !important;
-    justify-content: unset !important;
+    justify-content: center !important;
   }
 
+  /* Square video container — aspect-ratio drives the height, no fixed height */
   .features-media {
     grid-area: media !important;
     width: 100% !important;
-    height: clamp(300px, 36vw, 460px) !important;
-    min-height: 300px !important;
+    max-width: 400px !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    min-height: unset !important;
+    border-radius: 24px !important;
+    overflow: hidden !important;
+    position: relative !important;
+    flex-shrink: 0 !important;
   }
 
   /* Override the standalone editorial-video width so grid controls sizing */
   .features-media.editorial-video {
     width: 100% !important;
-    max-width: 100% !important;
+    max-width: 400px !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    padding: 0 !important;
+  }
+
+  /* Video element fills the square */
+  .features-media video,
+  .features-media.editorial-video video,
+  .features-media img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
+    border-radius: 0 !important;
   }
 
   .features-cards.details-grid {
@@ -440,8 +461,21 @@ html.site-entered .site-header:not(.header--on-light) {
   }
 
   .features-media {
+    width: min(100%, 340px) !important;
+    aspect-ratio: 1 / 1 !important;
+    height: auto !important;
+    margin-inline: auto !important;
+    border-radius: 20px !important;
+    overflow: hidden !important;
+  }
+
+  .features-media video,
+  .features-media.editorial-video video,
+  .features-media img {
     width: 100% !important;
-    height: clamp(220px, 55vw, 300px) !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    display: block !important;
   }
 
   .features-cards.details-grid {
