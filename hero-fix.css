@@ -131,6 +131,8 @@ html.hero-locked {
 }
 
 html.hero-locked body {
+  height: 100% !important;
+  overflow: hidden !important;
   touch-action: pan-x pinch-zoom !important;
   overscroll-behavior: none !important;
   background:
@@ -282,7 +284,8 @@ html.hero-transitioning .home-hero {
 }
 
 /* After entering: hero is fully gone — no scroll-back possible */
-html.site-entered .home-hero {
+html.site-entered .home-hero,
+body.site-entered .home-hero {
   display: none !important;
 }
 
@@ -299,10 +302,10 @@ html.site-entered {
 
 /* ── Hide entrance header once the user has entered the site ─────────────
    The .site-header overlays the hero. After entering, hero is gone and
-   the header is no longer needed — navigation uses .section-nav dots.
-   Hide immediately on site-entered; re-show only on explicitly light
-   sections (editorial / contact) via the existing header--on-light class. */
-html.site-entered .site-header:not(.header--on-light) {
+   the fixed header should not remain stuck above the flavors content;
+   navigation continues through the section-nav dots. */
+html.site-entered .site-header,
+body.site-entered .site-header {
   opacity: 0 !important;
   pointer-events: none !important;
   transform: translateY(-100%) !important;
