@@ -24,6 +24,94 @@
   font-size: 11px !important;
 }
 
+/* ── Section-nav: inside frame, refined, show only after site-entered ───── */
+
+/* Hide entirely until the user has entered the site */
+html:not(.site-entered) .section-nav {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transition: none !important;
+}
+
+/* Fade in smoothly after entry */
+html.site-entered .section-nav {
+  opacity: 1 !important;
+  visibility: visible !important;
+  transition: opacity 0.3s ease 0.2s !important;
+}
+
+/* Desktop: move inside boutique frame, refine appearance */
+@media (min-width: 769px) {
+  .section-nav {
+    left: var(--float-inset) !important;
+    background: rgba(53, 25, 61, 0.20) !important;
+    border: 0.5px solid rgba(212, 175, 85, 0.14) !important;
+    box-shadow: 0 6px 18px rgba(20, 10, 30, 0.10) !important;
+    padding: 8px 6px !important;
+    gap: 7px !important;
+  }
+}
+
+/* Refined nav-dots: inactive → subtle */
+.nav-dot {
+  width: 5px !important;
+  height: 5px !important;
+  background: rgba(200, 175, 215, 0.22) !important;
+  border: 0.5px solid rgba(212, 175, 85, 0.25) !important;
+  box-shadow: none !important;
+  transition: background 0.22s ease, border-color 0.22s ease, transform 0.22s ease !important;
+}
+
+/* Active dot: gold accent */
+.nav-dot.is-active {
+  background: rgba(196, 168, 68, 0.85) !important;
+  border-color: rgba(196, 168, 68, 0.7) !important;
+  transform: scale(1.35) !important;
+  box-shadow: 0 0 5px rgba(196, 168, 68, 0.35) !important;
+}
+
+/* More-info button: show only after site-entered */
+html:not(.site-entered) [data-more-info-button],
+html:not(.site-entered) [data-more-info-panel] {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+}
+
+html.site-entered [data-more-info-button] {
+  transition: opacity 0.3s ease 0.3s, visibility 0.3s ease 0.3s !important;
+}
+
+/* More-info button: slightly smaller, refined */
+@media (min-width: 769px) {
+  .section-nav .footer-legal-toggle,
+  [data-more-info-button] {
+    width: 34px !important;
+    height: 34px !important;
+    min-width: 34px !important;
+    min-height: 34px !important;
+    background: rgba(53, 25, 61, 0.52) !important;
+    border: 0.5px solid rgba(196, 168, 68, 0.28) !important;
+    color: rgba(196, 168, 68, 0.85) !important;
+    box-shadow: 0 4px 12px rgba(20, 10, 30, 0.14) !important;
+    left: var(--float-inset) !important;
+  }
+
+  .section-nav .footer-legal-toggle:hover,
+  [data-more-info-button]:hover {
+    background: rgba(53, 25, 61, 0.75) !important;
+    border-color: rgba(196, 168, 68, 0.5) !important;
+    color: var(--color-gold) !important;
+  }
+
+  [data-more-info-button] .more-info-icon,
+  .footer-legal-toggle .more-info-icon {
+    width: 16px !important;
+    height: 16px !important;
+  }
+}
+
 /* ── Boutique strip: fix clipping during hero-locked ──────────────────────
    .boutique-strip sits BELOW .home-hero in the DOM, inside .home-products.
    When hero-locked, .home-products height = 100svh and overflows hidden,
