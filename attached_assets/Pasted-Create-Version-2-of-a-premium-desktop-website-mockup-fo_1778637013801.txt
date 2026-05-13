@@ -1,0 +1,80 @@
+Create Version 2 of a premium desktop website mockup for a Hebrew patisserie dessert category page, based on the reference design and product assortment. The new version should feel more luxurious, clean, boutique, elegant, and editorial.
+
+Design direction:
+High-end French patisserie meets modern boutique ecommerce. Minimal, refined, feminine, artisanal, premium. The page should look polished, expensive, and calm, with strong visual hierarchy and excellent spacing.
+
+Important improvements over the previous version:
+- Remove the repeated wallpaper/background pattern completely
+- Use a smooth clean ivory / warm cream background only
+- Make the page feel less busy, more premium, more breathable
+- Strengthen the section title and subtitle hierarchy
+- Improve spacing between cards and around the grid
+- Make the product cards feel more consistent, elegant, and brand-led
+- Keep the overall tone soft, upscale, tasteful, and appetizing
+
+Layout:
+A full desktop category page in Hebrew, right-to-left layout.
+Top area includes a minimal refined header with elegant brand presence, subtle navigation, and luxury boutique styling.
+Below it, a centered category title area with a strong Hebrew title and a smaller refined subtitle.
+Then a 4-column product card grid with generous spacing and perfect alignment.
+
+Product cards:
+Each card should feel premium and consistent.
+Include:
+- large beautiful dessert image
+- clear Hebrew product name
+- a uniform decorative horizontal line under every product name, same exact length and same position in all cards
+- 1–2 short lines of readable Hebrew description
+- a refined CTA area, more visible than a tiny plus icon
+- soft shadow, rounded corners, elegant proportions
+
+Card styling:
+- same image height across all cards
+- same title area height across all cards
+- same underline length under every title
+- cleaner typography
+- better contrast
+- more breathing room inside each card
+- premium gold-beige accents with dark chocolate text
+
+Visual tone:
+Use realistic dessert photography inspired by premium patisserie products such as pistachio desserts, Oreo cream desserts, confetti vanilla cake, rich chocolate cakes, cookie-based desserts, and boutique pastry items.
+The desserts should look luxurious, handcrafted, detailed, and highly appetizing.
+
+Typography:
+Elegant and premium Hebrew typography.
+Make the product names more prominent.
+Make the title stronger and more editorial.
+Ensure the Hebrew text looks natural, refined, readable, and not gibberish.
+
+Color palette:
+Warm ivory background, soft cream, champagne beige, muted gold, dark chocolate brown, and very subtle blush or pistachio accents only if needed.
+Avoid strong saturated colors or anything playful/cheap.
+
+Buttons / CTA:
+Replace or redesign the weak tiny plus action into a more elegant and visible boutique UI element, such as:
+'לצפייה'
+'לפרטים'
+or a luxury styled circular icon button with stronger presence.
+The CTA should feel refined, not heavy.
+
+Overall composition:
+The whole page should feel like a luxury dessert boutique, not a generic ecommerce catalog.
+Less clutter, more elegance.
+Less decoration, more precision.
+More whitespace, better hierarchy, more premium editorial balance.
+
+Avoid:
+- busy wallpaper backgrounds
+- cluttered decorative patterns
+- cheap ecommerce look
+- inconsistent card heights
+- weak title hierarchy
+- tiny unreadable body text
+- random gibberish Hebrew
+- harsh shadows
+- overly colorful elements
+- generic stock-style layout
+
+Output style:
+Realistic high-end UI/UX mockup presentation, polished and sophisticated, like a premium brand concept for a boutique patisserie website.

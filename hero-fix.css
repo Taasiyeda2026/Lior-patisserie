@@ -379,59 +379,112 @@ html.site-entered .site-header:not(.header--on-light) {
   align-items: center !important;
 }
 
-/* ── Editorial / עבודת יד: 2-column layout (video | cards) ─────────────── */
+/* ══════════════════════════════════════════════════════════════════════════
+   Editorial / עבודת יד — Boutique redesign (reference: image_1778636826356)
+   Layout: cards column (visual-left in RTL) | video column (visual-right)
+   Style:  cream bg · white cards · gold-rounded icon squares · gold-framed video
+   ══════════════════════════════════════════════════════════════════════════ */
 
-/* Widen container so the 2-column grid has room */
+/* Section — warm cream background, generous breathing room */
+.editorial.features-section {
+  background: linear-gradient(160deg, #fdf9f2 0%, #f8f1e4 55%, #fdf9f2 100%) !important;
+  padding: 68px 0 80px !important;
+}
+
+/* Container — wide enough for 2 columns */
 .editorial .container,
 .editorial.features-section .container,
 .features-section .container {
-  width: min(100% - 40px, 960px) !important;
-  max-width: 960px !important;
+  width: min(100% - 40px, 980px) !important;
+  max-width: 980px !important;
 }
 
-/* Header (title + subtitle) — full width, centered above columns */
+/* Section label — gold, spaced caps */
+.editorial .section-label {
+  color: #c8a96a !important;
+  font-size: 0.72rem !important;
+  letter-spacing: 0.22em !important;
+  text-transform: uppercase !important;
+  margin-bottom: 14px !important;
+  font-weight: 500 !important;
+}
+
+/* Main heading — dark chocolate, large */
+.editorial h2 {
+  font-size: clamp(1.75rem, 2.8vw, 2.4rem) !important;
+  color: #2c1810 !important;
+  line-height: 1.22 !important;
+  font-weight: 700 !important;
+  margin-bottom: 0 !important;
+}
+
+/* Gold decorative divider after heading */
+.editorial .features-intro h2::after {
+  content: "" !important;
+  display: block !important;
+  width: 52px !important;
+  height: 1.5px !important;
+  background: linear-gradient(to left, transparent 0%, #c8a96a 35%, #c8a96a 65%, transparent 100%) !important;
+  margin: 16px 0 16px auto !important;
+}
+
+/* Subtitle text */
+.editorial .features-intro p {
+  color: #7a5540 !important;
+  font-size: 0.88rem !important;
+  line-height: 1.72 !important;
+  margin: 0 !important;
+}
+
+/* ── Header: right-aligned above grid (RTL = visually left side) ─────────── */
 .features-intro.editorial-text {
   width: 100% !important;
   max-width: 100% !important;
-  text-align: center !important;
-  margin: 0 0 28px !important;
+  text-align: right !important;
+  margin: 0 0 32px !important;
 }
 
-/* 2-column grid: video left, cards right */
+/* ── Desktop 2-column grid ───────────────────────────────────────────────── */
+/* In RTL: col-1 = visual RIGHT, col-2 = visual LEFT.
+   "media cards" → media on visual-RIGHT, cards on visual-LEFT = matches reference */
 @media (min-width: 769px) {
   .features-content {
     display: grid !important;
-    grid-template-columns: minmax(0, 420px) minmax(280px, 420px) !important;
+    grid-template-columns: minmax(0, 440px) minmax(260px, 420px) !important;
     grid-template-areas: "media cards" !important;
     align-items: center !important;
-    gap: clamp(24px, 3vw, 40px) !important;
+    gap: clamp(28px, 4vw, 52px) !important;
     justify-content: center !important;
   }
 
-  /* Square video container — aspect-ratio drives the height, no fixed height */
+  /* ── Video: square, gold-framed ──────────────────────────────────────── */
   .features-media {
     grid-area: media !important;
     width: 100% !important;
-    max-width: 400px !important;
+    max-width: 420px !important;
     aspect-ratio: 1 / 1 !important;
     height: auto !important;
     min-height: unset !important;
-    border-radius: 24px !important;
+    border-radius: 28px !important;
     overflow: hidden !important;
     position: relative !important;
     flex-shrink: 0 !important;
+    border: 1.5px solid rgba(200, 169, 106, 0.55) !important;
+    box-shadow:
+      0 28px 60px rgba(44, 24, 16, 0.14),
+      0 8px 24px rgba(44, 24, 16, 0.08) !important;
+    background: #f0e8d6 !important;
   }
 
-  /* Override the standalone editorial-video width so grid controls sizing */
   .features-media.editorial-video {
     width: 100% !important;
-    max-width: 400px !important;
+    max-width: 420px !important;
     aspect-ratio: 1 / 1 !important;
     height: auto !important;
     padding: 0 !important;
   }
 
-  /* Video element fills the square */
+  /* Video fills the square */
   .features-media video,
   .features-media.editorial-video video,
   .features-media img {
@@ -442,30 +495,129 @@ html.site-entered .site-header:not(.header--on-light) {
     border-radius: 0 !important;
   }
 
+  /* ── Cards column ────────────────────────────────────────────────────── */
   .features-cards.details-grid {
     grid-area: cards !important;
     display: flex !important;
     flex-direction: column !important;
-    justify-content: space-between !important;
+    justify-content: center !important;
+    gap: 16px !important;
     max-width: 100% !important;
     height: 100% !important;
   }
 }
 
-/* Mobile: stack — video above, cards below */
+/* ── Individual detail cards — white, rounded, soft shadow ───────────────── */
+.editorial .detail-card {
+  background: #ffffff !important;
+  border: 1px solid rgba(200, 169, 106, 0.16) !important;
+  border-radius: 20px !important;
+  box-shadow:
+    0 4px 18px rgba(44, 24, 16, 0.06),
+    0 1px 4px rgba(44, 24, 16, 0.04) !important;
+  padding: 20px 22px !important;
+  min-height: 84px !important;
+  gap: 18px !important;
+  transition: box-shadow 0.22s ease, transform 0.22s ease !important;
+}
+
+.editorial .detail-card:hover {
+  box-shadow:
+    0 10px 30px rgba(44, 24, 16, 0.10),
+    0 2px 8px rgba(44, 24, 16, 0.06) !important;
+  transform: translateY(-1px) !important;
+}
+
+/* ── Icon area — golden rounded square ───────────────────────────────────── */
+.editorial .detail-card .detail-illustration {
+  width: 48px !important;
+  height: 48px !important;
+  min-width: 48px !important;
+  min-height: 48px !important;
+  border-radius: 14px !important;
+  background: linear-gradient(145deg, #fef7ed, #f5e9d0) !important;
+  border: 1px solid rgba(200, 169, 106, 0.40) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: none !important;
+  flex-shrink: 0 !important;
+  order: 2 !important;
+}
+
+/* SVG icons — gold stroke */
+.editorial .pastry-icon {
+  stroke: #c8a96a !important;
+  width: 26px !important;
+  height: 26px !important;
+}
+
+/* Text content — visual left (RTL order 1) */
+.editorial .detail-card-copy {
+  order: 1 !important;
+  min-width: 0 !important;
+}
+
+/* Card title */
+.editorial .detail-card h3 {
+  color: #2c1810 !important;
+  font-size: 0.97rem !important;
+  font-weight: 700 !important;
+  margin: 0 0 4px !important;
+  line-height: 1.3 !important;
+}
+
+/* Card description */
+.editorial .detail-card p {
+  color: #7a5540 !important;
+  font-size: 0.82rem !important;
+  line-height: 1.62 !important;
+  margin: 0 !important;
+}
+
+/* ── Play button — glass + gold ring ─────────────────────────────────────── */
+.editorial .bakery-video-play {
+  width: 62px !important;
+  height: 62px !important;
+  border-radius: 999px !important;
+  border: 1.5px solid rgba(200, 169, 106, 0.75) !important;
+  background: rgba(255, 249, 242, 0.15) !important;
+  backdrop-filter: blur(10px) !important;
+  color: #fff8ef !important;
+  box-shadow:
+    0 10px 28px rgba(44, 24, 16, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+}
+
+.editorial .bakery-video-play span {
+  font-size: 1.4rem !important;
+  transform: translateX(2px) !important;
+  color: rgba(255, 252, 246, 0.95) !important;
+}
+
+/* ── Mobile: stack — video above, cards below ────────────────────────────── */
 @media (max-width: 768px) {
+  .features-intro.editorial-text {
+    text-align: center !important;
+    margin-bottom: 24px !important;
+  }
+
+  .editorial .features-intro h2::after {
+    margin: 14px auto !important;
+  }
+
   .features-content {
     grid-template-columns: 1fr !important;
     grid-template-areas: "media" "cards" !important;
-    gap: 20px !important;
+    gap: 22px !important;
   }
 
   .features-media {
-    width: min(100%, 340px) !important;
+    width: min(100%, 320px) !important;
     aspect-ratio: 1 / 1 !important;
     height: auto !important;
     margin-inline: auto !important;
-    border-radius: 20px !important;
+    border-radius: 22px !important;
     overflow: hidden !important;
   }
 
@@ -480,6 +632,12 @@ html.site-entered .site-header:not(.header--on-light) {
 
   .features-cards.details-grid {
     max-width: 100% !important;
+    gap: 12px !important;
+  }
+
+  .editorial .detail-card {
+    padding: 16px 18px !important;
+    border-radius: 16px !important;
   }
 }
 
