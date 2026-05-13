@@ -3774,13 +3774,23 @@ main {
   font-family: var(--font-display);
   font-size: 16px;
   letter-spacing: 0.02em;
-  color: rgba(248, 244, 238, 0.92);
+  color: #b8a396;
   white-space: nowrap;
   direction: ltr;
 }
 
+.nav-brand span:first-child {
+  color: #baa59a;
+  text-shadow:
+    0 1px 2px rgba(6, 3, 5, 0.72),
+    0 0 22px rgba(176, 148, 92, 0.06);
+}
+
 .nav-brand span:last-child {
-  color: var(--color-gold);
+  color: #b8965e;
+  text-shadow:
+    0 1px 2px rgba(6, 3, 5, 0.64),
+    0 0 18px rgba(188, 158, 88, 0.11);
 }
 
 .nav-links {
@@ -3805,8 +3815,7 @@ main {
   color: var(--color-gold);
 }
 
-.nav-links .hero-scroll-link,
-.nav-brand.hero-scroll-link {
+.nav-links .hero-scroll-link {
   background: transparent !important;
   border: none !important;
   box-shadow: none !important;
@@ -3814,6 +3823,19 @@ main {
   padding: 0 !important;
   animation: none !important;
   text-shadow: none !important;
+  backdrop-filter: none !important;
+  min-height: unset !important;
+  line-height: inherit !important;
+  white-space: nowrap;
+}
+
+.nav-brand.hero-scroll-link {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  animation: none !important;
   backdrop-filter: none !important;
   min-height: unset !important;
   line-height: inherit !important;
@@ -3831,12 +3853,15 @@ main {
 
 .site-header.header--on-light .nav-brand,
 .site-header.header--on-light .nav-brand span:first-child {
-  color: #3f2145 !important;
-  text-shadow: none !important;
+  color: #332118 !important;
+  text-shadow:
+    0 1px 0 rgba(218, 196, 158, 0.22),
+    0 0 1px rgba(140, 108, 72, 0.12) !important;
 }
 
 .site-header.header--on-light .nav-brand span:last-child {
-  color: var(--color-gold) !important;
+  color: #5e4a32 !important;
+  text-shadow: 0 1px 0 rgba(212, 184, 120, 0.22) !important;
 }
 
 .site-header.header--on-light .nav-links a,
