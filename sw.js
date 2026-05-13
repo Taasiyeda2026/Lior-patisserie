@@ -1,4 +1,4 @@
-const CACHE_NAME = "lior-patisserie-v21";
+const CACHE_NAME = "lior-patisserie-v22";
 
 const CORE_ASSETS = [
   "./",
@@ -7,10 +7,21 @@ const CORE_ASSETS = [
   "./hero-fix.css",
   "./main.js",
   "./site.webmanifest",
+  "./admin.webmanifest",
   "./assets/logo.png",
+  "./assets/icons/favicon.ico",
+  "./assets/icons/favicon-16x16.png",
+  "./assets/icons/favicon-32x32.png",
+  "./assets/icons/apple-touch-icon.png",
   "./assets/icons/android-chrome-192x192.png",
   "./assets/icons/android-chrome-512x512.png",
-  "./assets/icons/apple-touch-icon.png"
+  "./assets/icons/instagram.svg",
+  "./assets/icons/admin/admin-favicon.ico",
+  "./assets/icons/admin/admin-favicon-16x16.png",
+  "./assets/icons/admin/admin-favicon-32x32.png",
+  "./assets/icons/admin/admin-apple-touch-icon.png",
+  "./assets/icons/admin/admin-192x192.png",
+  "./assets/icons/admin/admin-512x512.png"
 ];
 
 const ADMIN_PATHS = [

@@ -536,6 +536,7 @@
         ? (() => {
             const fu = String(feature.image_url).trim();
             const src = isRemoteImageValue(fu) ? fu : normalizeProductMediaPath(fu);
+            if (!src) return featureIconFallback(feature, index);
             return `<img src="${escapeHtml(src)}" alt="${escapeHtml(feature.title || "")}" loading="lazy" decoding="async">`;
           })()
         : featureIconFallback(feature, index);

@@ -14,6 +14,17 @@
 window.normalizeImagePath = function normalizeImagePath(value) {
   let path = String(value || "").trim().replace(/\\/g, "/").replace(/^\.\/+/, "");
   if (!path) return "";
+
+  // Repair accidentally nested local asset prefixes introduced by icon-path edits.
+  // Examples: assets/icons/admin/assets/logo.png -> assets/logo.png
+  //           assets/icons/assets/logo.png       -> assets/logo.png
+  path = path
+    .replace(/^assets\/icons\/admin\/assets\//i, "assets/")
+    .replace(/^assets\/icons\/assets\//i, "assets/")
+    .replace(/^assets\/assets\//i, "assets/")
+    .replace(/^images\/images\//i, "images/")
+    .replace(/^attached_assets\/attached_assets\//i, "attached_assets/");
+
   if (/^https?:\/\//i.test(path) || path.startsWith("//") || path.startsWith("/")) return path;
   if (/^(assets|images|attached_assets)\//i.test(path)) return path;
 
