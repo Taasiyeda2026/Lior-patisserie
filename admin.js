@@ -1048,63 +1048,6 @@ async function toggleProductActive(root) {
   showNotice(productNoticeScopeForRoot(root), newActive ? "המוצר מוצג באתר" : "המוצר הוסתר מהאתר");
 }
 
-function featureTemplate(feature = {}) {
-  const id = feature.id || crypto.randomUUID();
-  const isActive = feature.is_active !== false;
-  return `<article class="feature-row${isActive ? "" : " product-inactive"}" data-feature-id="${id}" data-display-order="${Number(feature.display_order) || 0}">
-    <div class="grid">
-      <label class="field-label">כותרת <input data-field="title" value="${escapeHtml(feature.title || "")}"></label>
-      <label class="field-label">מוצג באתר <select data-field="is_active"><option value="true" ${isActive ? "selected" : ""}>כן</option><option value="false" ${!isActive ? "selected" : ""}>לא</option></select></label>
-      <label class="field-label wide">טקסט <textarea data-field="text">${escapeHtml(feature.text || "")}</textarea></label>
-    </div>
-    <div class="product-actions">
-      <button class="admin-button" type="button" data-save-feature>שמירה</button>
-    </div>
-  </article>`;
-}
-
-async function loadFeatures() {
-  const { data, error } = await client().from("site_features").select("*").order("display_order", { ascending: true });
-  if (error) throw error;
-  const featEl = document.getElementById("featuresAdmin");
-  featEl.innerHTML = (data || []).map(featureTemplate).join("");
-}
-
-async function saveFeature(row) {
-  const payload = rowPayload(row, "feature");
-  const { error } = await client().from("site_features").upsert(payload, { onConflict: "id" });
-  if (error) throw error;
-  row.classList.toggle("product-inactive", !payload.is_active);
-  syncFeatureToggleUi(row, payload.is_active);
-  showNotice("features", "כרטיס המידע נשמר בהצלחה");
-}
-
-async function toggleFeatureActive(row) {
-  const id = row.dataset.featureId;
-  const btn = row.querySelector("[data-toggle-feature]");
-  const select = row.querySelector('[data-field="is_active"]');
-  const currentActive = btn.dataset.active === "true";
-  const newActive = !currentActive;
-
-  const { error } = await client()
-    .from("site_features")
-    .update({ is_active: newActive, updated_at: new Date().toISOString() })
-    .eq("id", id);
-  if (error) throw error;
-
-  syncFeatureToggleUi(row, newActive);
-  if (select) select.value = String(newActive);
-  row.classList.toggle("product-inactive", !newActive);
-  showNotice("features", newActive ? "כרטיס המידע מוצג באתר" : "כרטיס המידע הוסתר מהאתר");
-}
-
-function syncFeatureToggleUi(row, isActive) {
-  const btn = row.querySelector("[data-toggle-feature]");
-  if (!btn) return;
-  btn.dataset.active = String(isActive);
-  btn.textContent = isActive ? "מוסתר באתר" : "הצג באתר";
-  btn.className = `admin-button ${isActive ? "muted" : "secondary"}`;
-}
 
 function rowPayload(row, type) {
   const payload = {
@@ -1140,7 +1083,7 @@ function escapeHtml(value) {
 
 async function initAdmin() {
   await loadSettings();
-  await Promise.all([loadProducts(), loadFeatures()]);
+  await loadProducts();
 }
 
 function setupEvents() {
@@ -1265,15 +1208,6 @@ function setupEvents() {
       if (product) openProductDrawer(product, getProductSeriesIndex(product));
       return;
     }
-    if (event.target.id === "addFeature") {
-      const wrap = document.getElementById("featuresAdmin");
-      const orders = Array.from(wrap.querySelectorAll(".feature-row"))
-        .map((row) => Number(row.dataset.displayOrder) || 0);
-      const nextOrder = orders.length ? Math.max(...orders) + 1 : 0;
-      wrap.insertAdjacentHTML("beforeend", featureTemplate({ display_order: nextOrder, is_active: true }));
-      const row = wrap.querySelector(".feature-row:last-of-type");
-      if (row) initAdminPreviewShells(row);
-    }
     if (event.target.matches("[data-save-product-drawer]")) {
       const form = document.getElementById("productDrawerForm");
       if (form) {
@@ -1303,18 +1237,12 @@ function setupEvents() {
       if (shell) syncAdminPreviewShell(shell);
       showImageToolStatus(tools, "התמונה הוסרה. לחצו שמירה לעדכון באתר.", true);
     }
-    if (event.target.matches("[data-save-feature]")) {
-      try { await saveFeature(event.target.closest(".feature-row")); } catch (error) { showNotice("features", error.message, false); }
-    }
-    if (event.target.matches("[data-toggle-feature]")) {
-      try { await toggleFeatureActive(event.target.closest(".feature-row")); } catch (error) { showNotice("features", error.message, false); }
-    }
   });
 
   document.addEventListener("input", (event) => {
     const input = event.target;
     if (input.matches("[data-field]") && ["image_url", "card_image_url"].includes(input.dataset.field)) {
-      const row = input.closest(".product-row, .feature-row, .product-drawer-form");
+      const row = input.closest(".product-row, .product-drawer-form");
       if (row) initAdminPreviewShells(row);
       return;
     }
