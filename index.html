@@ -46,9 +46,31 @@
     .site-nav { height: 46px !important; }
     .home-hero { margin: 0 !important; height: calc(100svh - (var(--shell-gutter) * 2)) !important; min-height: calc(100svh - (var(--shell-gutter) * 2)) !important; background: #2A1A2E !important; }
     html.hero-locked .home-products { height: calc(100svh - (var(--shell-gutter) * 2)) !important; max-height: calc(100svh - (var(--shell-gutter) * 2)) !important; }
-    /* Nav text — force light colors over dark transparent header */
-    .nav-brand, .nav-brand span:first-child { color: rgba(248,244,238,0.95) !important; direction: ltr !important; }
-    .nav-brand span:last-child { color: #C4A844 !important; }
+    /* Nav brand — warm chocolate + muted gold (readable on dark hero + light header) */
+    .site-header:not(.header--on-light) .nav-brand { direction: ltr !important; }
+    .site-header:not(.header--on-light) .nav-brand span:first-child {
+      color: #baa59a !important;
+      text-shadow:
+        0 1px 2px rgba(6, 3, 5, 0.75),
+        0 0 20px rgba(176, 148, 92, 0.06) !important;
+    }
+    .site-header:not(.header--on-light) .nav-brand span:last-child {
+      color: #b8965e !important;
+      text-shadow:
+        0 1px 2px rgba(6, 3, 5, 0.65),
+        0 0 18px rgba(188, 158, 88, 0.11) !important;
+    }
+    .site-header.header--on-light .nav-brand { direction: ltr !important; }
+    .site-header.header--on-light .nav-brand span:first-child {
+      color: #332118 !important;
+      text-shadow:
+        0 1px 0 rgba(218, 196, 158, 0.22),
+        0 0 1px rgba(140, 108, 72, 0.12) !important;
+    }
+    .site-header.header--on-light .nav-brand span:last-child {
+      color: #5e4a32 !important;
+      text-shadow: 0 1px 0 rgba(212, 184, 120, 0.22) !important;
+    }
     .nav-links a, .nav-links .hero-scroll-link { color: rgba(248,244,238,0.92) !important; background: transparent !important; border: none !important; box-shadow: none !important; border-radius: 0 !important; padding: 0 !important; animation: none !important; backdrop-filter: none !important; text-shadow: 0 1px 6px rgba(0,0,0,0.5) !important; }
     .nav-links .hero-scroll-link::after { content: none !important; }
     .nav-cta { color: #C4A844 !important; border-color: #C4A844 !important; }
