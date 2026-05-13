@@ -1,0 +1,161 @@
+Implement a premium RTL contact / order section for a boutique patisserie website in Hebrew.
+
+Goal:
+Refine the existing contact/order section so it looks more luxurious, clean, boutique, and polished, while keeping the current structure: a centered rounded card on a soft cream background with headline, supporting text, contact details, and one main CTA button.
+
+General design direction:
+- Elegant French patisserie aesthetic
+- Minimal, soft, premium, feminine, editorial
+- Calm composition with lots of whitespace
+- No heavy ecommerce feel
+- RTL layout only
+- Hebrew content
+- Desktop-first implementation, fully responsive
+
+Page / section styling:
+- Use a smooth warm ivory / cream background
+- Background should be clean, without wallpaper pattern
+- Optional: extremely subtle texture or gradient only
+- Keep the main focus on one centered card
+- Ensure overall feeling is airy, upscale, and brand-consistent
+
+Main card:
+- Center the card horizontally
+- Max width: 760px to 860px
+- Large rounded corners: 28px to 36px
+- Background: warm off-white, not pure white
+- Add a very soft shadow, elegant and diffused, not harsh
+- Internal spacing should be generous
+- Card should feel premium and calm, not crowded
+
+Suggested card spacing:
+- top padding: 48px to 56px
+- side padding: 48px to 64px
+- bottom padding: 40px to 52px
+- vertical spacing between content blocks should be consistent
+
+Top decorative area:
+- Add a very subtle decorative divider near the top of the card
+- Include a small micro-label in Hebrew above or below it
+- Keep this area minimal and elegant
+- Do not let it compete with the main headline
+
+Typography:
+- Use elegant Hebrew typography
+- Keep font system limited and consistent
+- Recommended hierarchy:
+  1. Brand / micro label: small, refined
+  2. Main headline: prominent, elegant, readable
+  3. Supporting text: smaller, soft contrast
+  4. Contact details: medium emphasis
+  5. CTA button label: clear and concise
+
+Headline:
+- Main headline should remain the visual focal point
+- Make it elegant rather than too heavy
+- Font size on desktop: around 40px to 52px depending on font
+- Font weight: 600 to 700
+- Line height: 1.15 to 1.25
+- Color: deep plum or dark chocolate
+- Text align: center
+
+Supporting text:
+- Place directly below headline
+- Keep it concise and readable
+- Font size: 16px to 18px
+- Line height: 1.6 to 1.8
+- Softer contrast than headline
+- Max width inside card should preserve elegant line length
+- Text align: center
+
+Contact details block:
+- Present phone and email as two separate centered rows
+- Use small elegant icons
+- Increase readability compared to current version
+- Font size: 16px to 18px
+- Spacing between rows: 12px to 16px
+- Spacing above CTA: 24px to 32px
+- Use consistent alignment between icon and text
+- Maintain a refined, minimal look
+
+Main CTA button — critical requirement:
+The CTA must be compact, not wide.
+
+Button requirements:
+- Button should use hug-content width, not full-width and not oversized
+- Button should be centered
+- Height: 40px to 44px
+- Horizontal padding: 18px to 24px
+- Vertical padding: 10px to 12px
+- Border radius: fully rounded pill style
+- Font size: 14px to 16px
+- Font weight: 500 to 600
+- Keep the label short, for example:
+  "להזמנה"
+  "שליחת הזמנה"
+  "השאירו פרטים"
+- The button should feel elegant, premium, and precise
+- Avoid chunky or oversized CTA styling
+- Shadow must be subtle and soft
+- Button should visually stand out, but not dominate the card
+
+Button colors:
+- Background: champagne gold / soft warm gold
+- Text: dark brown or deep plum
+- Hover state: slightly darker or richer gold
+- Active state: subtle pressed effect
+- Transition: smooth 180ms to 240ms ease
+
+Do NOT:
+- Do not create a wide or heavy button
+- Do not use strong gradients
+- Do not use thick borders
+- Do not use aggressive hover animations
+- Do not make the button feel like generic ecommerce UI
+
+Bottom signature / handwritten accent:
+- Keep the handwritten brand-style signoff only as a subtle decorative accent
+- Make it smaller and softer than in the current version
+- Reduce opacity or contrast slightly
+- Place it low in the card with enough breathing room
+- It must not compete with the CTA or headline
+
+Header refinement:
+- Keep top navigation minimal and elegant
+- Make sure header styling matches the central card
+- The top CTA, if present, should use the same visual language as the main button
+- Avoid clutter in the header
+
+Floating widget:
+- If a floating widget exists, reduce its visual weight
+- Make it more integrated with the palette
+- Badge should be subtle
+- It should not overpower the delicate premium feel
+
+Spacing and layout rules:
+- Preserve strong vertical rhythm
+- Maintain balanced whitespace around the card
+- All content should feel centered, intentional, and calm
+- The section should read as a luxury brand contact moment, not a utility form
+
+Responsive behavior:
+- Tablet: reduce card width and spacing proportionally
+- Mobile:
+  - keep centered layout
+  - reduce padding
+  - scale headline appropriately
+  - keep the CTA compact, never full width unless explicitly required
+  - maintain premium spacing and hierarchy
+
+Accessibility:
+- Ensure sufficient contrast for text and button label
+- Button must have clear hover and focus-visible states
+- Icons should not be the only method of communication
+- Maintain semantic structure and keyboard accessibility
+
+Implementation preference:
+Use clean semantic HTML, modular CSS or Tailwind-style utility classes, and maintainable component structure.
+If you are editing existing code, preserve current content and functionality but refine the visual system according to the requirements above.
+
+Expected outcome:
+A polished, upscale, RTL boutique patisserie contact/order section with a centered luxurious card, refined typography, improved hierarchy, clearer contact details, and a compact premium CTA button.
