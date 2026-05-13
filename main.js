@@ -22,8 +22,10 @@
     function applyHeroLockState() {
       const locked = !isHeroUnlocked();
       document.documentElement.classList.toggle("hero-locked", locked);
+      document.documentElement.classList.toggle("site-entered", !locked);
       if (document.body) {
         document.body.classList.toggle("hero-locked", locked);
+        document.body.classList.toggle("site-entered", !locked);
       }
     }
 
@@ -1303,29 +1305,51 @@ ${productLine}
         });
       });
 
-      let _sectionTops = [];
+      let _sections = [];
 
-      function cacheSectionTops() {
-        _sectionTops = _dots.map((dot) => {
-          const target = getDotTarget(dot);
-          return target ? target.offsetTop : 0;
-        });
+      function cacheSections() {
+        _sections = _dots.map((dot) => ({ dot, target: getDotTarget(dot) })).filter((item) => item.target);
       }
-      cacheSectionTops();
-      window.addEventListener("resize", cacheSectionTops, { passive: true });
+      cacheSections();
+      window.addEventListener("resize", cacheSections, { passive: true });
 
       let _navTicking = false;
       function updateActive() {
         if (_navTicking) return;
         _navTicking = true;
         requestAnimationFrame(() => {
-          cacheSectionTops();
-          if (!_sectionTops.length || !_dots.length) { _navTicking = false; return; }
-          const mid = window.scrollY + window.innerHeight * 0.45;
-          let activeIndex = 0;
-          _sectionTops.forEach((top, i) => { if (top <= mid) activeIndex = i; });
-          _dots.forEach((dot, i) => {
-            const active = i === activeIndex;
+          cacheSections();
+          if (!_sections.length) { _navTicking = false; return; }
+
+          const headerOffset = 58;
+          const viewportProbe = Math.min(
+            window.innerHeight - 1,
+            Math.max(headerOffset + 1, window.innerHeight * 0.42)
+          );
+          let activeItem = _sections[0];
+          let bestDistance = Number.POSITIVE_INFINITY;
+
+          _sections.forEach((item) => {
+            const rect = item.target.getBoundingClientRect();
+            const containsProbe = rect.top <= viewportProbe && rect.bottom > viewportProbe;
+            if (containsProbe) {
+              activeItem = item;
+              bestDistance = 0;
+              return;
+            }
+
+            const distance = Math.min(
+              Math.abs(rect.top - viewportProbe),
+              Math.abs(rect.bottom - viewportProbe)
+            );
+            if (distance < bestDistance) {
+              bestDistance = distance;
+              activeItem = item;
+            }
+          });
+
+          _dots.forEach((dot) => {
+            const active = dot === activeItem.dot;
             dot.classList.toggle("is-active", active);
             if (active) dot.setAttribute("aria-current", "true");
             else dot.removeAttribute("aria-current");
@@ -1334,7 +1358,7 @@ ${productLine}
         });
       }
 
-      window.__liorRefreshSectionNav = () => { cacheSectionTops(); updateActive(); };
+      window.__liorRefreshSectionNav = () => { cacheSections(); updateActive(); };
       window.addEventListener("scroll", updateActive, { passive: true });
       updateActive();
     }
