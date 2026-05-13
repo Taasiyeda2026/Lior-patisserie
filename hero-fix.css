@@ -1665,6 +1665,50 @@ body.hero-locked .floating-cart {
 }
 
 /* ══════════════════════════════════════════════════════════════════════════
+   Contact section — remove decorative bar & center contact details
+   ══════════════════════════════════════════════════════════════════════════ */
+
+/* Hide the gradient decorative bar inside the reveal card */
+.final .reveal::before,
+.contact-section .reveal::before {
+  display: none !important;
+}
+
+/* Contact details block — centered column, no card chrome */
+.contact-details-card {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  text-align: center !important;
+  margin: 0 auto 20px !important;
+  padding: 0 !important;
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  width: auto !important;
+}
+
+.contact-details-list {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  gap: 10px !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  list-style: none !important;
+}
+
+.contact-details-list li {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 10px !important;
+  width: auto !important;
+  direction: ltr !important;
+}
+
+/* ══════════════════════════════════════════════════════════════════════════
    Targeted contact section refinement — dark boutique finish
    ══════════════════════════════════════════════════════════════════════════ */
 .contact-section,
