@@ -70,8 +70,14 @@
         if (document.body) document.body.classList.add("site-entered");
 
         requestAnimationFrame(() => {
-          // Step 3: hero is gone — scroll to top (products is now at position 0)
+          // Step 3: hero is gone — products is now at the top of #home.
           window.scrollTo({ top: 0, behavior: "instant" });
+
+          if (window.history && window.history.replaceState) {
+            window.history.replaceState(null, "", "#products");
+          }
+
+          window.dispatchEvent(new CustomEvent("lior:site-entered"));
 
           window.setTimeout(() => {
             document.documentElement.classList.remove("hero-transitioning");
@@ -81,8 +87,42 @@
       }, 240);
     }
 
+    function setupHeroScrollGuard() {
+      const scrollKeys = new Set(["ArrowDown", "ArrowUp", "PageDown", "PageUp", "Home", "End", " ", "Spacebar"]);
+      const isLocked = () => document.documentElement.classList.contains("hero-locked");
+
+      const keepHeroPinned = () => {
+        if (!isLocked()) return;
+        if ((window.scrollY || window.pageYOffset || 0) !== 0) {
+          window.scrollTo(0, 0);
+        }
+      };
+
+      window.addEventListener("wheel", (event) => {
+        if (!isLocked()) return;
+        event.preventDefault();
+        keepHeroPinned();
+      }, { passive: false });
+
+      window.addEventListener("touchmove", (event) => {
+        if (!isLocked()) return;
+        event.preventDefault();
+        keepHeroPinned();
+      }, { passive: false });
+
+      window.addEventListener("keydown", (event) => {
+        if (!isLocked() || !scrollKeys.has(event.key)) return;
+        event.preventDefault();
+        keepHeroPinned();
+      });
+
+      window.addEventListener("scroll", keepHeroPinned, { passive: true });
+      keepHeroPinned();
+    }
+
     function setupHeroUnlock() {
       applyHeroLockState();
+      setupHeroScrollGuard();
 
       document.querySelectorAll(".hero-scroll-link").forEach((link) => {
         link.addEventListener("click", (event) => {
@@ -1558,6 +1598,7 @@ ${productLine}
       updateHeaderState();
       window.addEventListener("scroll", updateHeaderState, { passive: true });
       window.addEventListener("resize", updateHeaderState, { passive: true });
+      window.addEventListener("lior:site-entered", updateHeaderState);
     }
 
     function setupHiddenAdminEntry() {
