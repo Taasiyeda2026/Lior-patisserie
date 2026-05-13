@@ -359,6 +359,76 @@ html.site-entered .home-opening {
   z-index: 2 !important;
 }
 
+/* ── Editorial / עבודת יד: 2-column layout (video | cards) ─────────────── */
+
+/* Widen container so the 2-column grid has room */
+.editorial .container,
+.editorial.features-section .container,
+.features-section .container {
+  width: min(100% - 40px, 960px) !important;
+  max-width: 960px !important;
+}
+
+/* Header (title + subtitle) — full width, centered above columns */
+.features-intro.editorial-text {
+  width: 100% !important;
+  max-width: 100% !important;
+  text-align: center !important;
+  margin: 0 0 28px !important;
+}
+
+/* 2-column grid: video left, cards right */
+@media (min-width: 769px) {
+  .features-content {
+    display: grid !important;
+    grid-template-columns: minmax(300px, 1fr) minmax(280px, 420px) !important;
+    grid-template-areas: "media cards" !important;
+    align-items: stretch !important;
+    gap: clamp(24px, 3vw, 40px) !important;
+    justify-content: unset !important;
+  }
+
+  .features-media {
+    grid-area: media !important;
+    width: 100% !important;
+    height: clamp(300px, 36vw, 460px) !important;
+    min-height: 300px !important;
+  }
+
+  /* Override the standalone editorial-video width so grid controls sizing */
+  .features-media.editorial-video {
+    width: 100% !important;
+    max-width: 100% !important;
+  }
+
+  .features-cards.details-grid {
+    grid-area: cards !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    max-width: 100% !important;
+    height: 100% !important;
+  }
+}
+
+/* Mobile: stack — video above, cards below */
+@media (max-width: 768px) {
+  .features-content {
+    grid-template-columns: 1fr !important;
+    grid-template-areas: "media" "cards" !important;
+    gap: 20px !important;
+  }
+
+  .features-media {
+    width: 100% !important;
+    height: clamp(220px, 55vw, 300px) !important;
+  }
+
+  .features-cards.details-grid {
+    max-width: 100% !important;
+  }
+}
+
 /* Contact section centering */
 .final .section-label,
 .contact-section .section-label {

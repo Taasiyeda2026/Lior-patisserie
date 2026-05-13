@@ -1,0 +1,103 @@
+תיקון דחוף לעמוד המוצרים — טפט החתימה לא נראה.
+
+הטפט הוגדר לעמוד המוצרים, אבל בפועל כמעט לא רואים אותו או לא רואים אותו בכלל.
+
+קובץ הטפט:
+https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png
+
+יש לבדוק ולתקן את שילוב הטפט כך שייראה בעדינות באזור המוצרים / הטעמים בלבד.
+
+דרישות תיקון:
+
+1. לוודא שהטפט מחובר לסקשן הנכון
+יש לוודא שהרקע מוחל על הסקשן האמיתי של אזור המוצרים, למשל:
+#products
+או
+.products-section
+או
+.flavors-section
+או הסלקטור האמיתי שקיים בקוד.
+
+לא להחיל על Hero.
+לא להחיל על כל האתר.
+
+2. לבדוק שאין רקע אטום שמסתיר את הטפט
+אם לסקשן המוצרים יש background-color אטום, gradient אטום, או שכבת ::before/::after אחרת שמסתירה את הטפט — יש לתקן.
+
+הטפט צריך להיות שכבה נראית מעל צבע הרקע הבסיסי, אבל מאחורי התוכן.
+
+3. לחזק את נוכחות הטפט
+כרגע הטפט חלש מדי. יש לחזק אותו בעדינות.
+
+אפשר להשתמש בכיוון כזה:
+
+#products {
+  position: relative;
+  overflow: hidden;
+  background-color: #fff8ef;
+}
+
+#products::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: url("https://osehkbkeydhpesjlisuk.supabase.co/storage/v1/object/public/site-images/backgrounds/lior-signature-wallpaper.png");
+  background-size: 520px 520px;
+  background-repeat: repeat;
+  background-position: center top;
+  opacity: 0.18;
+  pointer-events: none;
+  z-index: 0;
+}
+
+#products::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 248, 239, 0.58);
+  pointer-events: none;
+  z-index: 1;
+}
+
+#products > * {
+  position: relative;
+  z-index: 2;
+}
+
+4. אם עדיין לא רואים
+להוריד את שכבת ה־overlay:
+במקום opacity 0.58 ב־after, לנסות:
+rgba(255, 248, 239, 0.35)
+
+או להעלות את opacity של הטפט:
+0.22–0.28
+
+אבל לא להגזים — הטפט צריך להיות נראה בעדינות, לא להשתלט.
+
+5. לוודא שהקובץ נטען
+יש לפתוח את ה־URL בדפדפן ולוודא שאין 404.
+אם יש בעיית טעינה, לבדוק שה־bucket ציבורי ושהנתיב נכון.
+
+6. לא לשים רקע אטום על אזורי משנה
+אם יש wrapper פנימי בתוך המוצרים עם background לבן/שמנת אטום שמכסה את כל האזור, יש להפוך אותו לשקוף או חצי שקוף.
+
+לדוגמה:
+.products-content,
+.products-inner {
+  background: transparent;
+}
+
+כרטיסי המוצרים עצמם יכולים להישאר עם רקע/צל משלהם.
+
+7. מובייל
+במובייל אפשר להחליש מעט את הטפט, אבל לא להעלים לגמרי:
+
+@media (max-width: 768px) {
+  #products::before {
+    opacity: 0.12;
+    background-size: 420px 420px;
+  }
+}
+
+תוצאה רצויה:
+בעמוד המוצרים רואים בבירור אך בעדינות את טפט החתימה ברקע. הוא צריך להוסיף תחושת מותג ובוטיק, אבל לא לפגוע בקריאות של הכותרות, הטקסטים וכרטיסי המוצרים.
