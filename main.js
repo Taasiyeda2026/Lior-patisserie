@@ -15,6 +15,16 @@
 
     const HERO_UNLOCK_STORAGE_KEY = "liorHeroUnlocked";
 
+    function shouldStartOnHero() {
+      return !window.location.hash || window.location.hash === "#home";
+    }
+
+    function resetHeroUnlockForMainRoute() {
+      if (shouldStartOnHero()) {
+        sessionStorage.removeItem(HERO_UNLOCK_STORAGE_KEY);
+      }
+    }
+
     function isHeroUnlocked() {
       return sessionStorage.getItem(HERO_UNLOCK_STORAGE_KEY) === "true";
     }
@@ -122,6 +132,7 @@
     }
 
     function setupHeroUnlock() {
+      resetHeroUnlockForMainRoute();
       applyHeroLockState();
       setupHeroScrollGuard();
 

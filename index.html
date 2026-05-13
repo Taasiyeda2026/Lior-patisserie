@@ -20,9 +20,16 @@
   <link href="https://fonts.googleapis.com/css2?family=Heebo:wght@300;400;500&family=Playfair+Display:ital,wght@0,400;1,400&display=swap" rel="stylesheet">
   <link rel="preload" href="assets/fonts/IBMPlexSansHebrew-Regular.ttf" as="font" type="font/ttf" crossorigin>
   <script>
-    if (!sessionStorage.getItem("liorHeroUnlocked")) {
-      document.documentElement.classList.add("hero-locked");
-    }
+    (function () {
+      var hash = window.location.hash || "";
+      var shouldStartOnHero = !hash || hash === "#home";
+      if (shouldStartOnHero) {
+        sessionStorage.removeItem("liorHeroUnlocked");
+      }
+      if (shouldStartOnHero || !sessionStorage.getItem("liorHeroUnlocked")) {
+        document.documentElement.classList.add("hero-locked");
+      }
+    })();
   </script>
 
   <link rel="stylesheet" href="styles.css?v=17">
